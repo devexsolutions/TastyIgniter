@@ -52,8 +52,8 @@ class LanguageManager
             foreach (File::glob($folder.'/'.$locale.'/*.php') as $filePath) {
                 $result[] = [
                     'namespace' => $namespace,
-                    'group' => pathinfo($filePath, PATHINFO_FILENAME),
-                    'system' => in_array(ucfirst($namespace), config('system.modules', [])),
+                    'group'     => pathinfo($filePath, PATHINFO_FILENAME),
+                    'system'    => in_array(ucfirst($namespace), config('system.modules', [])),
                 ];
             }
         }
@@ -70,18 +70,26 @@ class LanguageManager
         foreach ($sourceLines as $key => $sourceLine) {
             $translationLine = array_get($translationLines, $key, $sourceLine);
 
-            if ($stringFilter === 'changed' AND !array_has($translationLines, $key)) continue;
+            if ($stringFilter === 'changed' and !array_has($translationLines, $key)) {
+                continue;
+            }
 
-            if ($stringFilter === 'unchanged' AND array_has($translationLines, $key)) continue;
+            if ($stringFilter === 'unchanged' and array_has($translationLines, $key)) {
+                continue;
+            }
 
-            if ((!is_null($sourceLine) AND !is_string($sourceLine))) continue;
+            if ((!is_null($sourceLine) and !is_string($sourceLine))) {
+                continue;
+            }
 
-            if ((!is_null($translationLine) AND !is_string($translationLine))) continue;
+            if ((!is_null($translationLine) and !is_string($translationLine))) {
+                continue;
+            }
 
             $namespacedKey = sprintf('%s::%s.%s', $file['namespace'], $file['group'], $key);
 
             $result[$namespacedKey] = [
-                'source' => $sourceLine,
+                'source'      => $sourceLine,
                 'translation' => $translationLine,
             ];
         }
@@ -91,20 +99,20 @@ class LanguageManager
 
     public function searchTranslations($translations, $term = null)
     {
-        if (!strlen($term))
+        if (!strlen($term)) {
             return $translations;
+        }
 
         $result = [];
         $term = strtolower($term);
         foreach ($translations as $key => $value) {
             if (strlen($term)) {
-                if (stripos(strtolower(array_get($value, 'source')), $term) !== FALSE
-                    OR stripos(strtolower(array_get($value, 'translation')), $term) !== FALSE
-                    OR stripos(strtolower($key), $term) !== FALSE) {
+                if (stripos(strtolower(array_get($value, 'source')), $term) !== false
+                    or stripos(strtolower(array_get($value, 'translation')), $term) !== false
+                    or stripos(strtolower($key), $term) !== false) {
                     $result[$key] = $value;
                 }
-            }
-            else {
+            } else {
                 $result[$key] = $value;
             }
         }
@@ -122,12 +130,16 @@ class LanguageManager
         $items = $total ? $items->forPage($page, $perPage) : collect();
 
         $options = [
-            'path' => Paginator::resolveCurrentPath(),
+            'path'     => Paginator::resolveCurrentPath(),
             'pageName' => 'page',
         ];
 
         return App::makeWith(LengthAwarePaginator::class, compact(
-            'items', 'total', 'perPage', 'page', 'options'
+            'items',
+            'total',
+            'perPage',
+            'page',
+            'options'
         ));
     }
 }

@@ -16,23 +16,26 @@ class IgniterUtil extends Command
 {
     /**
      * The console command name.
+     *
      * @var string
      */
     protected $name = 'igniter:util';
 
     /**
      * The console command description.
+     *
      * @var string
      */
     protected $description = 'TastyIgniter Utility commands.';
 
     /**
      * Execute the console command.
+     *
      * @return void
      */
     public function handle()
     {
-        $command = implode(' ', (array)$this->argument('name'));
+        $command = implode(' ', (array) $this->argument('name'));
         $method = 'util'.studly_case($command);
 
         if (!method_exists($this, $method)) {
@@ -46,6 +49,7 @@ class IgniterUtil extends Command
 
     /**
      * Get the console command arguments.
+     *
      * @return array
      */
     protected function getArguments()
@@ -82,8 +86,9 @@ class IgniterUtil extends Command
 
         $this->comment('*** TastyIgniter sets latest version: '.params('ti_version'));
 
-        if ($this->option('extensions'))
+        if ($this->option('extensions')) {
             $this->setItemsVersion();
+        }
 
         $this->comment('-');
         sleep(1);
@@ -110,7 +115,7 @@ class IgniterUtil extends Command
     {
         $this->comment('Compiling registered asset bundles...');
 
-        config()->set('system.enableAssetMinify', (bool)$this->option('minify', TRUE));
+        config()->set('system.enableAssetMinify', (bool) $this->option('minify', true));
         $appContext = $this->option('admin') ? 'admin' : 'main';
         $bundles = Assets::getBundles($type, $appContext);
 
@@ -165,7 +170,7 @@ class IgniterUtil extends Command
 
     protected function setItemsVersion()
     {
-        $updates = UpdateManager::instance()->requestUpdateList(TRUE);
+        $updates = UpdateManager::instance()->requestUpdateList(true);
 
         collect(array_get($updates, 'items', []))
             ->filter(function ($update) {

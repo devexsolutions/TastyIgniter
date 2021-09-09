@@ -11,7 +11,7 @@ use Igniter\Flame\Database\Traits\Sortable;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Categories Model Class
+ * Categories Model Class.
  */
 class Categories_model extends Model
 {
@@ -38,10 +38,10 @@ class Categories_model extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'parent_id' => 'integer',
-        'priority' => 'integer',
-        'status' => 'boolean',
-        'nest_left' => 'integer',
+        'parent_id'  => 'integer',
+        'priority'   => 'integer',
+        'status'     => 'boolean',
+        'nest_left'  => 'integer',
         'nest_right' => 'integer',
     ];
 
@@ -114,20 +114,20 @@ class Categories_model extends Model
         });
     }
 
-	 public function scopeListFrontEnd($query, $options = [])
+    public function scopeListFrontEnd($query, $options = [])
     {
         extract(array_merge([
-            'page' => 1,
+            'page'      => 1,
             'pageLimit' => 20,
-            'enabled' => TRUE,
-            'sort' => 'id asc',
-            'location' => null,
-            'search' => '',
+            'enabled'   => true,
+            'sort'      => 'id asc',
+            'location'  => null,
+            'search'    => '',
         ], $options));
 
         $searchableFields = ['name', 'description'];
 
-        if (strlen($location) AND is_numeric($location)) {
+        if (strlen($location) and is_numeric($location)) {
             $query->whereHasOrDoesntHaveLocation($location);
         }
 
@@ -160,7 +160,7 @@ class Categories_model extends Model
         if ($enabled) {
             $query->isEnabled();
         }
-        
+
         return $query->paginate($pageLimit, $page);
     }
 }

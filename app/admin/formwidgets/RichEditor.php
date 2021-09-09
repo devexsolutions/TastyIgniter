@@ -19,7 +19,7 @@ class RichEditor extends BaseFormWidget
     /**
      * @var bool Determines whether content has HEAD and HTML tags.
      */
-    public $fullPage = FALSE;
+    public $fullPage = false;
 
     public $stretch;
 
@@ -59,7 +59,7 @@ class RichEditor extends BaseFormWidget
     }
 
     /**
-     * Prepares the list data
+     * Prepares the list data.
      */
     public function prepareVars()
     {
@@ -74,6 +74,7 @@ class RichEditor extends BaseFormWidget
 
     /**
      * Determine the toolbar buttons to use based on config.
+     *
      * @return string
      */
     protected function evalToolbarButtons()

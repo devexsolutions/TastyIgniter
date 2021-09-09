@@ -23,7 +23,8 @@ use System\Facades\Assets;
  * Request URI              Find Controller In
  * /admin/(any)             `admin`, `location` or `system` app directory
  * /admin/acme/cod/(any)    `Acme.Cod` extension
- * /(any)                   `main` app directory
+ * /(any)                   `main` app directory.
+ *
  * @see \Admin\Classes\AdminController|\Main\Classes\MainController  controller class
  */
 class Controller extends IlluminateController
@@ -48,7 +49,7 @@ class Controller extends IlluminateController
     public static $segments;
 
     /**
-     * Stores the requested controller so that the constructor is only run once
+     * Stores the requested controller so that the constructor is only run once.
      *
      * @var array|null
      */
@@ -101,7 +102,7 @@ class Controller extends IlluminateController
      * Finds and serves the request using the admin controller.
      *
      * @param string $url Specifies the requested page URL.
-     * If the parameter is omitted, the dashboard URL used.
+     *                    If the parameter is omitted, the dashboard URL used.
      *
      * @return string Returns the processed page content.
      */
@@ -134,8 +135,7 @@ class Controller extends IlluminateController
             $cacheKey = $parts[0];
 
             return Assets::combineGetContents($cacheKey);
-        }
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             $errorMessage = ErrorHandler::getDetailedMessage($ex);
 
             return '/* '.e($errorMessage).' */';
@@ -144,8 +144,9 @@ class Controller extends IlluminateController
 
     protected function locateController($url)
     {
-        if (isset($this->requestedCache))
+        if (isset($this->requestedCache)) {
             return $this->requestedCache;
+        }
 
         $segments = RouterHelper::segmentizeUrl($url);
 
@@ -162,28 +163,30 @@ class Controller extends IlluminateController
      * This method is used internally.
      * Finds a controller with a callable action method.
      *
-     * @param string $controller Specifies a controller name to locate.
-     * @param string|array $modules Specifies a list of modules to look in.
-     * @param string $inPath Base path to search the class file.
+     * @param string       $controller Specifies a controller name to locate.
+     * @param string|array $modules    Specifies a list of modules to look in.
+     * @param string       $inPath     Base path to search the class file.
      *
      * @return bool|\Admin\Classes\AdminController|\Main\Classes\MainController
-     * Returns the backend controller object
+     *                                                                          Returns the backend controller object
      */
     protected function locateControllerInPath($controller, $modules, $inPath)
     {
-        is_array($modules) OR $modules = [$modules];
+        is_array($modules) or $modules = [$modules];
 
         $controllerClass = null;
         $matchPath = $inPath.'/%s/controllers/%s.php';
         foreach ($modules as $module => $namespace) {
             $controller = strtolower(str_replace(['\\', '_'], ['/', ''], $controller));
             $controllerFile = File::existsInsensitive(sprintf($matchPath, $module, $controller));
-            if ($controllerFile AND !class_exists($controllerClass = '\\'.$namespace.'\Controllers\\'.$controller))
+            if ($controllerFile and !class_exists($controllerClass = '\\'.$namespace.'\Controllers\\'.$controller)) {
                 include_once $controllerFile;
+            }
         }
 
-        if (!$controllerClass OR !class_exists($controllerClass))
+        if (!$controllerClass or !class_exists($controllerClass)) {
             return null;
+        }
 
         $controllerObj = App::make($controllerClass);
 
@@ -191,7 +194,7 @@ class Controller extends IlluminateController
             return $controllerObj;
         }
 
-        return FALSE;
+        return false;
     }
 
     /**
@@ -203,7 +206,7 @@ class Controller extends IlluminateController
      */
     protected function processAction($actionName)
     {
-        if (strpos($actionName, '-') !== FALSE) {
+        if (strpos($actionName, '-') !== false) {
             return camel_case($actionName);
         }
 
@@ -223,8 +226,8 @@ class Controller extends IlluminateController
         if ($controllerObj = $this->locateControllerInPath($controller, $modules, app_path())) {
             return [
                 'controller' => $controllerObj,
-                'action' => $action,
-                'segments' => $segments,
+                'action'     => $action,
+                'segments'   => $segments,
             ];
         }
     }
@@ -237,8 +240,9 @@ class Controller extends IlluminateController
             self::$segments = $segments = array_slice($segments, 4);
 
             $extensionCode = sprintf('%s.%s', $author, $extension);
-            if (ExtensionManager::instance()->isDisabled($extensionCode))
+            if (ExtensionManager::instance()->isDisabled($extensionCode)) {
                 return;
+            }
 
             if ($controllerObj = $this->locateControllerInPath(
                 $controller,
@@ -247,8 +251,8 @@ class Controller extends IlluminateController
             )) {
                 return [
                     'controller' => $controllerObj,
-                    'action' => $action,
-                    'segments' => $segments,
+                    'action'     => $action,
+                    'segments'   => $segments,
                 ];
             }
         }
@@ -256,12 +260,14 @@ class Controller extends IlluminateController
 
     protected function pushRequestedControllerMiddleware()
     {
-        if (!App::runningInAdmin())
+        if (!App::runningInAdmin()) {
             return;
+        }
 
         $pathParts = explode('/', request()->path());
-        if (Config::get('system.adminUri', 'admin'))
+        if (Config::get('system.adminUri', 'admin')) {
             array_shift($pathParts);
+        }
 
         $path = implode('/', $pathParts);
         if ($result = $this->locateController($path)) {

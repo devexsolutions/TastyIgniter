@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\URL;
 use System\Actions\ModelAction;
 
 /**
- * Base Payment Gateway Class
+ * Base Payment Gateway Class.
  */
 class BasePaymentGateway extends ModelAction
 {
@@ -27,10 +27,10 @@ class BasePaymentGateway extends ModelAction
     protected $configRules = [];
 
     /**
-     * Class constructor
+     * Class constructor.
      *
      * @param AdminController $controller
-     * @param array $params
+     * @param array           $params
      */
     public function __construct($model = null)
     {
@@ -43,8 +43,9 @@ class BasePaymentGateway extends ModelAction
         $this->configFields = array_get($formConfig, 'fields');
         $this->configRules = array_get($formConfig, 'rules');
 
-        if (!$model)
+        if (!$model) {
             return;
+        }
 
         $this->initialize($model);
     }
@@ -52,13 +53,15 @@ class BasePaymentGateway extends ModelAction
     /**
      * Initialize method called when the payment gateway is first loaded
      * with an existing model.
+     *
      * @return array
      */
     public function initialize($host)
     {
         // Set default data
-        if (!$host->exists)
+        if (!$host->exists) {
             $this->initConfigData($host);
+        }
     }
 
     /**
@@ -98,11 +101,12 @@ class BasePaymentGateway extends ModelAction
      * Registers a entry page with specific URL. For example,
      * PayPal needs a landing page for the auto-return feature.
      * Important! Payment module access point names should have a prefix.
+     *
      * @return array Returns an array containing page URLs and methods to call for each URL:
-     * return ['paypal_return'=>'processPaypalReturn']. The processing methods must be declared
-     * in the payment type class. Processing methods must accept one parameter - an array of URL segments
-     * following the access point. For example, if URL is /paypal_return/12/34 an array
-     * ['12', '34'] will be passed to processPaypalReturn method.
+     *               return ['paypal_return'=>'processPaypalReturn']. The processing methods must be declared
+     *               in the payment type class. Processing methods must accept one parameter - an array of URL segments
+     *               following the access point. For example, if URL is /paypal_return/12/34 an array
+     *               ['12', '34'] will be passed to processPaypalReturn method.
      */
     public function registerEntryPoints()
     {
@@ -122,7 +126,7 @@ class BasePaymentGateway extends ModelAction
     }
 
     /**
-     * Returns true if the payment type is applicable for a specified order amount
+     * Returns true if the payment type is applicable for a specified order amount.
      *
      * @param float $total Specifies an order amount
      * @param $host Model object to add fields to
@@ -131,13 +135,14 @@ class BasePaymentGateway extends ModelAction
      */
     public function isApplicable($total, $host)
     {
-        return TRUE;
+        return true;
     }
 
     /**
-     * Returns true if the payment type has additional fee
+     * Returns true if the payment type has additional fee.
      *
      * @param $host Model object to add fields to
+     *
      * @return bool
      */
     public function hasApplicableFee($host = null)
@@ -148,34 +153,35 @@ class BasePaymentGateway extends ModelAction
     }
 
     /**
-     * Returns the payment type additional fee
+     * Returns the payment type additional fee.
      *
      * @param $host Model object to add fields to
+     *
      * @return string
      */
     public function getFormattedApplicableFee($host = null)
     {
         $host = is_null($host) ? $this->model : $host;
 
-        return ((int)$host->order_fee_type === 2)
+        return ((int) $host->order_fee_type === 2)
             ? $host->order_fee.'%'
             : currency_format($host->order_fee);
     }
 
     /**
      * This method should return TRUE if the gateway completes the payment on the client's browsers.
-     * Allows the system to take extra steps during checkout before  completing the payment
+     * Allows the system to take extra steps during checkout before  completing the payment.
      */
     public function completesPaymentOnClient()
     {
-        return FALSE;
+        return false;
     }
 
     /**
      * Processes payment using passed data.
      *
-     * @param array $data Posted payment form data.
-     * @param Model $host Type model object containing configuration fields values.
+     * @param array $data  Posted payment form data.
+     * @param Model $host  Type model object containing configuration fields values.
      * @param Model $order Order model object.
      */
     public function processPaymentForm($data, $host, $order)
@@ -207,13 +213,15 @@ class BasePaymentGateway extends ModelAction
      */
     public function supportsPaymentProfiles()
     {
-        return FALSE;
+        return false;
     }
 
     /**
      * Creates a customer profile on the payment gateway or update if the profile already exists.
+     *
      * @param \Admin\Models\Customers_model $customer Customer model to create a profile for
-     * @param array $data Posted payment form data
+     * @param array                         $data     Posted payment form data
+     *
      * @return \Admin\Models\Payment_profiles_model|object Returns the customer payment profile model
      */
     public function updatePaymentProfile($customer, $data)
@@ -223,8 +231,9 @@ class BasePaymentGateway extends ModelAction
 
     /**
      * Deletes a customer payment profile from the payment gateway.
-     * @param \Admin\Models\Customers_model $customer Customer model
-     * @param \Admin\Models\Payment_profiles_model $profile Payment profile model
+     *
+     * @param \Admin\Models\Customers_model        $customer Customer model
+     * @param \Admin\Models\Payment_profiles_model $profile  Payment profile model
      */
     public function deletePaymentProfile($customer, $profile)
     {
@@ -233,8 +242,9 @@ class BasePaymentGateway extends ModelAction
 
     /**
      * Creates a payment transaction from an existing payment profile.
+     *
      * @param \Admin\Models\Orders_model $order An order object to pay
-     * @param array $data
+     * @param array                      $data
      */
     public function payFromPaymentProfile($order, $data = [])
     {
@@ -250,7 +260,7 @@ class BasePaymentGateway extends ModelAction
     }
 
     /**
-     * Creates an instance of the order model
+     * Creates an instance of the order model.
      */
     protected function createOrderModel()
     {
@@ -260,7 +270,7 @@ class BasePaymentGateway extends ModelAction
     }
 
     /**
-     * Creates an instance of the order status model
+     * Creates an instance of the order status model.
      */
     protected function createOrderStatusModel()
     {

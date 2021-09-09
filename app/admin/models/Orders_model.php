@@ -17,7 +17,7 @@ use Main\Classes\MainController;
 use System\Traits\SendsMailTemplate;
 
 /**
- * Orders Model Class
+ * Orders Model Class.
  */
 class Orders_model extends Model
 {
@@ -55,29 +55,29 @@ class Orders_model extends Model
     /**
      * @var array The model table column to convert to dates on insert/update
      */
-    public $timestamps = TRUE;
+    public $timestamps = true;
 
     public $appends = ['customer_name', 'order_type_name', 'order_date_time', 'formatted_address'];
 
     protected $casts = [
-        'customer_id' => 'integer',
-        'location_id' => 'integer',
-        'address_id' => 'integer',
-        'total_items' => 'integer',
-        'cart' => Serialize::class,
-        'order_date' => 'date',
-        'order_time' => 'time',
-        'order_total' => 'float',
-        'notify' => 'boolean',
-        'processed' => 'boolean',
+        'customer_id'        => 'integer',
+        'location_id'        => 'integer',
+        'address_id'         => 'integer',
+        'total_items'        => 'integer',
+        'cart'               => Serialize::class,
+        'order_date'         => 'date',
+        'order_time'         => 'time',
+        'order_total'        => 'float',
+        'notify'             => 'boolean',
+        'processed'          => 'boolean',
         'order_time_is_asap' => 'boolean',
     ];
 
     public $relation = [
         'belongsTo' => [
-            'customer' => 'Admin\Models\Customers_model',
-            'location' => 'Admin\Models\Locations_model',
-            'address' => 'Admin\Models\Addresses_model',
+            'customer'       => 'Admin\Models\Customers_model',
+            'location'       => 'Admin\Models\Locations_model',
+            'address'        => 'Admin\Models\Addresses_model',
             'payment_method' => ['Admin\Models\Payments_model', 'foreignKey' => 'payment', 'otherKey' => 'code'],
         ],
         'hasMany' => [
@@ -92,8 +92,9 @@ class Orders_model extends Model
 
     public function listCustomerAddresses()
     {
-        if (!$this->customer)
+        if (!$this->customer) {
             return [];
+        }
 
         return $this->customer->addresses()->get();
     }
@@ -117,12 +118,12 @@ class Orders_model extends Model
     public function scopeListFrontEnd($query, $options = [])
     {
         extract(array_merge([
-            'page' => 1,
-            'pageLimit' => 20,
-            'customer' => null,
-            'location' => null,
-            'sort' => 'address_id desc',
-            'search' => '',
+            'page'           => 1,
+            'pageLimit'      => 20,
+            'customer'       => null,
+            'location'       => null,
+            'sort'           => 'address_id desc',
+            'search'         => '',
             'dateTimeFilter' => [],
         ], $options));
 
@@ -132,15 +133,13 @@ class Orders_model extends Model
 
         if ($location instanceof Locations_model) {
             $query->where('location_id', $location->getKey());
-        }
-        elseif (strlen($location)) {
+        } elseif (strlen($location)) {
             $query->where('location_id', $location);
         }
 
         if ($customer instanceof User) {
             $query->where('customer_id', $customer->getKey());
-        }
-        elseif (strlen($customer)) {
+        } elseif (strlen($customer)) {
             $query->where('customer_id', $customer);
         }
 
@@ -164,7 +163,7 @@ class Orders_model extends Model
             $query->search($search, $searchableFields);
         }
 
-        if ($startDateTime = array_get($dateTimeFilter, 'orderDateTime.startAt', FALSE) AND $endDateTime = array_get($dateTimeFilter, 'orderDateTime.endAt', FALSE)) {
+        if ($startDateTime = array_get($dateTimeFilter, 'orderDateTime.startAt', false) and $endDateTime = array_get($dateTimeFilter, 'orderDateTime.endAt', false)) {
             $query = $this->scopeWhereBetweenOrderDateTime($query, Carbon::parse($startDateTime)->format('Y-m-d H:i:s'), Carbon::parse($endDateTime)->format('Y-m-d H:i:s'));
         }
 
@@ -189,8 +188,9 @@ class Orders_model extends Model
 
     public function getOrderTypeNameAttribute()
     {
-        if (!$this->location)
+        if (!$this->location) {
             return $this->order_type;
+        }
 
         return optional(
             $this->location->availableOrderTypes()->get($this->order_type)
@@ -200,8 +200,10 @@ class Orders_model extends Model
     public function getOrderDatetimeAttribute($value)
     {
         if (!isset($this->attributes['order_date'])
-            AND !isset($this->attributes['order_time'])
-        ) return null;
+            and !isset($this->attributes['order_time'])
+        ) {
+            return null;
+        }
 
         return make_carbon($this->attributes['order_date'])
             ->setTimeFromTimeString($this->attributes['order_time']);
@@ -218,16 +220,18 @@ class Orders_model extends Model
 
     public function isCompleted()
     {
-        if (!$this->isPaymentProcessed())
-            return FALSE;
+        if (!$this->isPaymentProcessed()) {
+            return false;
+        }
 
         return $this->status_history()->where(
-            'status_id', setting('completed_order_status')
+            'status_id',
+            setting('completed_order_status')
         )->exists();
     }
 
     /**
-     * Check if an order was successfully placed
+     * Check if an order was successfully placed.
      *
      * @param int $order_id
      *
@@ -235,7 +239,7 @@ class Orders_model extends Model
      */
     public function isPaymentProcessed()
     {
-        return $this->processed AND !empty($this->status_id);
+        return $this->processed and !empty($this->status_id);
     }
 
     public function isDeliveryType()
@@ -249,7 +253,7 @@ class Orders_model extends Model
     }
 
     /**
-     * Return the dates of all orders
+     * Return the dates of all orders.
      *
      * @return array
      */
@@ -270,7 +274,7 @@ class Orders_model extends Model
         return $this->processed;
     }
 
-    public function logPaymentAttempt($message, $isSuccess, $request = [], $response = [], $isRefundable = FALSE)
+    public function logPaymentAttempt($message, $isSuccess, $request = [], $response = [], $isRefundable = false)
     {
         Payment_logs_model::logAttempt($this, $message, $isSuccess, $request, $response, $isRefundable);
     }
@@ -280,12 +284,14 @@ class Orders_model extends Model
         $id = $id ?: $this->status_id ?: setting('default_order_status');
 
         return $this->addStatusHistory(
-            Statuses_model::find($id), $options
+            Statuses_model::find($id),
+            $options
         );
     }
 
     /**
      * Generate a unique hash for this order.
+     *
      * @return string
      */
     protected function generateHash()
@@ -298,6 +304,7 @@ class Orders_model extends Model
 
     /**
      * Create a hash for this order.
+     *
      * @return string
      */
     protected function createHash()
@@ -312,7 +319,7 @@ class Orders_model extends Model
     public function mailGetRecipients($type)
     {
         $emailSetting = setting('order_email');
-        is_array($emailSetting) OR $emailSetting = [];
+        is_array($emailSetting) or $emailSetting = [];
 
         $recipients = [];
         if (in_array($type, $emailSetting)) {
@@ -333,7 +340,7 @@ class Orders_model extends Model
     }
 
     /**
-     * Return the order data to build mail template
+     * Return the order data to build mail template.
      *
      * @return array
      */
@@ -380,12 +387,12 @@ class Orders_model extends Model
             }
 
             $data['order_menus'][] = [
-                'menu_name' => $menu->name,
+                'menu_name'     => $menu->name,
                 'menu_quantity' => $menu->quantity,
-                'menu_price' => currency_format($menu->price),
+                'menu_price'    => currency_format($menu->price),
                 'menu_subtotal' => currency_format($menu->subtotal),
-                'menu_options' => implode('<br /> ', $optionData),
-                'menu_comment' => $menu->comment,
+                'menu_options'  => implode('<br /> ', $optionData),
+                'menu_comment'  => $menu->comment,
             ];
         }
 
@@ -395,13 +402,14 @@ class Orders_model extends Model
             $data['order_totals'][] = [
                 'order_total_title' => htmlspecialchars_decode($total->title),
                 'order_total_value' => currency_format($total->value),
-                'priority' => $total->priority,
+                'priority'          => $total->priority,
             ];
         }
 
         $data['order_address'] = lang('admin::lang.orders.text_collection_order_type');
-        if ($model->address)
-            $data['order_address'] = format_address($model->address->toArray(), FALSE);
+        if ($model->address) {
+            $data['order_address'] = format_address($model->address->toArray(), false);
+        }
 
         if ($model->location) {
             $data['location_name'] = $model->location->location_name;
@@ -413,7 +421,7 @@ class Orders_model extends Model
         $data['status_name'] = $statusHistory ? optional($statusHistory->status)->status_name : null;
         $data['status_comment'] = $statusHistory ? $statusHistory->comment : null;
 
-        $controller = MainController::getController() ?: new MainController;
+        $controller = MainController::getController() ?: new MainController();
         $data['order_view_url'] = $controller->pageUrl('account/order', [
             'hash' => $model->hash,
         ]);

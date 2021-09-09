@@ -21,7 +21,7 @@ class Staff_roles_model extends Model
     /**
      * @var array The model table column to convert to dates on insert/update
      */
-    public $timestamps = TRUE;
+    public $timestamps = true;
 
     public $relation = [
         'hasMany' => [
@@ -56,9 +56,11 @@ class Staff_roles_model extends Model
     public function setPermissionsAttribute($permissions)
     {
         foreach ($permissions ?? [] as $permission => $value) {
-            if (!in_array($value = (int)$value, [-1, 0, 1])) {
+            if (!in_array($value = (int) $value, [-1, 0, 1])) {
                 throw new InvalidArgumentException(sprintf(
-                    'Invalid value "%s" for permission "%s" given.', $value, $permission
+                    'Invalid value "%s" for permission "%s" given.',
+                    $value,
+                    $permission
                 ));
             }
 

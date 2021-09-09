@@ -21,11 +21,11 @@ class CodeEditor extends BaseFormWidget
     /**
      * @var bool Determines whether content has HEAD and HTML tags.
      */
-    public $fullPage = FALSE;
+    public $fullPage = false;
 
     public $lineSeparator;
 
-    public $readOnly = FALSE;
+    public $readOnly = false;
 
     //
     // Object properties
@@ -68,7 +68,7 @@ class CodeEditor extends BaseFormWidget
     }
 
     /**
-     * Prepares the list data
+     * Prepares the list data.
      */
     public function prepareVars()
     {

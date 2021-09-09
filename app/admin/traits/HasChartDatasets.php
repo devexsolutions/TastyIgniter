@@ -54,10 +54,10 @@ trait HasChartDatasets
         $borderColor = sprintf('rgb(%s, %s, %s)', $r, $g, $b);
 
         return array_merge($this->datasetOptions, [
-            'label' => lang($config['label']),
-            'data' => $this->queryDatasets($config, $start, $end),
+            'label'           => lang($config['label']),
+            'data'            => $this->queryDatasets($config, $start, $end),
             'backgroundColor' => $backgroundColor,
-            'borderColor' => $borderColor,
+            'borderColor'     => $borderColor,
         ]);
     }
 

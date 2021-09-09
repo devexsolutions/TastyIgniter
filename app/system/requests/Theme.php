@@ -13,12 +13,13 @@ class Theme extends FormRequest
 
     public function rules()
     {
-        if ($form = $this->getForm() AND $form->context != 'source') {
+        if ($form = $this->getForm() and $form->context != 'source') {
             $rules = [];
             $fieldsConfig = $this->controller->asExtension('FormController')->getFormModel()->getFieldsConfig();
             foreach ($fieldsConfig as $name => $field) {
-                if (!array_key_exists('rules', $field))
+                if (!array_key_exists('rules', $field)) {
                     continue;
+                }
 
                 $dottedName = implode('.', name_to_array($name));
                 $rules[] = [$dottedName, $field['label'], $field['rules']];

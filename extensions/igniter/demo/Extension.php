@@ -10,8 +10,8 @@ class Extension extends BaseExtension
     {
         return [
             'Igniter\Demo\Components\Block' => [
-                'code' => 'block',
-                'name' => 'lang:igniter.demo::default.text_component_title',
+                'code'        => 'block',
+                'name'        => 'lang:igniter.demo::default.text_component_title',
                 'description' => 'lang:igniter.demo::default.text_component_desc',
             ],
         ];

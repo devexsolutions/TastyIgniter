@@ -5,7 +5,7 @@ namespace Main\Classes;
 use Admin\Models\Customer_groups_model;
 
 /**
- * Customer Class
+ * Customer Class.
  */
 class Customer extends \Igniter\Flame\Auth\Manager
 {
@@ -69,15 +69,16 @@ class Customer extends \Igniter\Flame\Auth\Manager
     }
 
     /**
-     * Registers a user by giving the required credentials
+     * Registers a user by giving the required credentials.
      *
      * @param array $credentials
+     * @param bool  $activate
      *
-     * @param bool $activate
-     * @return \Admin\Models\Customers_model
      * @throws \Exception
+     *
+     * @return \Admin\Models\Customers_model
      */
-    public function register(array $attributes, $activate = FALSE)
+    public function register(array $attributes, $activate = false)
     {
         $model = $this->createModel();
         $model->fill($attributes);

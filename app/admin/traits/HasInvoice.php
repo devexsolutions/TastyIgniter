@@ -13,23 +13,26 @@ trait HasInvoice
         });
 
         static::saved(function (self $model) {
-            if ($model->isPaymentProcessed() AND !$model->hasInvoice())
+            if ($model->isPaymentProcessed() and !$model->hasInvoice()) {
                 $model->generateInvoice();
+            }
         });
     }
 
     public function getInvoiceNumberAttribute()
     {
-        if (!strlen($this->invoice_prefix))
+        if (!strlen($this->invoice_prefix)) {
             return null;
+        }
 
         return $this->invoice_prefix.$this->order_id;
     }
 
     public function getInvoiceNoAttribute()
     {
-        if (!strlen($this->invoice_prefix))
+        if (!strlen($this->invoice_prefix)) {
             return null;
+        }
 
         return $this->invoice_prefix.$this->order_id;
     }
@@ -41,8 +44,9 @@ trait HasInvoice
 
     public function generateInvoice()
     {
-        if ($this->hasInvoice())
+        if ($this->hasInvoice()) {
             return $this->invoice_number;
+        }
 
         $invoiceDate = is_null($this->invoice_date)
             ? Carbon::now() : $this->invoice_date;
@@ -52,7 +56,7 @@ trait HasInvoice
             : $this->invoice_prefix;
 
         $this->newQuery()->where($this->getKeyName(), $this->getKey())->update([
-            'invoice_date' => $invoiceDate,
+            'invoice_date'   => $invoiceDate,
             'invoice_prefix' => $invoicePrefix,
         ]);
 
@@ -64,10 +68,10 @@ trait HasInvoice
         $invoiceDate = $invoiceDate ?? $this->invoice_date;
 
         return parse_values([
-            'year' => $invoiceDate->year,
-            'month' => $invoiceDate->month,
-            'day' => $invoiceDate->day,
-            'hour' => $invoiceDate->hour,
+            'year'   => $invoiceDate->year,
+            'month'  => $invoiceDate->month,
+            'day'    => $invoiceDate->day,
+            'hour'   => $invoiceDate->hour,
             'minute' => $invoiceDate->minute,
             'second' => $invoiceDate->second,
         ], setting('invoice_prefix') ?: 'INV-{year}-00');

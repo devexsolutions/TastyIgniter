@@ -19,10 +19,10 @@ trait ListExtendable
     }
 
     /**
-     * Controller override: Extend supplied model
+     * Controller override: Extend supplied model.
      *
      * @param Model $model
-     * @param null $alias
+     * @param null  $alias
      *
      * @return\Igniter\Flame\Database\Model
      */
@@ -56,7 +56,7 @@ trait ListExtendable
      * options before the default query is processed.
      *
      * @param \Igniter\Flame\Database\Builder $query
-     * @param array $scope
+     * @param array                           $scope
      */
     public function listFilterExtendQuery($query, $scope)
     {
@@ -77,8 +77,8 @@ trait ListExtendable
      * Called after the filter scopes are defined.
      *
      * @param \Admin\Widgets\Filter $host The hosting filter widget
-     *
      * @param $scopes
+     *
      * @return void
      */
     public function listFilterExtendScopes($host, $scopes)
@@ -86,11 +86,11 @@ trait ListExtendable
     }
 
     /**
-     * Replace a table column value (<td>...</td>)
+     * Replace a table column value (<td>...</td>).
      *
-     * @param Model $record The populated model used for the column
+     * @param Model  $record The populated model used for the column
      * @param string $column The column to override
-     * @param string $alias List alias (optional)
+     * @param string $alias  List alias (optional)
      *
      * @return string HTML view
      */
@@ -99,10 +99,10 @@ trait ListExtendable
     }
 
     /**
-     * Replace the entire table header contents (<th>...</th>) with custom HTML
+     * Replace the entire table header contents (<th>...</th>) with custom HTML.
      *
      * @param string $columnName The column name to override
-     * @param string $alias List alias (optional)
+     * @param string $alias      List alias (optional)
      *
      * @return string HTML view
      */

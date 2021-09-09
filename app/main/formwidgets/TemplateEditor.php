@@ -13,7 +13,7 @@ use Main\Classes\Theme;
 use Main\Classes\ThemeManager;
 
 /**
- * Template Editor
+ * Template Editor.
  */
 class TemplateEditor extends BaseFormWidget
 {
@@ -41,10 +41,10 @@ class TemplateEditor extends BaseFormWidget
     protected $manager;
 
     protected $templateConfig = [
-        '_pages' => '~/app/main/template/config/page',
+        '_pages'    => '~/app/main/template/config/page',
         '_partials' => '~/app/main/template/config/partial',
-        '_layouts' => '~/app/main/template/config/layout',
-        '_content' => '~/app/main/template/config/content',
+        '_layouts'  => '~/app/main/template/config/layout',
+        '_content'  => '~/app/main/template/config/content',
     ];
 
     /**
@@ -84,8 +84,9 @@ class TemplateEditor extends BaseFormWidget
     {
         $this->prepareVars();
 
-        if ($this->templateWidget)
+        if ($this->templateWidget) {
             $this->controller->setTemplateValue('mTime', $this->getTemplateModifiedTime());
+        }
 
         return $this->makePartial('templateeditor/templateeditor');
     }
@@ -120,8 +121,9 @@ class TemplateEditor extends BaseFormWidget
 
     public function onManageSource()
     {
-        if ($this->manager->isLocked($this->model->code))
+        if ($this->manager->isLocked($this->model->code)) {
             throw new ApplicationException(lang('system::lang.themes.alert_theme_locked'));
+        }
 
         $this->validate(post(), [
             ['action', 'Source Action', 'required|in:delete,rename,new'],
@@ -135,12 +137,10 @@ class TemplateEditor extends BaseFormWidget
         if ($fileAction == 'rename') {
             $this->manager->renameFile($fileName, $newFileName, $this->model->code);
             flash()->success(sprintf(lang('admin::lang.alert_success'), 'Template file renamed '));
-        }
-        elseif ($fileAction == 'delete') {
+        } elseif ($fileAction == 'delete') {
             $this->manager->deleteFile($fileName, $this->model->code);
             flash()->success(sprintf(lang('admin::lang.alert_success'), 'Template file deleted '));
-        }
-        else {
+        } else {
             $this->manager->newFile($newFileName, $this->model->code);
             flash()->success(sprintf(lang('admin::lang.alert_success'), 'Template file created '));
         }
@@ -153,22 +153,26 @@ class TemplateEditor extends BaseFormWidget
 
     public function onSaveSource()
     {
-        if ($this->manager->isLocked($this->model->code))
+        if ($this->manager->isLocked($this->model->code)) {
             throw new ApplicationException(lang('system::lang.themes.alert_theme_locked'));
+        }
 
         $fileName = sprintf('%s/%s', $this->templateType, $this->templateFile);
         $data = post('Theme.source');
 
         $this->validateAfter(function (Validator $validator) {
-            if ($this->wasTemplateModified())
+            if ($this->wasTemplateModified()) {
                 $validator->errors()->add('markup', lang('system::lang.themes.alert_changes_confirm'));
+            }
         });
 
-        $this->validate($data,
+        $this->validate(
+            $data,
             array_get($this->templateWidget->config ?? [], 'rules', [])
         );
 
-        $this->manager->writeFile($fileName,
+        $this->manager->writeFile(
+            $fileName,
             $this->getTemplateAttributes(),
             $this->model->code
         );
@@ -178,10 +182,10 @@ class TemplateEditor extends BaseFormWidget
     {
         try {
             $template = $this->manager->readFile(
-                $this->templateType.'/'.$this->templateFile, $this->model->code
+                $this->templateType.'/'.$this->templateFile,
+                $this->model->code
             );
-        }
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             return null;
         }
 
@@ -189,12 +193,12 @@ class TemplateEditor extends BaseFormWidget
         $widgetConfig = $this->loadConfig($configFile, ['form'], 'form');
 
         $widgetConfig['data'] = [
-            'fileName' => $template->getFileName(),
+            'fileName'     => $template->getFileName(),
             'baseFileName' => $template->getBaseFileName(),
-            'settings' => $template->settings,
-            'markup' => $template->getMarkup(),
-            'codeSection' => $template->getCode(),
-            'fileSource' => $template,
+            'settings'     => $template->settings,
+            'markup'       => $template->getMarkup(),
+            'codeSection'  => $template->getCode(),
+            'fileSource'   => $template,
         ];
 
         $widgetConfig['model'] = $this->model;
@@ -208,23 +212,24 @@ class TemplateEditor extends BaseFormWidget
 
     protected function getTemplateEditorOptions()
     {
-        if (!$themeObject = $this->model->getTheme() OR !$themeObject instanceof Theme)
+        if (!$themeObject = $this->model->getTheme() or !$themeObject instanceof Theme) {
             throw new ApplicationException('Missing theme object on '.get_class($this->model));
+        }
 
         $type = $this->templateType ?? '_pages';
         /** @var \Main\Template\Model $templateClass */
         $templateClass = $themeObject->getTemplateClass($type);
 
-        return $templateClass::getDropdownOptions($themeObject, TRUE);
+        return $templateClass::getDropdownOptions($themeObject, true);
     }
 
     protected function getTemplateTypes()
     {
         return [
-            '_pages' => 'system::lang.themes.label_type_page',
+            '_pages'    => 'system::lang.themes.label_type_page',
             '_partials' => 'system::lang.themes.label_type_partial',
-            '_layouts' => 'system::lang.themes.label_type_layout',
-            '_content' => 'system::lang.themes.label_type_content',
+            '_layouts'  => 'system::lang.themes.label_type_layout',
+            '_content'  => 'system::lang.themes.label_type_content',
         ];
     }
 

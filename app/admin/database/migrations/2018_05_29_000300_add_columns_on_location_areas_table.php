@@ -7,7 +7,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Add color column on location_areas table
+ * Add color column on location_areas table.
  */
 class AddColumnsOnLocationAreasTable extends Migration
 {

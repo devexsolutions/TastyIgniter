@@ -6,14 +6,13 @@ use Admin\Facades\AdminAuth;
 
 class Logout extends \Admin\Classes\AdminController
 {
-    protected $requireAuthentication = FALSE;
+    protected $requireAuthentication = false;
 
     public function index()
     {
         if (AdminAuth::isImpersonator()) {
             AdminAuth::stopImpersonate();
-        }
-        else {
+        } else {
             AdminAuth::logout();
 
             session()->invalidate();

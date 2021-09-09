@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Schema;
  * New column 'priority' on menu options, menu_options_values table
  * New column 'is_default' on menu_options_values table
  * New columns 'original_id, layout, plain_layout' on Mail Template table
- * New column 'plain_body' on Mail Template data table
+ * New column 'plain_body' on Mail Template data table.
  */
 class AddColumns extends Migration
 {

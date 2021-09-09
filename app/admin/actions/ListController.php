@@ -7,7 +7,7 @@ use Admin\Traits\ListExtendable;
 use System\Classes\ControllerAction;
 
 /**
- * List Controller Class
+ * List Controller Class.
  */
 class ListController extends ControllerAction
 {
@@ -32,7 +32,8 @@ class ListController extends ControllerAction
      *              'primary_key', 'DESC'
      *          ],
      *      ],
-     *  ];
+     *  ];.
+     *
      * @var array
      */
     public $listConfig;
@@ -103,19 +104,20 @@ class ListController extends ControllerAction
     public function index_onDelete()
     {
         $checkedIds = post('checked');
-        if (!$checkedIds OR !is_array($checkedIds) OR !count($checkedIds)) {
+        if (!$checkedIds or !is_array($checkedIds) or !count($checkedIds)) {
             flash()->success(lang('admin::lang.list.delete_empty'));
 
             return $this->controller->refreshList();
         }
 
-        if (!$alias = post('alias'))
+        if (!$alias = post('alias')) {
             $alias = $this->primaryAlias;
+        }
 
         $listConfig = $this->makeConfig($this->listConfig[$alias], $this->requiredConfig);
 
         $modelClass = $listConfig['model'];
-        $model = new $modelClass;
+        $model = new $modelClass();
         $model = $this->controller->listExtendModel($model, $alias);
 
         $query = $model->newQuery();
@@ -132,8 +134,7 @@ class ListController extends ControllerAction
 
             $prefix = ($count > 1) ? ' records' : 'record';
             flash()->success(sprintf(lang('admin::lang.alert_success'), '['.$count.']'.$prefix.' '.lang('admin::lang.text_deleted')));
-        }
-        else {
+        } else {
             flash()->warning(sprintf(lang('admin::lang.alert_error_nothing'), lang('admin::lang.text_deleted')));
         }
 
@@ -157,7 +158,7 @@ class ListController extends ControllerAction
     }
 
     /**
-     * Prepare the widgets used by this action
+     * Prepare the widgets used by this action.
      *
      * @param $alias
      *
@@ -165,13 +166,14 @@ class ListController extends ControllerAction
      */
     public function makeList($alias)
     {
-        if (!$alias OR !isset($this->listConfig[$alias]))
+        if (!$alias or !isset($this->listConfig[$alias])) {
             $alias = $this->primaryAlias;
+        }
 
         $listConfig = $this->controller->getListConfig($alias);
 
         $modelClass = $listConfig['model'];
-        $model = new $modelClass;
+        $model = new $modelClass();
         unset($listConfig['model']);
         $model = $this->controller->listExtendModel($model, $alias);
 
@@ -209,10 +211,11 @@ class ListController extends ControllerAction
         $widget->bindToController();
 
         // Prep the optional toolbar widget
-        if (isset($this->controller->widgets['toolbar']) AND (isset($listConfig['toolbar']) OR isset($modelConfig['toolbar']))) {
+        if (isset($this->controller->widgets['toolbar']) and (isset($listConfig['toolbar']) or isset($modelConfig['toolbar']))) {
             $this->toolbarWidget = $this->controller->widgets['toolbar'];
-            if ($this->toolbarWidget instanceof \Admin\Widgets\Toolbar)
+            if ($this->toolbarWidget instanceof \Admin\Widgets\Toolbar) {
                 $this->toolbarWidget->reInitialize($listConfig['toolbar'] ?? $modelConfig['toolbar']);
+            }
         }
 
         // Prep the optional filter widget
@@ -230,7 +233,7 @@ class ListController extends ControllerAction
                 });
 
                 $widget->setSearchOptions([
-                    'mode' => $searchWidget->mode,
+                    'mode'  => $searchWidget->mode,
                     'scope' => $searchWidget->scope,
                 ]);
 
@@ -265,8 +268,9 @@ class ListController extends ControllerAction
 
     public function renderList($alias = null)
     {
-        if (is_null($alias) OR !isset($this->listConfig[$alias]))
+        if (is_null($alias) or !isset($this->listConfig[$alias])) {
             $alias = $this->primaryAlias;
+        }
 
         $list = [];
 
@@ -289,7 +293,7 @@ class ListController extends ControllerAction
             $this->makeLists();
         }
 
-        if (!$alias OR !isset($this->listConfig[$alias])) {
+        if (!$alias or !isset($this->listConfig[$alias])) {
             $alias = $this->primaryAlias;
         }
 

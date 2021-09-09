@@ -27,14 +27,14 @@ class Activities extends BaseDashboardWidget
     {
         return [
             'title' => [
-                'label' => 'admin::lang.dashboard.label_widget_title',
+                'label'   => 'admin::lang.dashboard.label_widget_title',
                 'default' => 'admin::lang.dashboard.text_recent_activity',
-                'type' => 'text',
+                'type'    => 'text',
             ],
             'count' => [
-                'label' => 'admin::lang.dashboard.text_activities_count',
+                'label'   => 'admin::lang.dashboard.text_activities_count',
                 'default' => 5,
-                'type' => 'select',
+                'type'    => 'select',
                 'options' => [1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 7 => 7, 8 => 8, 9 => 9, 10 => 10],
             ],
         ];
@@ -45,7 +45,7 @@ class Activities extends BaseDashboardWidget
         $user = AdminAuth::getUser();
         $this->vars['activities'] = Activities_model::listRecent([
             'pageLimit' => $this->property('count'),
-            'onlyUser' => $user,
+            'onlyUser'  => $user,
         ])->get();
     }
 }

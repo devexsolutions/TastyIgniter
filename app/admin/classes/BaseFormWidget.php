@@ -4,7 +4,7 @@ namespace Admin\Classes;
 
 /**
  * Form Widget base class
- * Widgets used specifically for forms
+ * Widgets used specifically for forms.
  *
  * Adapted from october\backend\classes\FormWidgetBase
  */
@@ -32,12 +32,12 @@ class BaseFormWidget extends BaseWidget
     /**
      * @var bool Render this form with uneditable preview data.
      */
-    public $previewMode = FALSE;
+    public $previewMode = false;
 
     /**
      * @var bool Determines if this form field should display comments and labels.
      */
-    public $showLabels = TRUE;
+    public $showLabels = true;
 
     //
     // Object properties
@@ -59,7 +59,7 @@ class BaseFormWidget extends BaseWidget
     protected $valueFrom;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param $controller \Illuminate\Routing\Controller Active controller object.
      * @param $formField \Admin\Classes\FormField Object containing general form field information.
@@ -115,6 +115,7 @@ class BaseFormWidget extends BaseWidget
     /**
      * Returns the value for this form field,
      * supports nesting via HTML array.
+     *
      * @return string
      */
     public function getLoadValue()
@@ -127,8 +128,9 @@ class BaseFormWidget extends BaseWidget
             ? $this->formField->getDefaultFromData($this->data ?: $this->model)
             : null;
 
-        if ($value = post($this->formField->getName()))
+        if ($value = post($this->formField->getName())) {
             return $value;
+        }
 
         return $this->formField->getValueFromData($this->data ?: $this->model, $defaultValue);
     }

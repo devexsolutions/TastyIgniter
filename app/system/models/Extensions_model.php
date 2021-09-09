@@ -10,15 +10,15 @@ use Main\Classes\ThemeManager;
 use System\Classes\ExtensionManager;
 
 /**
- * Extensions Model Class
+ * Extensions Model Class.
  */
 class Extensions_model extends Model
 {
     const ICON_MIMETYPES = [
-        'svg' => 'image/svg+xml',
-        'png' => 'image/png',
+        'svg'  => 'image/svg+xml',
+        'png'  => 'image/png',
         'jpeg' => 'image/jpeg',
-        'jpg' => 'image/jpeg',
+        'jpg'  => 'image/jpeg',
     ];
 
     /**
@@ -46,17 +46,19 @@ class Extensions_model extends Model
     public static function onboardingIsComplete()
     {
         $activeTheme = ThemeManager::instance()->getActiveTheme();
-        if (!$activeTheme)
-            return FALSE;
-
-        $requiredExtensions = (array)$activeTheme->requires;
-        foreach ($requiredExtensions as $name => $constraint) {
-            $extension = ExtensionManager::instance()->findExtension($name);
-            if (!$extension OR $extension->disabled)
-                return FALSE;
+        if (!$activeTheme) {
+            return false;
         }
 
-        return TRUE;
+        $requiredExtensions = (array) $activeTheme->requires;
+        foreach ($requiredExtensions as $name => $constraint) {
+            $extension = ExtensionManager::instance()->findExtension($name);
+            if (!$extension or $extension->disabled) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     //
@@ -85,21 +87,23 @@ class Extensions_model extends Model
 
     public function getStatusAttribute()
     {
-        return $this->class AND !$this->class->disabled;
+        return $this->class and !$this->class->disabled;
     }
 
     public function getIconAttribute()
     {
         $icon = array_get($this->meta, 'icon', []);
-        if (is_string($icon))
+        if (is_string($icon)) {
             $icon = ['class' => 'fa '.$icon];
+        }
 
         if (strlen($image = array_get($icon, 'image'))) {
             $file = extension_path(str_replace('.', '/', $this->name).'/'.$image);
             if (file_exists($file)) {
                 $extension = pathinfo($file, PATHINFO_EXTENSION);
-                if (!array_key_exists($extension, self::ICON_MIMETYPES))
+                if (!array_key_exists($extension, self::ICON_MIMETYPES)) {
                     throw new ApplicationException('Invalid extension icon type');
+                }
 
                 $mimeType = self::ICON_MIMETYPES[$extension];
                 $data = base64_encode(file_get_contents($file));
@@ -119,8 +123,9 @@ class Extensions_model extends Model
     public function getReadmeAttribute($value)
     {
         $readmePath = ExtensionManager::instance()->path($this->name).'readme.md';
-        if (!$readmePath = File::existsInsensitive($readmePath))
+        if (!$readmePath = File::existsInsensitive($readmePath)) {
             return $value;
+        }
 
         return Markdown::parseFile($readmePath)->toHtml();
     }
@@ -139,27 +144,29 @@ class Extensions_model extends Model
     //
 
     /**
-     * Sets the extension class as a property of this class
+     * Sets the extension class as a property of this class.
+     *
      * @return bool
      */
     public function applyExtensionClass()
     {
         $code = $this->name;
 
-        if (!$code)
-            return FALSE;
+        if (!$code) {
+            return false;
+        }
 
         if (!$extensionClass = ExtensionManager::instance()->findExtension($code)) {
-            return FALSE;
+            return false;
         }
 
         $this->class = $extensionClass;
 
-        return TRUE;
+        return true;
     }
 
     /**
-     * Sync all extensions available in the filesystem into database
+     * Sync all extensions available in the filesystem into database.
      */
     public static function syncAll()
     {
@@ -167,11 +174,13 @@ class Extensions_model extends Model
         foreach ($extensionManager->namespaces() as $namespace => $path) {
             $code = $extensionManager->getIdentifier($namespace);
 
-            if (!($extension = $extensionManager->findExtension($code))) continue;
+            if (!($extension = $extensionManager->findExtension($code))) {
+                continue;
+            }
 
             $model = self::firstOrNew(['name' => $code]);
 
-            $enableExtension = ($model->exists AND !$extension->disabled);
+            $enableExtension = ($model->exists and !$extension->disabled);
 
             $model->save();
 

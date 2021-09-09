@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Igniter\Flame\Database\Model;
 
 /**
- * Menu Specials Model Class
+ * Menu Specials Model Class.
  */
 class Menus_specials_model extends Model
 {
@@ -26,13 +26,13 @@ class Menus_specials_model extends Model
     ];
 
     protected $casts = [
-        'menu_id' => 'integer',
-        'start_date' => 'datetime',
-        'end_date' => 'datetime',
-        'special_price' => 'float',
-        'special_status' => 'boolean',
-        'recurring_from' => 'time',
-        'recurring_to' => 'time',
+        'menu_id'         => 'integer',
+        'start_date'      => 'datetime',
+        'end_date'        => 'datetime',
+        'special_price'   => 'float',
+        'special_status'  => 'boolean',
+        'recurring_from'  => 'time',
+        'recurring_to'    => 'time',
         'recurring_every' => 'array',
     ];
 
@@ -43,8 +43,9 @@ class Menus_specials_model extends Model
 
     public function getPrettyEndDateAttribute()
     {
-        if ($this->isRecurring() OR !$this->end_date)
+        if ($this->isRecurring() or !$this->end_date) {
             return null;
+        }
 
         return $this->end_date->format(lang('system::lang.php.date_time_format'));
     }
@@ -61,16 +62,18 @@ class Menus_specials_model extends Model
 
     public function active()
     {
-        if (!$this->special_status)
-            return FALSE;
+        if (!$this->special_status) {
+            return false;
+        }
 
-        return !($this->isExpired() === TRUE);
+        return !($this->isExpired() === true);
     }
 
     public function daysRemaining()
     {
-        if ($this->validity != 'period' OR !$this->end_date->greaterThan(Carbon::now()))
+        if ($this->validity != 'period' or !$this->end_date->greaterThan(Carbon::now())) {
             return 0;
+        }
 
         return $this->end_date->diffForHumans();
     }
@@ -86,12 +89,13 @@ class Menus_specials_model extends Model
 
         switch ($this->validity) {
             case 'forever':
-                return FALSE;
+                return false;
             case 'period':
                 return !$now->between($this->start_date, $this->end_date);
             case 'recurring':
-                if (!in_array($now->format('w'), $this->recurring_every ?? []))
-                    return TRUE;
+                if (!in_array($now->format('w'), $this->recurring_every ?? [])) {
+                    return true;
+                }
 
                 $start = $now->copy()->setTimeFromTimeString($this->recurring_from);
                 $end = $now->copy()->setTimeFromTimeString($this->recurring_to);
@@ -107,8 +111,9 @@ class Menus_specials_model extends Model
 
     public function getMenuPrice($price)
     {
-        if ($this->isFixed())
+        if ($this->isFixed()) {
             return $this->special_price;
+        }
 
         return $price - (($price / 100) * round($this->special_price));
     }

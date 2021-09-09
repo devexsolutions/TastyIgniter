@@ -8,7 +8,8 @@ use Igniter\Flame\Support\Facades\File;
 use Illuminate\Support\Facades\Cache;
 
 /**
- * MailThemes Model Class
+ * MailThemes Model Class.
+ *
  * @method static instance()
  * @method static get($var, $default)
  */
@@ -47,6 +48,7 @@ class Mail_themes_model extends Model
     /**
      * Initialize the seed data for this model. This only executes when the
      * model is first created or reset to default.
+     *
      * @return void
      */
     public function initSettingsData()
@@ -81,8 +83,7 @@ class Mail_themes_model extends Model
         try {
             $customCss = self::compileCss();
             Cache::forever($cacheKey, $customCss);
-        }
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             $customCss = '/* '.$ex->getMessage().' */';
         }
 
@@ -92,23 +93,23 @@ class Mail_themes_model extends Model
     protected static function getCssVars()
     {
         return [
-            'body_bg' => static::BODY_BG,
-            'content_bg' => static::WHITE_COLOR,
-            'content_inner_bg' => static::WHITE_COLOR,
-            'button_text_color' => static::WHITE_COLOR,
-            'button_primary_bg' => static::PRIMARY_BG,
-            'button_positive_bg' => static::POSITIVE_BG,
-            'button_negative_bg' => static::NEGATIVE_BG,
-            'header_color' => static::HEADER_COLOR,
-            'heading_color' => static::HEADING_COLOR,
-            'text_color' => static::TEXT_COLOR,
-            'link_color' => static::LINK_COLOR,
-            'footer_color' => static::FOOTER_COLOR,
-            'body_border_color' => static::BORDER_COLOR,
-            'subcopy_border_color' => static::BORDER_COLOR,
-            'table_border_color' => static::BORDER_COLOR,
-            'panel_bg' => static::BORDER_COLOR,
-            'promotion_bg' => static::WHITE_COLOR,
+            'body_bg'                => static::BODY_BG,
+            'content_bg'             => static::WHITE_COLOR,
+            'content_inner_bg'       => static::WHITE_COLOR,
+            'button_text_color'      => static::WHITE_COLOR,
+            'button_primary_bg'      => static::PRIMARY_BG,
+            'button_positive_bg'     => static::POSITIVE_BG,
+            'button_negative_bg'     => static::NEGATIVE_BG,
+            'header_color'           => static::HEADER_COLOR,
+            'heading_color'          => static::HEADING_COLOR,
+            'text_color'             => static::TEXT_COLOR,
+            'link_color'             => static::LINK_COLOR,
+            'footer_color'           => static::FOOTER_COLOR,
+            'body_border_color'      => static::BORDER_COLOR,
+            'subcopy_border_color'   => static::BORDER_COLOR,
+            'table_border_color'     => static::BORDER_COLOR,
+            'panel_bg'               => static::BORDER_COLOR,
+            'promotion_bg'           => static::WHITE_COLOR,
             'promotion_border_color' => static::PROMOTION_BORDER_COLOR,
         ];
     }

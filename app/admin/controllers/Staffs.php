@@ -16,32 +16,32 @@ class Staffs extends \Admin\Classes\AdminController
 
     public $listConfig = [
         'list' => [
-            'model' => 'Admin\Models\Staffs_model',
-            'title' => 'lang:admin::lang.staff.text_title',
+            'model'        => 'Admin\Models\Staffs_model',
+            'title'        => 'lang:admin::lang.staff.text_title',
             'emptyMessage' => 'lang:admin::lang.staff.text_empty',
-            'defaultSort' => ['staff_id', 'DESC'],
-            'configFile' => 'staffs_model',
+            'defaultSort'  => ['staff_id', 'DESC'],
+            'configFile'   => 'staffs_model',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:admin::lang.staff.text_form_name',
-        'model' => 'Admin\Models\Staffs_model',
+        'name'    => 'lang:admin::lang.staff.text_form_name',
+        'model'   => 'Admin\Models\Staffs_model',
         'request' => 'Admin\Requests\Staff',
-        'create' => [
-            'title' => 'lang:admin::lang.form.create_title',
-            'redirect' => 'staffs/edit/{staff_id}',
+        'create'  => [
+            'title'         => 'lang:admin::lang.form.create_title',
+            'redirect'      => 'staffs/edit/{staff_id}',
             'redirectClose' => 'staffs',
-            'redirectNew' => 'staffs/create',
+            'redirectNew'   => 'staffs/create',
         ],
         'edit' => [
-            'title' => 'lang:admin::lang.form.edit_title',
-            'redirect' => 'staffs/edit/{staff_id}',
+            'title'         => 'lang:admin::lang.form.edit_title',
+            'redirect'      => 'staffs/edit/{staff_id}',
             'redirectClose' => 'staffs',
-            'redirectNew' => 'staffs/create',
+            'redirectNew'   => 'staffs/create',
         ],
         'preview' => [
-            'title' => 'lang:admin::lang.form.preview_title',
+            'title'    => 'lang:admin::lang.form.preview_title',
             'redirect' => 'staffs',
         ],
         'delete' => [
@@ -75,9 +75,9 @@ class Staffs extends \Admin\Classes\AdminController
         $usernameChanged = $this->currentUser->username != post('Staff[user][username]');
         $passwordChanged = strlen(post('Staff[user][password]'));
         $languageChanged = $this->currentUser->language != post('Staff[language_id]');
-        if ($usernameChanged OR $passwordChanged OR $languageChanged) {
+        if ($usernameChanged or $passwordChanged or $languageChanged) {
             $this->currentUser->reload()->reloadRelations();
-            AdminAuth::login($this->currentUser, TRUE);
+            AdminAuth::login($this->currentUser, true);
         }
 
         return $result;
@@ -90,7 +90,7 @@ class Staffs extends \Admin\Classes\AdminController
         }
 
         $id = post('recordId', $recordId);
-        if ($staff = $this->formFindModelObject((int)$id)) {
+        if ($staff = $this->formFindModelObject((int) $id)) {
             AdminAuth::stopImpersonate();
             AdminAuth::impersonate($staff->user);
             flash()->success(sprintf(lang('admin::lang.customers.alert_impersonate_success'), $staff->staff_name));

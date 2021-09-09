@@ -30,26 +30,26 @@ class Themes extends \Admin\Classes\AdminController
 
     public $listConfig = [
         'list' => [
-            'model' => 'System\Models\Themes_model',
-            'title' => 'lang:system::lang.themes.text_title',
+            'model'        => 'System\Models\Themes_model',
+            'title'        => 'lang:system::lang.themes.text_title',
             'emptyMessage' => 'lang:system::lang.themes.text_empty',
-            'defaultSort' => ['theme_id', 'DESC'],
-            'configFile' => 'themes_model',
+            'defaultSort'  => ['theme_id', 'DESC'],
+            'configFile'   => 'themes_model',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:system::lang.themes.text_form_name',
-        'model' => 'System\Models\Themes_model',
+        'name'    => 'lang:system::lang.themes.text_form_name',
+        'model'   => 'System\Models\Themes_model',
         'request' => 'System\Requests\Theme',
-        'edit' => [
-            'title' => 'system::lang.themes.text_edit_title',
-            'redirect' => 'themes/edit/{code}',
+        'edit'    => [
+            'title'         => 'system::lang.themes.text_edit_title',
+            'redirect'      => 'themes/edit/{code}',
             'redirectClose' => 'themes',
         ],
         'source' => [
-            'title' => 'system::lang.themes.text_source_title',
-            'redirect' => 'themes/source/{code}',
+            'title'         => 'system::lang.themes.text_source_title',
+            'redirect'      => 'themes/source/{code}',
             'redirectClose' => 'themes',
         ],
         'delete' => [
@@ -78,14 +78,14 @@ class Themes extends \Admin\Classes\AdminController
     {
         if (ThemeManager::instance()->isLocked($themeCode)) {
             Template::setButton(lang('system::lang.themes.button_child'), [
-                'class' => 'btn btn-default pull-right',
+                'class'        => 'btn btn-default pull-right',
                 'data-request' => 'onCreateChild',
             ]);
         }
 
         Template::setButton(lang('system::lang.themes.button_source'), [
             'class' => 'btn btn-default pull-right mr-3',
-            'href' => admin_url('themes/source/'.$themeCode),
+            'href'  => admin_url('themes/source/'.$themeCode),
         ]);
 
         $this->asExtension('FormController')->edit($context, $themeCode);
@@ -95,14 +95,14 @@ class Themes extends \Admin\Classes\AdminController
     {
         if (ThemeManager::instance()->isLocked($themeCode)) {
             Template::setButton(lang('system::lang.themes.button_child'), [
-                'class' => 'btn btn-default pull-right',
+                'class'        => 'btn btn-default pull-right',
                 'data-request' => 'onCreateChild',
             ]);
         }
 
         Template::setButton(lang('system::lang.themes.button_customize'), [
             'class' => 'btn btn-default pull-right mr-3',
-            'href' => admin_url('themes/edit/'.$themeCode),
+            'href'  => admin_url('themes/edit/'.$themeCode),
         ]);
 
         $this->asExtension('FormController')->edit($context, $themeCode);
@@ -121,7 +121,7 @@ class Themes extends \Admin\Classes\AdminController
             $activeThemeCode = params()->get('default_themes.main');
 
             // Theme must be disabled before it can be deleted
-            if ($model AND $model->code == $activeThemeCode) {
+            if ($model and $model->code == $activeThemeCode) {
                 flash()->warning(sprintf(
                     lang('admin::lang.alert_error_nothing'),
                     lang('admin::lang.text_deleted').lang('system::lang.themes.text_theme_is_active')
@@ -133,7 +133,7 @@ class Themes extends \Admin\Classes\AdminController
             // Theme not found in filesystem
             // so delete from database
             if (!$theme) {
-                Themes_model::deleteTheme($themeCode, TRUE);
+                Themes_model::deleteTheme($themeCode, true);
                 flash()->success(sprintf(lang('admin::lang.alert_success'), 'Theme deleted '));
 
                 return $this->redirectBack();
@@ -144,8 +144,7 @@ class Themes extends \Admin\Classes\AdminController
             $this->vars['themeModel'] = $model;
             $this->vars['themeObj'] = $theme;
             $this->vars['themeData'] = $model->data;
-        }
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             $this->handleError($ex);
         }
     }
@@ -201,8 +200,7 @@ class Themes extends \Admin\Classes\AdminController
     {
         if (Themes_model::deleteTheme($themeCode, post('delete_data', 1) == 1)) {
             flash()->success(sprintf(lang('admin::lang.alert_success'), 'Theme deleted '));
-        }
-        else {
+        } else {
             flash()->danger(lang('admin::lang.alert_error_try_again'));
         }
 
@@ -211,13 +209,14 @@ class Themes extends \Admin\Classes\AdminController
 
     public function listOverrideColumnValue($record, $column, $alias = null)
     {
-        if ($column->type != 'button' OR $column->columnName != 'default')
+        if ($column->type != 'button' or $column->columnName != 'default') {
             return null;
+        }
 
         $attributes = $column->attributes;
 
         $column->iconCssClass = 'fa fa-star-o';
-        if ($record->getTheme() AND $record->getTheme()->isActive()) {
+        if ($record->getTheme() and $record->getTheme()->isActive()) {
             $column->iconCssClass = 'fa fa-star';
             $attributes['title'] = 'lang:system::lang.themes.text_is_default';
             $attributes['data-request'] = null;
@@ -269,40 +268,43 @@ class Themes extends \Admin\Classes\AdminController
 
     protected function buildAssetsBundle($model)
     {
-        if (!$model->getFieldsConfig())
+        if (!$model->getFieldsConfig()) {
             return;
+        }
 
-        if (!config('system.publishThemeAssetsBundle', TRUE))
+        if (!config('system.publishThemeAssetsBundle', true)) {
             return;
+        }
 
-        $loaded = FALSE;
+        $loaded = false;
         $theme = $model->getTheme();
         $file = '/_meta/assets.json';
 
         if (File::exists($path = $theme->path.$file)) {
             Assets::addFromManifest($theme->publicPath.$file);
-            $loaded = TRUE;
+            $loaded = true;
         }
 
-        if ($theme->hasParent() AND File::exists($path = $theme->getParent()->path.$file)) {
+        if ($theme->hasParent() and File::exists($path = $theme->getParent()->path.$file)) {
             Assets::addFromManifest($theme->getParent()->publicPath.$file);
-            $loaded = TRUE;
+            $loaded = true;
         }
 
-        if (!$loaded)
+        if (!$loaded) {
             return;
+        }
 
         Event::listen('assets.combiner.beforePrepare', function (AssetsManager $combiner, $assets) use ($theme) {
             ThemeManager::applyAssetVariablesOnCombinerFilters(
-                array_flatten($combiner->getFilters()), $theme
+                array_flatten($combiner->getFilters()),
+                $theme
             );
         });
 
         try {
             Artisan::call('igniter:util', ['name' => 'compile scss']);
             Artisan::call('igniter:util', ['name' => 'compile js']);
-        }
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             Log::error($ex);
             flash()->error('Building assets bundle error: '.$ex->getMessage())->important();
         }

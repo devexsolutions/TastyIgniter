@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use Igniter\Flame\Database\Model;
 
 /**
- * Mealtimes Model Class
+ * Mealtimes Model Class.
  */
 class Mealtimes_model extends Model
 {
@@ -26,8 +26,8 @@ class Mealtimes_model extends Model
     protected $primaryKey = 'mealtime_id';
 
     protected $casts = [
-        'start_time' => 'time',
-        'end_time' => 'time',
+        'start_time'      => 'time',
+        'end_time'        => 'time',
         'mealtime_status' => 'boolean',
     ];
 
@@ -53,8 +53,9 @@ class Mealtimes_model extends Model
 
     public function isAvailable($datetime = null)
     {
-        if (is_null($datetime))
+        if (is_null($datetime)) {
             $datetime = Carbon::now();
+        }
 
         if (!$datetime instanceof Carbon) {
             $datetime = Carbon::parse($datetime);

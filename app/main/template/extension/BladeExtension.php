@@ -9,30 +9,30 @@ class BladeExtension extends AbstractExtension
     public function getDirectives()
     {
         return [
-            'extends' => '@extends directive is not supported. Use theme layouts instead.',
-            'include' => '@include directive is not supported. Use @partial instead.',
-            'includeIf' => '@includeIf directive is not supported. Use @partial instead.',
-            'includeWhen' => '@includeWhen directive is not supported. Use @partial instead.',
-            'includeUnless' => '@includeUnless directive is not supported. Use @partial instead.',
-            'includeFirst' => '@includeFirst directive is not supported. Use @partial instead.',
-            'each' => '@each directive is not supported. Use @partial instead.',
-            'endcomponent' => '@endcomponent directive is not supported. Use @component instead.',
-            'componentfirst' => '@componentfirst directive is not supported. Use @component instead.',
+            'extends'           => '@extends directive is not supported. Use theme layouts instead.',
+            'include'           => '@include directive is not supported. Use @partial instead.',
+            'includeIf'         => '@includeIf directive is not supported. Use @partial instead.',
+            'includeWhen'       => '@includeWhen directive is not supported. Use @partial instead.',
+            'includeUnless'     => '@includeUnless directive is not supported. Use @partial instead.',
+            'includeFirst'      => '@includeFirst directive is not supported. Use @partial instead.',
+            'each'              => '@each directive is not supported. Use @partial instead.',
+            'endcomponent'      => '@endcomponent directive is not supported. Use @component instead.',
+            'componentfirst'    => '@componentfirst directive is not supported. Use @component instead.',
             'endcomponentfirst' => '@endcomponentfirst directive is not supported. Use @component instead.',
 
-            'content' => [$this, 'compilesContent'],
-            'component' => [$this, 'compilesComponent'],
+            'content'      => [$this, 'compilesContent'],
+            'component'    => [$this, 'compilesComponent'],
             'hasComponent' => [$this, 'compilesHasComponent'],
-            'page' => [$this, 'compilesPage'],
-            'partial' => [$this, 'compilesPartial'],
-            'partialIf' => [$this, 'compilesPartialIf'],
+            'page'         => [$this, 'compilesPage'],
+            'partial'      => [$this, 'compilesPartial'],
+            'partialIf'    => [$this, 'compilesPartialIf'],
 
-            'styles' => [$this, 'compilesStyles'],
+            'styles'  => [$this, 'compilesStyles'],
             'scripts' => [$this, 'compilesScripts'],
 
-            'auth' => [$this, 'compilesAuth'],
-            'elseauth' => [$this, 'compileElseAuth'],
-            'guest' => [$this, 'compilesGuest'],
+            'auth'      => [$this, 'compilesAuth'],
+            'elseauth'  => [$this, 'compileElseAuth'],
+            'guest'     => [$this, 'compilesGuest'],
             'elseguest' => [$this, 'compilesElseGuest'],
         ];
     }

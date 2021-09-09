@@ -15,32 +15,32 @@ class Allergens extends AdminController
 
     public $listConfig = [
         'list' => [
-            'model' => 'Admin\Models\Allergens_model',
-            'title' => 'lang:admin::lang.allergens.text_title',
+            'model'        => 'Admin\Models\Allergens_model',
+            'title'        => 'lang:admin::lang.allergens.text_title',
             'emptyMessage' => 'lang:admin::lang.allergens.text_empty',
-            'defaultSort' => ['allergens_id', 'DESC'],
-            'configFile' => 'allergens_model',
+            'defaultSort'  => ['allergens_id', 'DESC'],
+            'configFile'   => 'allergens_model',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:admin::lang.allergens.text_form_name',
-        'model' => 'Admin\Models\Allergens_model',
+        'name'    => 'lang:admin::lang.allergens.text_form_name',
+        'model'   => 'Admin\Models\Allergens_model',
         'request' => 'Admin\Requests\Allergen',
-        'create' => [
-            'title' => 'lang:admin::lang.form.create_title',
-            'redirect' => 'allergens/edit/{allergen_id}',
+        'create'  => [
+            'title'         => 'lang:admin::lang.form.create_title',
+            'redirect'      => 'allergens/edit/{allergen_id}',
             'redirectClose' => 'allergens',
-            'redirectNew' => 'allergens/create',
+            'redirectNew'   => 'allergens/create',
         ],
         'edit' => [
-            'title' => 'lang:admin::lang.form.edit_title',
-            'redirect' => 'allergens/edit/{allergen_id}',
+            'title'         => 'lang:admin::lang.form.edit_title',
+            'redirect'      => 'allergens/edit/{allergen_id}',
             'redirectClose' => 'allergens',
-            'redirectNew' => 'allergens/create',
+            'redirectNew'   => 'allergens/create',
         ],
         'preview' => [
-            'title' => 'lang:admin::lang.form.preview_title',
+            'title'    => 'lang:admin::lang.form.preview_title',
             'redirect' => 'allergens',
         ],
         'delete' => [

@@ -115,7 +115,7 @@ return [
     |
     */
 
-    'enableRoutesCache' => FALSE,
+    'enableRoutesCache' => false,
 
     /*
     |--------------------------------------------------------------------------
@@ -167,15 +167,15 @@ return [
     'assets' => [
 
         'media' => [
-            'disk' => 'media',
+            'disk'   => 'media',
             'folder' => 'uploads',
-            'path' => '/assets/media/uploads',
+            'path'   => '/assets/media/uploads',
         ],
 
         'attachment' => [
-            'disk' => 'media',
+            'disk'   => 'media',
             'folder' => 'attachments',
-            'path' => '/assets/media/attachments',
+            'path'   => '/assets/media/attachments',
         ],
     ],
 
@@ -215,7 +215,7 @@ return [
     |
     */
 
-    'filePermissions' => '644',
+    'filePermissions'   => '644',
     'folderPermissions' => '755',
 
     /*
@@ -228,5 +228,5 @@ return [
     |
     */
 
-    'enableCsrfProtection' => TRUE,
+    'enableCsrfProtection' => true,
 ];

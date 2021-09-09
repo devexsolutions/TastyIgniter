@@ -45,26 +45,27 @@ class DropMoreUnusedColumns extends Migration
 
     protected function mergeValuesIntoOptionsColumn()
     {
-        if (!Schema::hasColumn('locations', 'delivery_time'))
+        if (!Schema::hasColumn('locations', 'delivery_time')) {
             return;
+        }
 
         DB::table('locations')->get()->each(function ($model) {
             $options = @unserialize($model->options) ?: [];
 
             $options = array_merge([
-                'offer_delivery' => $model->offer_delivery,
-                'offer_collection' => $model->offer_collection,
-                'delivery_lead_time' => $model->delivery_time,
-                'collection_lead_time' => $model->collection_time,
-                'delivery_time_interval' => $model->delivery_time,
-                'collection_time_interval' => $model->collection_time,
+                'offer_delivery'            => $model->offer_delivery,
+                'offer_collection'          => $model->offer_collection,
+                'delivery_lead_time'        => $model->delivery_time,
+                'collection_lead_time'      => $model->collection_time,
+                'delivery_time_interval'    => $model->delivery_time,
+                'collection_time_interval'  => $model->collection_time,
                 'reservation_time_interval' => $model->reservation_time_interval,
-                'reservation_lead_time' => $model->reservation_stay_time,
-                'future_orders' => [
-                    'enable_delivery' => array_get($options, 'future_orders', 0),
+                'reservation_lead_time'     => $model->reservation_stay_time,
+                'future_orders'             => [
+                    'enable_delivery'   => array_get($options, 'future_orders', 0),
                     'enable_collection' => array_get($options, 'future_orders', 0),
-                    'delivery_days' => array_get($options, 'future_order_days.delivery', 0),
-                    'collection_days' => array_get($options, 'future_order_days.collection', 0),
+                    'delivery_days'     => array_get($options, 'future_order_days.delivery', 0),
+                    'collection_days'   => array_get($options, 'future_order_days.collection', 0),
                 ],
             ], $options);
 

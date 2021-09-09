@@ -9,7 +9,7 @@ use System\Traits\ConfigMaker;
 use System\Traits\ViewMaker;
 
 /**
- * Controller Action base Class
+ * Controller Action base Class.
  */
 class ControllerAction
 {
@@ -42,8 +42,9 @@ class ControllerAction
      */
     public function __construct($controller = null)
     {
-        if ($controller !== null)
+        if ($controller !== null) {
             $this->controller = $controller;
+        }
 
         // Add paths from the extension / module context
         $this->configPath = $this->controller->configPath;
@@ -57,10 +58,10 @@ class ControllerAction
     }
 
     /**
-     * Sets the widget configuration values
+     * Sets the widget configuration values.
      *
      * @param string|array $config
-     * @param array $required Required config items
+     * @param array        $required Required config items
      */
     public function setConfig($config, $required = [])
     {
@@ -70,15 +71,16 @@ class ControllerAction
     /**
      * Get the widget configuration values.
      *
-     * @param string $name Config name, supports array names like "field[key]"
-     * @param mixed $default Default value if nothing is found
+     * @param string $name    Config name, supports array names like "field[key]"
+     * @param mixed  $default Default value if nothing is found
      *
      * @return mixed
      */
     public function getConfig($name = null, $default = null)
     {
-        if (is_null($name))
+        if (is_null($name)) {
             return $this->config;
+        }
 
         $nameArray = name_to_array($name);
 
@@ -86,8 +88,9 @@ class ControllerAction
         $result = isset($this->config[$fieldName]) ? $this->config[$fieldName] : $default;
 
         foreach ($nameArray as $key) {
-            if (!is_array($result) OR !array_key_exists($key, $result))
+            if (!is_array($result) or !array_key_exists($key, $result)) {
                 return $default;
+            }
 
             $result = $result[$key];
         }

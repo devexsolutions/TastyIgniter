@@ -21,41 +21,41 @@ class Reservations extends \Admin\Classes\AdminController
 
     public $listConfig = [
         'list' => [
-            'model' => 'Admin\Models\Reservations_model',
-            'title' => 'lang:admin::lang.reservations.text_title',
+            'model'        => 'Admin\Models\Reservations_model',
+            'title'        => 'lang:admin::lang.reservations.text_title',
             'emptyMessage' => 'lang:admin::lang.reservations.text_empty',
-            'defaultSort' => ['reservation_id', 'DESC'],
-            'configFile' => 'reservations_model',
+            'defaultSort'  => ['reservation_id', 'DESC'],
+            'configFile'   => 'reservations_model',
         ],
     ];
 
     public $calendarConfig = [
         'calender' => [
-            'title' => 'lang:admin::lang.reservations.text_title',
-            'emptyMessage' => 'lang:admin::lang.reservations.text_no_booking',
+            'title'          => 'lang:admin::lang.reservations.text_title',
+            'emptyMessage'   => 'lang:admin::lang.reservations.text_no_booking',
             'popoverPartial' => 'reservations/calendar_popover',
-            'configFile' => 'reservations_model',
+            'configFile'     => 'reservations_model',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:admin::lang.reservations.text_form_name',
-        'model' => 'Admin\Models\Reservations_model',
+        'name'    => 'lang:admin::lang.reservations.text_form_name',
+        'model'   => 'Admin\Models\Reservations_model',
         'request' => 'Admin\Requests\Reservation',
-        'create' => [
-            'title' => 'lang:admin::lang.form.create_title',
-            'redirect' => 'reservations/edit/{reservation_id}',
+        'create'  => [
+            'title'         => 'lang:admin::lang.form.create_title',
+            'redirect'      => 'reservations/edit/{reservation_id}',
             'redirectClose' => 'reservations',
-            'redirectNew' => 'reservations/create',
+            'redirectNew'   => 'reservations/create',
         ],
         'edit' => [
-            'title' => 'lang:admin::lang.form.edit_title',
-            'redirect' => 'reservations/edit/{reservation_id}',
+            'title'         => 'lang:admin::lang.form.edit_title',
+            'redirect'      => 'reservations/edit/{reservation_id}',
             'redirectClose' => 'reservations',
-            'redirectNew' => 'reservations/create',
+            'redirectNew'   => 'reservations/create',
         ],
         'preview' => [
-            'title' => 'lang:admin::lang.form.preview_title',
+            'title'    => 'lang:admin::lang.form.preview_title',
             'redirect' => 'reservations',
         ],
         'delete' => [
@@ -86,21 +86,24 @@ class Reservations extends \Admin\Classes\AdminController
 
     public function index_onDelete()
     {
-        if (!$this->getUser()->hasPermission('Admin.DeleteReservations'))
+        if (!$this->getUser()->hasPermission('Admin.DeleteReservations')) {
             throw new ApplicationException(lang('admin::lang.alert_user_restricted'));
+        }
 
         return $this->asExtension('Admin\Actions\ListController')->index_onDelete();
     }
 
     public function index_onUpdateStatus()
     {
-        $model = Reservations_model::find((int)post('recordId'));
-        $status = Statuses_model::find((int)post('statusId'));
-        if (!$model OR !$status)
+        $model = Reservations_model::find((int) post('recordId'));
+        $status = Statuses_model::find((int) post('statusId'));
+        if (!$model or !$status) {
             return;
+        }
 
-        if ($record = $model->addStatusHistory($status))
+        if ($record = $model->addStatusHistory($status)) {
             StatusUpdated::log($record, $this->getUser());
+        }
 
         flash()->success(sprintf(lang('admin::lang.alert_success'), lang('admin::lang.statuses.text_form_name').' updated'))->now();
 
@@ -109,8 +112,9 @@ class Reservations extends \Admin\Classes\AdminController
 
     public function edit_onDelete()
     {
-        if (!$this->getUser()->hasPermission('Admin.DeleteReservations'))
+        if (!$this->getUser()->hasPermission('Admin.DeleteReservations')) {
             throw new ApplicationException(lang('admin::lang.alert_user_restricted'));
+        }
 
         return $this->asExtension('Admin\Actions\FormController')->edit_onDelete();
     }
@@ -118,14 +122,17 @@ class Reservations extends \Admin\Classes\AdminController
     public function calendarGenerateEvents($startAt, $endAt)
     {
         return Reservations_model::listCalendarEvents(
-            $startAt, $endAt, $this->getLocationId()
+            $startAt,
+            $endAt,
+            $this->getLocationId()
         );
     }
 
     public function calendarUpdateEvent($eventId, $startAt, $endAt)
     {
-        if (!$reservation = Reservations_model::find($eventId))
+        if (!$reservation = Reservations_model::find($eventId)) {
             throw new Exception(lang('admin::lang.reservations.alert_no_reservation_found'));
+        }
 
         $startAt = make_carbon($startAt);
         $endAt = make_carbon($endAt);

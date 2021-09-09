@@ -12,7 +12,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Class Filter
+ * Class Filter.
  */
 class Filter extends BaseWidget
 {
@@ -35,7 +35,7 @@ class Filter extends BaseWidget
 
     /**
      * @var string The context of this filter, scopes that do not belong
-     * to this context will not be shown.
+     *             to this context will not be shown.
      */
     public $context;
 
@@ -44,7 +44,7 @@ class Filter extends BaseWidget
     /**
      * @var bool Determines if scope definitions have been created.
      */
-    protected $scopesDefined = FALSE;
+    protected $scopesDefined = false;
 
     /**
      * @var array Collection of all scopes used in this filter.
@@ -124,7 +124,7 @@ class Filter extends BaseWidget
     }
 
     /**
-     * Renders the HTML element for a scope
+     * Renders the HTML element for a scope.
      *
      * @param $scope
      *
@@ -139,14 +139,16 @@ class Filter extends BaseWidget
 
     /**
      * Update a filter scope value.
+     *
      * @return array
      */
     public function onSubmit()
     {
         $this->defineFilterScopes();
 
-        if (!$scopes = post($this->alias))
+        if (!$scopes = post($this->alias)) {
             return;
+        }
 
         foreach ($scopes as $scope => $value) {
             $scope = $this->getScope($scope);
@@ -159,7 +161,7 @@ class Filter extends BaseWidget
                     break;
 
                 case 'checkbox':
-                    $checked = $value == '1' ? TRUE : FALSE;
+                    $checked = $value == '1' ? true : false;
                     $this->setScopeValue($scope, $checked);
                     break;
 
@@ -173,11 +175,11 @@ class Filter extends BaseWidget
                     break;
 
                 case 'daterange':
-                    $format = array_get($scope->config, 'showTimePicker', FALSE) ? 'Y-m-d H:i:s' : 'Y-m-d';
-                    $dateRange = (is_array($value) AND count($value) === 2 AND $value[0] != '') ? [
+                    $format = array_get($scope->config, 'showTimePicker', false) ? 'Y-m-d H:i:s' : 'Y-m-d';
+                    $dateRange = (is_array($value) and count($value) === 2 and $value[0] != '') ? [
                         make_carbon($value[0])->format($format),
                         make_carbon($value[1])->format($format),
-                    ] : NULL;
+                    ] : null;
                     $this->setScopeValue($scope, $dateRange);
                     break;
             }
@@ -218,7 +220,7 @@ class Filter extends BaseWidget
 
         return [
             'available' => $this->getAvailableOptions($scope),
-            'active' => $activeKey,
+            'active'    => $activeKey,
         ];
     }
 
@@ -289,14 +291,16 @@ class Filter extends BaseWidget
             $methodName = $options;
 
             if (!$model->methodExists($methodName)) {
-                throw new Exception(sprintf(lang('admin::lang.list.filter_missing_definitions'),
-                    get_class($model), $methodName, $scope->scopeName
+                throw new Exception(sprintf(
+                    lang('admin::lang.list.filter_missing_definitions'),
+                    get_class($model),
+                    $methodName,
+                    $scope->scopeName
                 ));
             }
 
             $options = $model->$methodName();
-        }
-        elseif (!is_array($options)) {
+        } elseif (!is_array($options)) {
             $options = [];
         }
 
@@ -308,12 +312,13 @@ class Filter extends BaseWidget
      */
     protected function defineFilterScopes()
     {
-        if ($this->scopesDefined)
+        if ($this->scopesDefined) {
             return;
+        }
 
         $this->fireSystemEvent('admin.filter.extendScopesBefore');
 
-        if (!isset($this->scopes) OR !is_array($this->scopes)) {
+        if (!isset($this->scopes) or !is_array($this->scopes)) {
             $this->scopes = [];
         }
 
@@ -321,7 +326,7 @@ class Filter extends BaseWidget
 
         $this->fireSystemEvent('admin.filter.extendScopes', [$this->scopes]);
 
-        $this->scopesDefined = TRUE;
+        $this->scopesDefined = true;
     }
 
     /**
@@ -336,25 +341,27 @@ class Filter extends BaseWidget
 
             // Check if admin has permissions to show this column
             $permissions = array_get($config, 'permissions');
-            if (!empty($permissions) AND !AdminAuth::getUser()->hasPermission($permissions, FALSE)) {
+            if (!empty($permissions) and !AdminAuth::getUser()->hasPermission($permissions, false)) {
                 continue;
             }
 
             // Check that the filter scope matches the active context
             if ($scopeObj->context !== null) {
-                $context = (array)$scopeObj->context;
+                $context = (array) $scopeObj->context;
                 if (!in_array($this->getContext(), $context)) {
                     continue;
                 }
             }
 
             // Check that the filter scope matches the active location context
-            if ($this->isLocationAware($config)) continue;
+            if ($this->isLocationAware($config)) {
+                continue;
+            }
 
             // Validate scope model
             if (isset($config['modelClass'])) {
                 $class = $config['modelClass'];
-                $model = new $class;
+                $model = new $class();
                 $this->scopeModels[$name] = $model;
             }
 
@@ -415,7 +422,7 @@ class Filter extends BaseWidget
     /**
      * Applies a filter scope constraints to a DB query.
      *
-     * @param string $scope
+     * @param string                          $scope
      * @param \Igniter\Flame\Database\Builder $query
      *
      * @return \Igniter\Flame\Database\Builder
@@ -426,7 +433,7 @@ class Filter extends BaseWidget
             $scope = $this->getScope($scope);
         }
 
-        if ($scope->disabled OR ($scope->value !== '0' AND !$scope->value)) {
+        if ($scope->disabled or ($scope->value !== '0' and !$scope->value)) {
             return;
         }
 
@@ -438,9 +445,9 @@ class Filter extends BaseWidget
                     $date = make_carbon($scope->value);
                     $query->whereRaw(strtr($scopeConditions, [
                         ':filtered' => $date->format('Y-m-d'),
-                        ':year' => $date->format('Y'),
-                        ':month' => $date->format('m'),
-                        ':day' => $date->format('d'),
+                        ':year'     => $date->format('Y'),
+                        ':month'    => $date->format('m'),
+                        ':day'      => $date->format('d'),
                     ]));
                 } // Scope
                 elseif ($scopeMethod = $scope->scope) {
@@ -457,13 +464,13 @@ class Filter extends BaseWidget
                     $endDate = make_carbon($value[1]);
                     $query->whereRaw(strtr($scopeConditions, [
                         ':filtered_start' => '"'.$startDate->format('Y-m-d').'"',
-                        ':year_start' => $startDate->format('Y'),
-                        ':month_start' => $startDate->format('m'),
-                        ':day_start' => $startDate->format('d'),
-                        ':filtered_end' => '"'.$endDate->format('Y-m-d').'"',
-                        ':year_end' => $endDate->format('Y'),
-                        ':month_end' => $endDate->format('m'),
-                        ':day_end' => $endDate->format('d'),
+                        ':year_start'     => $startDate->format('Y'),
+                        ':month_start'    => $startDate->format('m'),
+                        ':day_start'      => $startDate->format('d'),
+                        ':filtered_end'   => '"'.$endDate->format('Y-m-d').'"',
+                        ':year_end'       => $endDate->format('Y'),
+                        ':month_end'      => $endDate->format('m'),
+                        ':day_end'        => $endDate->format('d'),
                     ]));
                 } // Scope
                 elseif ($scopeMethod = $scope->scope) {
@@ -486,14 +493,12 @@ class Filter extends BaseWidget
                         $filtered = implode(',', array_map(function ($key) {
                             return DB::getPdo()->quote($key);
                         }, $value));
-                    }
-                    else {
+                    } else {
                         $filtered = DB::getPdo()->quote($value);
                     }
 
                     $query->whereRaw(strtr($scopeConditions, [':filtered' => $filtered]));
-                }
-                elseif ($scopeMethod = $scope->scope) {
+                } elseif ($scopeMethod = $scope->scope) {
                     $query->$scopeMethod($value);
                 }
 
@@ -555,6 +560,7 @@ class Filter extends BaseWidget
 
     /**
      * Get all the registered scopes for the instance.
+     *
      * @return array
      */
     public function getScopes()
@@ -563,7 +569,7 @@ class Filter extends BaseWidget
     }
 
     /**
-     * Get a specified scope object
+     * Get a specified scope object.
      *
      * @param string $scope
      *
@@ -572,7 +578,8 @@ class Filter extends BaseWidget
     public function getScope($scope)
     {
         if (!isset($this->allScopes[$scope])) {
-            throw new Exception(sprintf(lang('admin::lang.list.filter_missing_scope_definitions'),
+            throw new Exception(sprintf(
+                lang('admin::lang.list.filter_missing_scope_definitions'),
                 $scope
             ));
         }
@@ -598,6 +605,7 @@ class Filter extends BaseWidget
 
     /**
      * Returns the active context for displaying the filter.
+     *
      * @return string
      */
     public function getContext()
@@ -609,7 +617,7 @@ class Filter extends BaseWidget
     {
         $cookieKey = $this->getCookieKey();
 
-        return (bool)@json_decode(array_get($_COOKIE, $cookieKey));
+        return (bool) @json_decode(array_get($_COOKIE, $cookieKey));
     }
 
     public function getCookieKey()
@@ -624,8 +632,9 @@ class Filter extends BaseWidget
      */
     protected function getScopeModel($scope)
     {
-        if (!isset($this->scopeModels[$scope]))
+        if (!isset($this->scopeModels[$scope])) {
             return null;
+        }
 
         return $this->scopeModels[$scope];
     }

@@ -10,7 +10,7 @@ use Igniter\Flame\Database\Traits\Purgeable;
 use Illuminate\Support\Facades\Event;
 
 /**
- * Menus Model Class
+ * Menus Model Class.
  */
 class Menus_model extends Model
 {
@@ -33,26 +33,26 @@ class Menus_model extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'menu_price' => 'float',
-        'menu_category_id' => 'integer',
-        'stock_qty' => 'integer',
-        'minimum_qty' => 'integer',
-        'subtract_stock' => 'boolean',
+        'menu_price'        => 'float',
+        'menu_category_id'  => 'integer',
+        'stock_qty'         => 'integer',
+        'minimum_qty'       => 'integer',
+        'subtract_stock'    => 'boolean',
         'order_restriction' => 'array',
-        'menu_status' => 'boolean',
-        'menu_priority' => 'integer',
+        'menu_status'       => 'boolean',
+        'menu_priority'     => 'integer',
     ];
 
     public $relation = [
         'hasMany' => [
-            'menu_options' => ['Admin\Models\Menu_item_options_model', 'delete' => TRUE],
+            'menu_options' => ['Admin\Models\Menu_item_options_model', 'delete' => true],
         ],
         'hasOne' => [
-            'special' => ['Admin\Models\Menus_specials_model', 'delete' => TRUE],
+            'special' => ['Admin\Models\Menus_specials_model', 'delete' => true],
         ],
         'belongsToMany' => [
             'categories' => ['Admin\Models\Categories_model', 'table' => 'menu_categories'],
-            'mealtimes' => ['Admin\Models\Mealtimes_model', 'table' => 'menu_mealtimes'],
+            'mealtimes'  => ['Admin\Models\Mealtimes_model', 'table' => 'menu_mealtimes'],
         ],
         'morphToMany' => [
             'allergens' => ['Admin\Models\Allergens_model', 'name' => 'allergenable'],
@@ -93,20 +93,20 @@ class Menus_model extends Model
     public function scopeListFrontEnd($query, $options = [])
     {
         extract(array_merge([
-            'page' => 1,
+            'page'      => 1,
             'pageLimit' => 20,
-            'enabled' => TRUE,
-            'sort' => 'menu_priority asc',
-            'group' => null,
-            'location' => null,
-            'category' => null,
-            'search' => '',
+            'enabled'   => true,
+            'sort'      => 'menu_priority asc',
+            'group'     => null,
+            'location'  => null,
+            'category'  => null,
+            'search'    => '',
             'orderType' => null,
         ], $options));
 
         $searchableFields = ['menu_name', 'menu_description'];
 
-        if (strlen($location) AND is_numeric($location)) {
+        if (strlen($location) and is_numeric($location)) {
             $query->whereHasOrDoesntHaveLocation($location);
             $query->with(['categories' => function ($q) use ($location) {
                 $q->whereHasOrDoesntHaveLocation($location);
@@ -173,11 +173,13 @@ class Menus_model extends Model
     {
         $this->restorePurgedValues();
 
-        if (array_key_exists('menu_options', $this->attributes))
-            $this->addMenuOption((array)$this->attributes['menu_options']);
+        if (array_key_exists('menu_options', $this->attributes)) {
+            $this->addMenuOption((array) $this->attributes['menu_options']);
+        }
 
-        if (array_key_exists('special', $this->attributes))
-            $this->addMenuSpecial((array)$this->attributes['special']);
+        if (array_key_exists('special', $this->attributes)) {
+            $this->addMenuSpecial((array) $this->attributes['special']);
+        }
     }
 
     protected function beforeDelete()
@@ -198,21 +200,24 @@ class Menus_model extends Model
     }
 
     /**
-     * Subtract or add to menu stock quantity
+     * Subtract or add to menu stock quantity.
      *
-     * @param int $quantity
+     * @param int  $quantity
      * @param bool $subtract
+     *
      * @return bool TRUE on success, or FALSE on failure
      */
-    public function updateStock($quantity = 0, $subtract = TRUE)
+    public function updateStock($quantity = 0, $subtract = true)
     {
-        if (!$this->subtract_stock)
-            return FALSE;
+        if (!$this->subtract_stock) {
+            return false;
+        }
 
-        if ($this->stock_qty == 0)
-            return FALSE;
+        if ($this->stock_qty == 0) {
+            return false;
+        }
 
-        $stockQty = ($subtract === TRUE)
+        $stockQty = ($subtract === true)
             ? $this->stock_qty - $quantity
             : $this->stock_qty + $quantity;
 
@@ -225,11 +230,11 @@ class Menus_model extends Model
 
         Event::fire('admin.menu.stockUpdated', [$this, $quantity, $subtract]);
 
-        return TRUE;
+        return true;
     }
 
     /**
-     * Create new or update existing menu allergens
+     * Create new or update existing menu allergens.
      *
      * @param array $allergenIds if empty all existing records will be deleted
      *
@@ -237,14 +242,15 @@ class Menus_model extends Model
      */
     public function addMenuAllergens(array $allergenIds = [])
     {
-        if (!$this->exists)
-            return FALSE;
+        if (!$this->exists) {
+            return false;
+        }
 
         $this->allergens()->sync($allergenIds);
     }
 
     /**
-     * Create new or update existing menu categories
+     * Create new or update existing menu categories.
      *
      * @param array $categoryIds if empty all existing records will be deleted
      *
@@ -252,14 +258,15 @@ class Menus_model extends Model
      */
     public function addMenuCategories(array $categoryIds = [])
     {
-        if (!$this->exists)
-            return FALSE;
+        if (!$this->exists) {
+            return false;
+        }
 
         $this->categories()->sync($categoryIds);
     }
 
     /**
-     * Create new or update existing menu mealtimes
+     * Create new or update existing menu mealtimes.
      *
      * @param array $mealtimeIds if empty all existing records will be deleted
      *
@@ -267,14 +274,15 @@ class Menus_model extends Model
      */
     public function addMenuMealtimes(array $mealtimeIds = [])
     {
-        if (!$this->exists)
-            return FALSE;
+        if (!$this->exists) {
+            return false;
+        }
 
         $this->mealtimes()->sync($mealtimeIds);
     }
 
     /**
-     * Create new or update existing menu options
+     * Create new or update existing menu options.
      *
      * @param array $menuOptions if empty all existing records will be deleted
      *
@@ -283,8 +291,9 @@ class Menus_model extends Model
     public function addMenuOption(array $menuOptions = [])
     {
         $menuId = $this->getKey();
-        if (!is_numeric($menuId))
-            return FALSE;
+        if (!is_numeric($menuId)) {
+            return false;
+        }
 
         $idsToKeep = [];
         foreach ($menuOptions as $option) {
@@ -303,9 +312,9 @@ class Menus_model extends Model
     }
 
     /**
-     * Create new or update existing menu special
+     * Create new or update existing menu special.
      *
-     * @param bool $id
+     * @param bool  $id
      * @param array $menuSpecial
      *
      * @return bool
@@ -313,8 +322,9 @@ class Menus_model extends Model
     public function addMenuSpecial(array $menuSpecial = [])
     {
         $menuId = $this->getKey();
-        if (!is_numeric($menuId))
-            return FALSE;
+        if (!is_numeric($menuId)) {
+            return false;
+        }
 
         $menuSpecial['menu_id'] = $menuId;
         $this->special()->updateOrCreate([
@@ -323,7 +333,7 @@ class Menus_model extends Model
     }
 
     /**
-     * Is menu item available on a given datetime
+     * Is menu item available on a given datetime.
      *
      * @param string | \Carbon\Carbon $datetime
      *
@@ -331,17 +341,18 @@ class Menus_model extends Model
      */
     public function isAvailable($datetime = null)
     {
-        if (is_null($datetime))
+        if (is_null($datetime)) {
             $datetime = Carbon::now();
+        }
 
         if (!$datetime instanceof Carbon) {
             $datetime = Carbon::parse($datetime);
         }
 
-        $isAvailable = TRUE;
+        $isAvailable = true;
 
         if (count($this->mealtimes) > 0) {
-            $isAvailable = FALSE;
+            $isAvailable = false;
             foreach ($this->mealtimes as $mealtime) {
                 if ($mealtime->mealtime_status) {
                     $isAvailable = $isAvailable || $mealtime->isAvailable($datetime);
@@ -349,8 +360,9 @@ class Menus_model extends Model
             }
         }
 
-        if (is_bool($eventResults = $this->fireSystemEvent('admin.menu.isAvailable', [$datetime, $isAvailable], TRUE)))
+        if (is_bool($eventResults = $this->fireSystemEvent('admin.menu.isAvailable', [$datetime, $isAvailable], true))) {
             $isAvailable = $eventResults;
+        }
 
         return $isAvailable;
     }

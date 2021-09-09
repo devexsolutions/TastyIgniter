@@ -8,7 +8,7 @@ use IteratorAggregate;
 
 /**
  * Form Tabs definition
- * A translation of the form field tab configuration
+ * A translation of the form field tab configuration.
  *
  * Adapted from october\backend\class\FormTabs
  */
@@ -41,7 +41,7 @@ class FormTabs implements IteratorAggregate, ArrayAccess
     /**
      * @var bool If set to TRUE, fields will not be displayed in tabs.
      */
-    public $suppressTabs = FALSE;
+    public $suppressTabs = false;
 
     /**
      * @var string Specifies a CSS class to attach to the tab container.
@@ -56,7 +56,7 @@ class FormTabs implements IteratorAggregate, ArrayAccess
      * - secondary - tabs section for secondary fields.
      *
      * @param string $section Specifies a section as described above.
-     * @param array $config A list of render mode specific config.
+     * @param array  $config  A list of render mode specific config.
      */
     public function __construct($section, $config = [])
     {
@@ -64,7 +64,7 @@ class FormTabs implements IteratorAggregate, ArrayAccess
         $this->config = $this->evalConfig($config);
 
         if ($this->section == self::SECTION_OUTSIDE) {
-            $this->suppressTabs = TRUE;
+            $this->suppressTabs = true;
         }
     }
 
@@ -97,9 +97,9 @@ class FormTabs implements IteratorAggregate, ArrayAccess
     /**
      * Add a field to the collection of tabs.
      *
-     * @param string $name
+     * @param string    $name
      * @param FormField $field
-     * @param string $tab
+     * @param string    $tab
      */
     public function addField($name, FormField $field, $tab = null)
     {
@@ -131,16 +131,17 @@ class FormTabs implements IteratorAggregate, ArrayAccess
                         unset($this->fields[$tab]);
                     }
 
-                    return TRUE;
+                    return true;
                 }
             }
         }
 
-        return FALSE;
+        return false;
     }
 
     /**
-     * Returns true if any fields have been registered for these tabs
+     * Returns true if any fields have been registered for these tabs.
+     *
      * @return bool
      */
     public function hasFields()
@@ -150,6 +151,7 @@ class FormTabs implements IteratorAggregate, ArrayAccess
 
     /**
      * Returns an array of the registered fields, including tabs.
+     *
      * @return array
      */
     public function getFields()
@@ -159,6 +161,7 @@ class FormTabs implements IteratorAggregate, ArrayAccess
 
     /**
      * Returns an array of the registered fields, without tabs.
+     *
      * @return array
      */
     public function getAllFields()
@@ -174,18 +177,20 @@ class FormTabs implements IteratorAggregate, ArrayAccess
 
     /**
      * Get an iterator for the items.
+     *
      * @return ArrayIterator
      */
     public function getIterator()
     {
-        return new ArrayIterator($this->suppressTabs
+        return new ArrayIterator(
+            $this->suppressTabs
             ? $this->getAllFields()
             : $this->getFields()
         );
     }
 
     /**
-     * ArrayAccess implementation
+     * ArrayAccess implementation.
      *
      * @param mixed $offset
      * @param mixed $value
@@ -196,7 +201,7 @@ class FormTabs implements IteratorAggregate, ArrayAccess
     }
 
     /**
-     * ArrayAccess implementation
+     * ArrayAccess implementation.
      *
      * @param mixed $offset
      *
@@ -208,7 +213,7 @@ class FormTabs implements IteratorAggregate, ArrayAccess
     }
 
     /**
-     * ArrayAccess implementation
+     * ArrayAccess implementation.
      *
      * @param mixed $offset
      */
@@ -218,7 +223,7 @@ class FormTabs implements IteratorAggregate, ArrayAccess
     }
 
     /**
-     * ArrayAccess implementation
+     * ArrayAccess implementation.
      *
      * @param mixed $offset
      *

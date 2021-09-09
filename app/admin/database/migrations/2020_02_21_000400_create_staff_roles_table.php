@@ -25,10 +25,10 @@ class CreateStaffRolesTable extends Migration
         DB::table('staff_groups')->get()->each(function ($model) {
             if (!empty($model->permissions)) {
                 DB::table('staff_roles')->insert([
-                    'name' => $model->staff_group_name,
+                    'name'        => $model->staff_group_name,
                     'permissions' => $model->permissions,
-                    'created_at' => Carbon::now()->toDateTimeString(),
-                    'updated_at' => Carbon::now()->toDateTimeString(),
+                    'created_at'  => Carbon::now()->toDateTimeString(),
+                    'updated_at'  => Carbon::now()->toDateTimeString(),
                 ]);
             }
         });

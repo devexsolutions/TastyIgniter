@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\View;
 use System\Classes\MailManager;
 
 /**
- * MailPartials Model Class
+ * MailPartials Model Class.
  */
 class Mail_partials_model extends Model
 {
@@ -32,7 +32,7 @@ class Mail_partials_model extends Model
     /**
      * @var array The model table column to convert to dates on insert/update
      */
-    public $timestamps = TRUE;
+    public $timestamps = true;
 
     protected $casts = [
         'is_custom' => 'boolean',
@@ -54,12 +54,14 @@ class Mail_partials_model extends Model
 
     public function fillFromCode($code = null)
     {
-        if (is_null($code))
+        if (is_null($code)) {
             $code = $this->code;
+        }
 
         $definitions = MailManager::instance()->listRegisteredPartials();
-        if (!$definition = array_get($definitions, $code))
+        if (!$definition = array_get($definitions, $code)) {
             throw new ApplicationException('Unable to find a registered partial with code: '.$code);
+        }
 
         $this->fillFromView($definition);
     }
@@ -76,14 +78,13 @@ class Mail_partials_model extends Model
     {
         try {
             if (!$template = self::whereCode($code)->first()) {
-                $template = new self;
+                $template = new self();
                 $template->code = $code;
                 $template->fillFromCode();
             }
 
             return $template;
-        }
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             return null;
         }
     }
@@ -91,6 +92,7 @@ class Mail_partials_model extends Model
     /**
      * Loops over each mail layout and ensures the system has a layout,
      * if the layout does not exist, it will create one.
+     *
      * @return void
      */
     public static function createPartials()
@@ -102,7 +104,7 @@ class Mail_partials_model extends Model
                 continue;
             }
 
-            $partial = new static;
+            $partial = new static();
             $partial->code = $code;
             $partial->is_custom = 0;
             $partial->fillFromView($path);

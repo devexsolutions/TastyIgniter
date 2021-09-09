@@ -13,18 +13,21 @@ class IgniterDown extends Command
 
     /**
      * The console command name.
+     *
      * @var string
      */
     protected $name = 'igniter:down';
 
     /**
      * The console command description.
+     *
      * @var string
      */
     protected $description = 'Destroys all database tables for TastyIgniter and all extensions.';
 
     /**
      * Execute the console command.
+     *
      * @return mixed
      */
     public function handle()
@@ -50,12 +53,13 @@ class IgniterDown extends Command
 
     /**
      * Get the default confirmation callback.
+     *
      * @return \Closure
      */
     protected function getDefaultConfirmCallback()
     {
         return function () {
-            return TRUE;
+            return true;
         };
     }
 }

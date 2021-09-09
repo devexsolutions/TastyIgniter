@@ -11,18 +11,20 @@ class DemoSchemaSeeder extends Seeder
 
     /**
      * Run the demo schema seeds.
+     *
      * @return void
      */
     public function run()
     {
-        if (!DatabaseSeeder::$seedDemo) return;
+        if (!DatabaseSeeder::$seedDemo) {
+            return;
+        }
 
         $this->seedCategories();
 
         $this->seedMenuOptions();
 
         $this->seedMenuItems();
-
     }
 
     protected function seedWorkingHours($locationId)
@@ -30,12 +32,12 @@ class DemoSchemaSeeder extends Seeder
         foreach (['opening', 'delivery', 'collection'] as $type) {
             foreach (['0', '1', '2', '3', '4', '5', '6'] as $day) {
                 DB::table('working_hours')->insert([
-                    'location_id' => $locationId,
-                    'weekday' => $day,
-                    'type' => $type,
+                    'location_id'  => $locationId,
+                    'weekday'      => $day,
+                    'type'         => $type,
                     'opening_time' => '00:00',
                     'closing_time' => '23:59',
-                    'status' => 1,
+                    'status'       => 1,
                 ]);
             }
         }
@@ -43,16 +45,18 @@ class DemoSchemaSeeder extends Seeder
 
     protected function seedCategories()
     {
-        if (DB::table('categories')->count())
+        if (DB::table('categories')->count()) {
             return;
+        }
 
         DB::table('categories')->insert($this->getSeedRecords('categories'));
     }
 
     protected function seedMenuOptions()
     {
-        if (DB::table('menu_options')->count())
+        if (DB::table('menu_options')->count()) {
             return;
+        }
 
         foreach ($this->getSeedRecords('menu_options') as $menuOption) {
             $optionId = DB::table('menu_options')->insertGetId(array_except($menuOption, 'option_values'));
@@ -67,8 +71,9 @@ class DemoSchemaSeeder extends Seeder
 
     protected function seedMenuItems()
     {
-        if (DB::table('menus')->count())
+        if (DB::table('menus')->count()) {
             return;
+        }
 
         foreach ($this->getSeedRecords('menus') as $menu) {
             $menuId = DB::table('menus')->insertGetId(array_except($menu, 'menu_options'));
@@ -78,19 +83,19 @@ class DemoSchemaSeeder extends Seeder
 
                 $menuOptionId = DB::table('menu_item_options')->insertGetId([
                     'option_id' => $option->option_id,
-                    'menu_id' => $menuId,
+                    'menu_id'   => $menuId,
                 ]);
 
                 $optionValues = DB::table('menu_option_values')->where('option_id', $option->option_id)->get();
 
                 foreach ($optionValues as $optionValue) {
                     DB::table('menu_item_option_values')->insertGetId([
-                        'menu_option_id' => $menuOptionId,
+                        'menu_option_id'  => $menuOptionId,
                         'option_value_id' => $optionValue->option_value_id,
-                        'new_price' => $optionValue->price,
-                        'quantity' => 0,
-                        'subtract_stock' => 0,
-                        'priority' => $optionValue->priority,
+                        'new_price'       => $optionValue->price,
+                        'quantity'        => 0,
+                        'subtract_stock'  => 0,
+                        'priority'        => $optionValue->priority,
                     ]);
                 }
             }
@@ -99,6 +104,6 @@ class DemoSchemaSeeder extends Seeder
 
     protected function getSeedRecords($name)
     {
-        return json_decode(file_get_contents($this->recordsPath.'/'.$name.'.json'), TRUE);
+        return json_decode(file_get_contents($this->recordsPath.'/'.$name.'.json'), true);
     }
 }

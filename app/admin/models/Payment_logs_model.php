@@ -8,7 +8,7 @@ use Igniter\Flame\Database\Traits\Validation;
 use Illuminate\Support\Facades\Event;
 
 /**
- * Payment logs Model Class
+ * Payment logs Model Class.
  */
 class Payment_logs_model extends Model
 {
@@ -30,39 +30,39 @@ class Payment_logs_model extends Model
 
     protected $appends = ['date_added_since'];
 
-    public $timestamps = TRUE;
+    public $timestamps = true;
 
     public $dates = ['refunded_at'];
 
     public $relation = [
         'belongsTo' => [
-            'order' => ['Admin\Models\Orders_model'],
+            'order'          => ['Admin\Models\Orders_model'],
             'payment_method' => ['Admin\Models\Payments_model', 'foreignKey' => 'payment_code', 'otherKey' => 'code'],
         ],
     ];
 
     public $rules = [
-        'message' => 'string',
-        'order_id' => 'integer',
-        'payment_code' => 'string',
-        'payment_name' => 'string',
-        'is_success' => 'boolean',
-        'request' => 'array',
-        'response' => 'array',
+        'message'       => 'string',
+        'order_id'      => 'integer',
+        'payment_code'  => 'string',
+        'payment_name'  => 'string',
+        'is_success'    => 'boolean',
+        'request'       => 'array',
+        'response'      => 'array',
         'is_refundable' => 'boolean',
     ];
 
     protected $casts = [
-        'order_id' => 'integer',
-        'request' => 'array',
-        'response' => 'array',
-        'is_success' => 'boolean',
+        'order_id'      => 'integer',
+        'request'       => 'array',
+        'response'      => 'array',
+        'is_success'    => 'boolean',
         'is_refundable' => 'boolean',
     ];
 
-    public static function logAttempt($order, $message, $isSuccess, $request = [], $response = [], $isRefundable = FALSE)
+    public static function logAttempt($order, $message, $isSuccess, $request = [], $response = [], $isRefundable = false)
     {
-        $record = new static;
+        $record = new static();
         $record->message = $message;
         $record->order_id = $order->order_id;
         $record->payment_code = $order->payment_method->code;
@@ -91,6 +91,6 @@ class Payment_logs_model extends Model
             Event::fire('admin.paymentLog.refundProcessed', [$this]);
         }
 
-        return TRUE;
+        return true;
     }
 }

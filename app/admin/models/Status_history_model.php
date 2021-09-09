@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Igniter\Flame\Database\Model;
 
 /**
- * Status History Model Class
+ * Status History Model Class.
  */
 class Status_history_model extends Model
 {
@@ -25,18 +25,18 @@ class Status_history_model extends Model
 
     protected $appends = ['staff_name', 'status_name', 'notified', 'date_added_since'];
 
-    public $timestamps = TRUE;
+    public $timestamps = true;
 
     protected $casts = [
         'object_id' => 'integer',
-        'staff_id' => 'integer',
+        'staff_id'  => 'integer',
         'status_id' => 'integer',
-        'notify' => 'boolean',
+        'notify'    => 'boolean',
     ];
 
     public $relation = [
         'belongsTo' => [
-            'staff' => 'Admin\Models\Staffs_model',
+            'staff'  => 'Admin\Models\Staffs_model',
             'status' => ['Admin\Models\Statuses_model', 'status_id'],
         ],
         'morphTo' => [
@@ -53,7 +53,7 @@ class Status_history_model extends Model
 
     public function getStaffNameAttribute($value)
     {
-        return ($this->staff AND $this->staff->exists) ? $this->staff->staff_name : $value;
+        return ($this->staff and $this->staff->exists) ? $this->staff->staff_name : $value;
     }
 
     public function getDateAddedSinceAttribute($value)
@@ -63,7 +63,7 @@ class Status_history_model extends Model
 
     public function getStatusNameAttribute($value)
     {
-        return ($this->status AND $this->status->exists) ? $this->status->status_name : $value;
+        return ($this->status and $this->status->exists) ? $this->status->status_name : $value;
     }
 
     public function getNotifiedAttribute()
@@ -74,7 +74,8 @@ class Status_history_model extends Model
     /**
      * @param \Igniter\Flame\Database\Model|mixed $status
      * @param \Igniter\Flame\Database\Model|mixed $object
-     * @param array $options
+     * @param array                               $options
+     *
      * @return static|bool
      */
     public static function createHistory($status, $object, $options = [])
@@ -82,7 +83,7 @@ class Status_history_model extends Model
         $statusId = $status->getKey();
         $previousStatus = $object->getOriginal('status_id');
 
-        $model = new static;
+        $model = new static();
         $model->status_id = $statusId;
         $model->object_id = $object->getKey();
         $model->object_type = $object->getMorphClass();
@@ -90,14 +91,15 @@ class Status_history_model extends Model
         $model->comment = array_get($options, 'comment', $status->status_comment);
         $model->notify = array_get($options, 'notify', $status->notify_customer);
 
-        if ($model->fireSystemEvent('admin.statusHistory.beforeAddStatus', [$object, $statusId, $previousStatus], TRUE) === FALSE)
-            return FALSE;
+        if ($model->fireSystemEvent('admin.statusHistory.beforeAddStatus', [$object, $statusId, $previousStatus], true) === false) {
+            return false;
+        }
 
         $model->save();
 
         // Update using query to prevent model events from firing
         $object->newQuery()->where($object->getKeyName(), $object->getKey())->update([
-            'status_id' => $statusId,
+            'status_id'         => $statusId,
             'status_updated_at' => Carbon::now(),
         ]);
 

@@ -41,8 +41,8 @@ class ComponentPartial extends Extendable implements TemplateSource
 
     /**
      * @var int The maximum allowed path nesting level. The default value is 2,
-     * meaning that files can only exist in the root directory, or in a
-     * subdirectory. Set to null if any level is allowed.
+     *          meaning that files can only exist in the root directory, or in a
+     *          subdirectory. Set to null if any level is allowed.
      */
     protected $maxNesting = 2;
 
@@ -60,7 +60,8 @@ class ComponentPartial extends Extendable implements TemplateSource
 
     /**
      * @param \System\Classes\BaseComponent $component
-     * @param string $fileName
+     * @param string                        $fileName
+     *
      * @return \Main\Template\ComponentPartial|mixed
      */
     public static function load($component, $fileName)
@@ -70,7 +71,8 @@ class ComponentPartial extends Extendable implements TemplateSource
 
     /**
      * @param \System\Classes\BaseComponent $component
-     * @param string $fileName
+     * @param string                        $fileName
+     *
      * @return \Main\Template\ComponentPartial|mixed
      */
     public static function loadCached($component, $fileName)
@@ -79,9 +81,10 @@ class ComponentPartial extends Extendable implements TemplateSource
     }
 
     /**
-     * @param \Main\Classes\Theme $theme
+     * @param \Main\Classes\Theme           $theme
      * @param \System\Classes\BaseComponent $component
-     * @param string $fileName
+     * @param string                        $fileName
+     *
      * @return mixed
      */
     public static function loadOverrideCached($theme, $component, $fileName)
@@ -110,7 +113,7 @@ class ComponentPartial extends Extendable implements TemplateSource
             return null;
         }
 
-        if (($content = @File::get($filePath)) === FALSE) {
+        if (($content = @File::get($filePath)) === false) {
             return null;
         }
 
@@ -125,7 +128,7 @@ class ComponentPartial extends Extendable implements TemplateSource
      * Returns true if the specific component contains a matching partial.
      *
      * @param BaseComponent $component Specifies a component the file belongs to.
-     * @param string $fileName Specifies the file name to check.
+     * @param string        $fileName  Specifies the file name to check.
      *
      * @return bool
      */
@@ -142,6 +145,7 @@ class ComponentPartial extends Extendable implements TemplateSource
 
     /**
      * Returns the key used by the Template cache.
+     *
      * @return string
      */
     public function getTemplateCacheKey()
@@ -151,6 +155,7 @@ class ComponentPartial extends Extendable implements TemplateSource
 
     /**
      * Returns the default extension used by this template.
+     *
      * @return string
      */
     public function getDefaultExtension()
@@ -176,11 +181,13 @@ class ComponentPartial extends Extendable implements TemplateSource
 
         foreach (['.blade.', '.'] as $part) {
             $basename = $fileName;
-            if (!strlen(File::extension($basename)))
+            if (!strlen(File::extension($basename))) {
                 $basename .= $part.$this->defaultExtension;
+            }
 
-            if (File::isFile($path = $componentPath.'/'.$basename))
+            if (File::isFile($path = $componentPath.'/'.$basename)) {
                 return $path;
+            }
 
             // Check the shared "/partials" directory for the partial
             $sharedPath = dirname($componentPath).'/partials/'.$basename;
@@ -194,6 +201,7 @@ class ComponentPartial extends Extendable implements TemplateSource
 
     /**
      * Returns the file name.
+     *
      * @return string
      */
     public function getFileName()
@@ -203,12 +211,13 @@ class ComponentPartial extends Extendable implements TemplateSource
 
     /**
      * Returns the file name without the extension.
+     *
      * @return string
      */
     public function getBaseFileName()
     {
         $pos = strrpos($this->fileName, '.');
-        if ($pos === FALSE) {
+        if ($pos === false) {
             return $this->fileName;
         }
 
@@ -217,6 +226,7 @@ class ComponentPartial extends Extendable implements TemplateSource
 
     /**
      * Returns the file content.
+     *
      * @return string
      */
     public function getContent()
@@ -225,7 +235,8 @@ class ComponentPartial extends Extendable implements TemplateSource
     }
 
     /**
-     * Gets the markup section of a template
+     * Gets the markup section of a template.
+     *
      * @return string The template source code
      */
     public function getMarkup()
@@ -234,7 +245,8 @@ class ComponentPartial extends Extendable implements TemplateSource
     }
 
     /**
-     * Gets the code section of a template
+     * Gets the code section of a template.
+     *
      * @return string The template source code
      */
     public function getCode()

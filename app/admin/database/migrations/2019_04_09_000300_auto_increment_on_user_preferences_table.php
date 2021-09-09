@@ -7,7 +7,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Set PRIMARY key on user_preferences table
+ * Set PRIMARY key on user_preferences table.
  */
 class AutoIncrementOnUserPreferencesTable extends Migration
 {

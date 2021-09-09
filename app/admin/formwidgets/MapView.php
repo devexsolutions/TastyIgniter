@@ -43,7 +43,8 @@ class MapView extends BaseFormWidget
     {
         if (strlen($key = setting('maps_api_key'))) {
             $url = 'https://maps.googleapis.com/maps/api/js?key=%s&libraries=geometry';
-            $this->addJs(sprintf($url, $key),
+            $this->addJs(
+                sprintf($url, $key),
                 ['name' => 'google-maps-js', 'async' => null, 'defer' => null]
             );
         }
@@ -61,8 +62,8 @@ class MapView extends BaseFormWidget
 
     public function prepareVars()
     {
-        $this->vars['mapHeight'] = (int)$this->height;
-        $this->vars['mapZoom'] = (int)$this->zoom;
+        $this->vars['mapHeight'] = (int) $this->height;
+        $this->vars['mapZoom'] = (int) $this->zoom;
         $this->vars['mapCenter'] = $this->getCenter();
         $this->vars['shapeSelector'] = $this->shapeSelector;
         $this->vars['previewMode'] = $this->previewMode;
@@ -70,20 +71,22 @@ class MapView extends BaseFormWidget
 
     public function isConfigured()
     {
-        return (bool)strlen(trim(setting('maps_api_key')));
+        return (bool) strlen(trim(setting('maps_api_key')));
     }
 
     public function hasCenter()
     {
-        return (bool)count(array_filter($this->getCenter() ?: []));
+        return (bool) count(array_filter($this->getCenter() ?: []));
     }
 
     protected function getCenter()
     {
-        if ($this->center)
+        if ($this->center) {
             return $this->center;
+        }
 
-        if (method_exists($this->controller, 'mapViewCenterCoords'))
+        if (method_exists($this->controller, 'mapViewCenterCoords')) {
             return $this->controller->mapViewCenterCoords();
+        }
     }
 }

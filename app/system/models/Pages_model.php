@@ -6,7 +6,7 @@ use Igniter\Flame\Database\Model;
 use Igniter\Flame\Database\Traits\HasPermalink;
 
 /**
- * Pages Model Class
+ * Pages Model Class.
  */
 class Pages_model extends Model
 {
@@ -29,14 +29,14 @@ class Pages_model extends Model
     /**
      * @var array The model table column to convert to dates on insert/update
      */
-    public $timestamps = TRUE;
+    public $timestamps = true;
 
     protected $guarded = [];
 
     protected $casts = [
         'language_id' => 'integer',
-        'metadata' => 'json',
-        'status' => 'boolean',
+        'metadata'    => 'json',
+        'status'      => 'boolean',
     ];
 
     public $relation = [
@@ -61,7 +61,7 @@ class Pages_model extends Model
     //
 
     /**
-     * Scope a query to only include enabled page
+     * Scope a query to only include enabled page.
      *
      * @param $query
      *

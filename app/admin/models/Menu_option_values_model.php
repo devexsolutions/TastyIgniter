@@ -6,7 +6,7 @@ use Igniter\Flame\Database\Model;
 use Igniter\Flame\Database\Traits\Sortable;
 
 /**
- * Menu_option_values Model Class
+ * Menu_option_values Model Class.
  */
 class Menu_option_values_model extends Model
 {
@@ -26,9 +26,9 @@ class Menu_option_values_model extends Model
 
     protected $casts = [
         'option_value_id' => 'integer',
-        'option_id' => 'integer',
-        'price' => 'float',
-        'priority' => 'integer',
+        'option_id'       => 'integer',
+        'price'           => 'float',
+        'priority'        => 'integer',
     ];
 
     public $relation = [
@@ -41,8 +41,8 @@ class Menu_option_values_model extends Model
     ];
 
     public $sortable = [
-        'sortOrderColumn' => 'priority',
-        'sortWhenCreating' => TRUE,
+        'sortOrderColumn'  => 'priority',
+        'sortWhenCreating' => true,
     ];
 
     public static function getDropDownOptions()
@@ -52,8 +52,9 @@ class Menu_option_values_model extends Model
 
     public function getAllergensOptions()
     {
-        if (self::$allergensOptionsCache)
+        if (self::$allergensOptionsCache) {
             return self::$allergensOptionsCache;
+        }
 
         return self::$allergensOptionsCache = Allergens_model::dropdown('name')->all();
     }
@@ -68,7 +69,7 @@ class Menu_option_values_model extends Model
     }
 
     /**
-     * Create new or update existing menu allergens
+     * Create new or update existing menu allergens.
      *
      * @param array $allergenIds if empty all existing records will be deleted
      *
@@ -76,8 +77,9 @@ class Menu_option_values_model extends Model
      */
     public function addMenuAllergens(array $allergenIds = [])
     {
-        if (!$this->exists)
-            return FALSE;
+        if (!$this->exists) {
+            return false;
+        }
 
         $this->allergens()->sync($allergenIds);
     }

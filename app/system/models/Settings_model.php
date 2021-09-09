@@ -15,7 +15,7 @@ use System\Classes\UpdateManager;
 use System\Traits\ConfigMaker;
 
 /**
- * Settings Model Class
+ * Settings Model Class.
  */
 class Settings_model extends Model
 {
@@ -49,7 +49,7 @@ class Settings_model extends Model
     public static function listMenuSettingItems($menu, $item, $user)
     {
         $options = [];
-        $settingItems = (new static)->listSettingItems();
+        $settingItems = (new static())->listSettingItems();
         foreach (array_get($settingItems, 'core', []) as $settingItem) {
             $options[$settingItem->label] = [$settingItem->icon, $settingItem->url];
         }
@@ -83,17 +83,17 @@ class Settings_model extends Model
         return [
             'h:i A' => $now->format('h:i A'),
             'h:i a' => $now->format('h:i a'),
-            'H:i' => $now->format('H:i'),
+            'H:i'   => $now->format('H:i'),
         ];
     }
 
     public static function getPageLimitOptions()
     {
         return [
-            '10' => '10',
-            '20' => '20',
-            '50' => '50',
-            '75' => '75',
+            '10'  => '10',
+            '20'  => '20',
+            '50'  => '50',
+            '75'  => '75',
             '100' => '100',
         ];
     }
@@ -102,22 +102,23 @@ class Settings_model extends Model
     {
         $theme = ThemeManager::instance()->getActiveTheme();
 
-        return Page::getDropdownOptions($theme, TRUE);
+        return Page::getDropdownOptions($theme, true);
     }
 
     public static function getReservationPageOptions()
     {
         $theme = ThemeManager::instance()->getActiveTheme();
 
-        return Page::getDropdownOptions($theme, TRUE);
+        return Page::getDropdownOptions($theme, true);
     }
 
     public static function onboardingIsComplete()
     {
-        if (!Session::has('settings.errors'))
-            return FALSE;
+        if (!Session::has('settings.errors')) {
+            return false;
+        }
 
-        return count(array_filter((array)Session::get('settings.errors'))) === 0;
+        return count(array_filter((array) Session::get('settings.errors'))) === 0;
     }
 
     public static function updatesCount()
@@ -126,8 +127,7 @@ class Settings_model extends Model
             $updates = UpdateManager::instance()->requestUpdateList();
 
             return count(array_get($updates, 'items', []));
-        }
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
         }
     }
 
@@ -149,16 +149,18 @@ class Settings_model extends Model
         }
 
         $settingItem = $this->getSettingItem('core.'.$code);
-        if (!is_array($settingItem->form))
+        if (!is_array($settingItem->form)) {
             $settingItem->form = array_get($this->makeConfig($settingItem->form, ['form']), 'form', []);
+        }
 
         return $this->fieldConfig = $settingItem->form ?? [];
     }
 
     public function getFieldValues()
     {
-        if (is_array($this->fieldValues))
+        if (is_array($this->fieldValues)) {
             return $this->fieldValues;
+        }
 
         $values = [];
         $records = $this->newQuery()->where('sort', 'config')->get();
@@ -176,16 +178,18 @@ class Settings_model extends Model
 
     public function getSettingItem($code)
     {
-        if (!$this->allItems)
+        if (!$this->allItems) {
             $this->loadSettingItems();
+        }
 
         return $this->allItems[$code] ?? null;
     }
 
     public function listSettingItems()
     {
-        if (!$this->items)
+        if (!$this->items) {
             $this->loadSettingItems();
+        }
 
         return $this->items;
     }
@@ -232,31 +236,33 @@ class Settings_model extends Model
         }
 
         $defaultDefinitions = [
-            'code' => null,
-            'label' => null,
+            'code'        => null,
+            'label'       => null,
             'description' => null,
-            'icon' => null,
-            'url' => null,
-            'priority' => 99,
+            'icon'        => null,
+            'url'         => null,
+            'priority'    => 99,
             'permissions' => [],
-            'context' => 'settings',
-            'model' => null,
-            'form' => null,
+            'context'     => 'settings',
+            'model'       => null,
+            'form'        => null,
         ];
 
         foreach ($definitions as $code => $definition) {
             $item = array_merge($defaultDefinitions, array_merge($definition, [
-                'code' => $code,
+                'code'  => $code,
                 'owner' => $owner,
             ]));
 
-            if (!isset($item['url']))
-                $item['url'] = admin_url($owner == 'core'
+            if (!isset($item['url'])) {
+                $item['url'] = admin_url(
+                    $owner == 'core'
                     ? 'settings/edit/'.$code
                     : 'extensions/edit/'.str_replace('.', '/', $owner).'/'.$code
                 );
+            }
 
-            $this->items[] = (object)$item;
+            $this->items[] = (object) $item;
         }
     }
 
@@ -279,7 +285,7 @@ class Settings_model extends Model
             $current_timezone = new DateTimeZone($timezone_identifier);
 
             $temp_timezones[] = [
-                'offset' => (int)$current_timezone->getOffset($utc_time),
+                'offset'     => (int) $current_timezone->getOffset($utc_time),
                 'identifier' => $timezone_identifier,
             ];
         }

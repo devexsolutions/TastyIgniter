@@ -47,6 +47,7 @@ class DataSource
 
     /**
      * Returns a total number of records in the data source.
+     *
      * @return int
      */
     public function getCount()
@@ -66,10 +67,10 @@ class DataSource
      * Return records from the data source.
      *
      * @param int $offset Specifies the offset of the first record to return, zero-based.
-     * @param int $count Specifies the number of records to return.
+     * @param int $count  Specifies the number of records to return.
      *
      * @return array Returns the records.
-     * If there are no more records, returns an empty array.
+     *               If there are no more records, returns an empty array.
      */
     public function getRecords($offset, $count)
     {
@@ -100,7 +101,7 @@ class DataSource
      * @param int $count Specifies the number of records to return.
      *
      * @return array Returns the records.
-     * If there are no more records, returns an empty array.
+     *               If there are no more records, returns an empty array.
      */
     public function readRecords($count = 10)
     {

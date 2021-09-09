@@ -74,16 +74,17 @@ class Router
      * @param string $url The requested URL string.
      *
      * @return \Main\Template\Page|mixed Returns page object
-     * or null if the page cannot be found.
+     *                                   or null if the page cannot be found.
      */
     public function findByUrl($url)
     {
         $this->url = $url;
         $url = RouterHelper::normalizeUrl($url);
 
-        $apiResult = Event::fire('router.beforeRoute', [$url, $this], TRUE);
-        if ($apiResult !== null)
+        $apiResult = Event::fire('router.beforeRoute', [$url, $this], true);
+        if ($apiResult !== null) {
             return $apiResult;
+        }
 
         for ($pass = 1; $pass <= 2; $pass++) {
             $fileName = null;
@@ -106,8 +107,9 @@ class Router
                     $fileName = $router->matchedRoute();
 
                     if ($cacheable) {
-                        if (!$urlList OR !is_array($urlList))
+                        if (!$urlList or !is_array($urlList)) {
                             $urlList = [];
+                        }
 
                         $urlList[$url] = !empty($this->parameters)
                             ? [$fileName, $this->parameters]
@@ -146,8 +148,8 @@ class Router
      * Finds a URL by it's page. Returns the URL route for linking to the page and uses the supplied
      * parameters in it's address.
      *
-     * @param string $fileName Page file name.
-     * @param array $parameters Route parameters to consider in the URL.
+     * @param string $fileName   Page file name.
+     * @param array  $parameters Route parameters to consider in the URL.
      *
      * @return string A built URL matching the page route.
      */
@@ -162,6 +164,7 @@ class Router
 
     /**
      * Autoloads the URL map only allowing a single execution.
+     *
      * @return \Igniter\Flame\Router\Router
      */
     protected function getRouterObject()
@@ -184,6 +187,7 @@ class Router
 
     /**
      * Autoloads the URL map only allowing a single execution.
+     *
      * @return array Returns the URL map.
      */
     protected function getUrlMap()
@@ -200,20 +204,22 @@ class Router
      * The URL map can is cached. The clearUrlMap() method resets the cache. By default
      * the map is updated every time when a page is saved in the back-end, or
      * when the interval defined with the system.urlMapCacheTtl expires.
+     *
      * @return bool Returns true if the URL map was loaded from the cache. Otherwise returns false.
      */
     protected function loadUrlMap()
     {
         $cacheable = Config::get('system.enableRoutesCache');
-        $cached = $cacheable ? Cache::get($this->getUrlMapCacheKey(), FALSE) : FALSE;
+        $cached = $cacheable ? Cache::get($this->getUrlMapCacheKey(), false) : false;
 
-        if (!$cached OR ($unSerialized = @unserialize(@base64_decode($cached))) === FALSE) {
+        if (!$cached or ($unSerialized = @unserialize(@base64_decode($cached))) === false) {
             // The item doesn't exist in the cache, create the map
             $pages = $this->theme->listPages();
             $map = [];
             foreach ($pages as $page) {
-                if (!optional($page)->permalink)
+                if (!optional($page)->permalink) {
                     continue;
+                }
 
                 $map[] = ['file' => $page->getFileName(), 'pattern' => $page->permalink];
             }
@@ -227,12 +233,12 @@ class Router
                 );
             }
 
-            return FALSE;
+            return false;
         }
 
         $this->urlMap = $unSerialized;
 
-        return TRUE;
+        return true;
     }
 
     /**
@@ -258,6 +264,7 @@ class Router
 
     /**
      * Returns the current routing parameters.
+     *
      * @return array
      */
     public function getParameters()
@@ -267,6 +274,7 @@ class Router
 
     /**
      * Returns the last URL to be looked up.
+     *
      * @return string
      */
     public function getUrl()
@@ -284,7 +292,7 @@ class Router
      */
     public function getParameter($name, $default = null)
     {
-        if (isset($this->parameters[$name]) AND !empty($this->parameters[$name])) {
+        if (isset($this->parameters[$name]) and !empty($this->parameters[$name])) {
             return $this->parameters[$name];
         }
 
@@ -305,6 +313,7 @@ class Router
 
     /**
      * Returns the cache key name for the URL list.
+     *
      * @return string
      */
     protected function getUrlListCacheKey()
@@ -314,6 +323,7 @@ class Router
 
     /**
      * Returns the cache key name for the URL list.
+     *
      * @return string
      */
     protected function getUrlMapCacheKey()
@@ -324,19 +334,19 @@ class Router
     /**
      * Tries to load a page file name corresponding to a specified URL from the cache.
      *
-     * @param string $url Specifies the requested URL.
-     * @param array &$urlList The URL list loaded from the cache
+     * @param string $url      Specifies the requested URL.
+     * @param array  &$urlList The URL list loaded from the cache
      *
      * @return mixed Returns the page file name if the URL exists in the cache. Otherwise returns null.
      */
     protected function getCachedUrlFileName($url, &$urlList)
     {
         $key = $this->getUrlListCacheKey();
-        $urlList = Cache::get($key, FALSE);
+        $urlList = Cache::get($key, false);
 
         if (
-            $urlList AND
-            ($urlList = @unserialize(@base64_decode($urlList))) AND
+            $urlList and
+            ($urlList = @unserialize(@base64_decode($urlList))) and
             is_array($urlList)
         ) {
             if (array_key_exists($url, $urlList)) {

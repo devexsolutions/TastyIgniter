@@ -5,7 +5,7 @@ namespace Admin\Models;
 use Igniter\Flame\Database\Model;
 
 /**
- * StaffGroups Model Class
+ * StaffGroups Model Class.
  */
 class Staff_groups_model extends Model
 {
@@ -33,9 +33,9 @@ class Staff_groups_model extends Model
     ];
 
     protected $casts = [
-        'auto_assign' => 'boolean',
-        'auto_assign_mode' => 'integer',
-        'auto_assign_limit' => 'integer',
+        'auto_assign'              => 'boolean',
+        'auto_assign_mode'         => 'integer',
+        'auto_assign_limit'        => 'integer',
         'auto_assign_availability' => 'boolean',
     ];
 
@@ -65,7 +65,8 @@ class Staff_groups_model extends Model
 
     public static function syncAutoAssignStatus()
     {
-        params()->set('allocator_is_enabled',
+        params()->set(
+            'allocator_is_enabled',
             self::query()->where('auto_assign', 1)->exists()
         );
     }
@@ -89,7 +90,7 @@ class Staff_groups_model extends Model
     public function listAssignees()
     {
         return $this->staffs->filter(function (Staffs_model $staff) {
-            return $staff->isEnabled() AND $staff->canAssignTo();
+            return $staff->isEnabled() and $staff->canAssignTo();
         })->values();
     }
 

@@ -8,7 +8,7 @@ use Igniter\Flame\Database\Traits\Sortable;
 use Igniter\Flame\Database\Traits\Validation;
 
 /**
- * Tables Model Class
+ * Tables Model Class.
  */
 class Tables_model extends Model
 {
@@ -31,12 +31,12 @@ class Tables_model extends Model
     protected $primaryKey = 'table_id';
 
     protected $casts = [
-        'min_capacity' => 'integer',
-        'max_capacity' => 'integer',
+        'min_capacity'   => 'integer',
+        'max_capacity'   => 'integer',
         'extra_capacity' => 'integer',
-        'priority' => 'integer',
-        'is_joinable' => 'boolean',
-        'table_status' => 'boolean',
+        'priority'       => 'integer',
+        'is_joinable'    => 'boolean',
+        'table_status'   => 'boolean',
     ];
 
     public $relation = [
@@ -62,7 +62,7 @@ class Tables_model extends Model
     }
 
     /**
-     * Scope a query to only include enabled location
+     * Scope a query to only include enabled location.
      *
      * @return $this
      */

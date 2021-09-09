@@ -18,28 +18,28 @@ class Payments extends \Admin\Classes\AdminController
 
     public $listConfig = [
         'list' => [
-            'model' => 'Admin\Models\Payments_model',
-            'title' => 'lang:admin::lang.payments.text_title',
+            'model'        => 'Admin\Models\Payments_model',
+            'title'        => 'lang:admin::lang.payments.text_title',
             'emptyMessage' => 'lang:admin::lang.payments.text_empty',
-            'defaultSort' => ['date_updated', 'DESC'],
-            'configFile' => 'payments_model',
+            'defaultSort'  => ['date_updated', 'DESC'],
+            'configFile'   => 'payments_model',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:admin::lang.payments.text_form_name',
-        'model' => 'Admin\Models\Payments_model',
+        'name'   => 'lang:admin::lang.payments.text_form_name',
+        'model'  => 'Admin\Models\Payments_model',
         'create' => [
-            'title' => 'lang:admin::lang.form.create_title',
-            'redirect' => 'payments/edit/{code}',
+            'title'         => 'lang:admin::lang.form.create_title',
+            'redirect'      => 'payments/edit/{code}',
             'redirectClose' => 'payments',
-            'redirectNew' => 'payments/create',
+            'redirectNew'   => 'payments/create',
         ],
         'edit' => [
-            'title' => 'lang:admin::lang.form.edit_title',
-            'redirect' => 'payments/edit/{code}',
+            'title'         => 'lang:admin::lang.form.edit_title',
+            'redirect'      => 'payments/edit/{code}',
             'redirectClose' => 'payments',
-            'redirectNew' => 'payments/create',
+            'redirectNew'   => 'payments/create',
         ],
         'delete' => [
             'redirect' => 'payments',
@@ -71,8 +71,9 @@ class Payments extends \Admin\Classes\AdminController
      *
      * @param string $paymentCode
      *
-     * @return Model
      * @throws \Exception
+     *
+     * @return Model
      */
     public function formFindModelObject($paymentCode = null)
     {
@@ -87,8 +88,9 @@ class Payments extends \Admin\Classes\AdminController
         $this->formExtendQuery($query);
         $result = $query->whereCode($paymentCode)->first();
 
-        if (!$result)
+        if (!$result) {
             throw new Exception(sprintf(lang('admin::lang.form.not_found'), $paymentCode));
+        }
 
         $result = $this->formExtendModel($result) ?: $result;
 
@@ -110,8 +112,9 @@ class Payments extends \Admin\Classes\AdminController
 
     public function formExtendModel($model)
     {
-        if (!$model->exists)
+        if (!$model->exists) {
             $model->applyGatewayClass();
+        }
 
         return $model;
     }
@@ -126,14 +129,15 @@ class Payments extends \Admin\Classes\AdminController
 
         if ($form->context != 'create') {
             $field = $form->getField('code');
-            $field->disabled = TRUE;
+            $field->disabled = true;
         }
     }
 
     public function formBeforeCreate($model)
     {
-        if (!strlen($code = post('Payment.payment')))
+        if (!strlen($code = post('Payment.payment'))) {
             throw new ApplicationException(lang('admin::lang.payments.alert_invalid_code'));
+        }
 
         $paymentGateway = PaymentGateways::instance()->findGateway($code);
 
@@ -152,8 +156,9 @@ class Payments extends \Admin\Classes\AdminController
             ['status', 'lang:admin::lang.label_status', 'required|integer'],
         ];
 
-        if ($form->model->exists AND ($mergeRules = $form->model->getConfigRules()))
+        if ($form->model->exists and ($mergeRules = $form->model->getConfigRules())) {
             array_push($rules, ...$mergeRules);
+        }
 
         return $this->validatePasses($form->getSaveData(), $rules);
     }

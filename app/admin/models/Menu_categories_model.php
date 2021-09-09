@@ -5,7 +5,7 @@ namespace Admin\Models;
 use Igniter\Flame\Database\Model;
 
 /**
- * Menu categories Model Class
+ * Menu categories Model Class.
  */
 class Menu_categories_model extends Model
 {
@@ -17,16 +17,16 @@ class Menu_categories_model extends Model
     /**
      * @var string The database table primary key
      */
-    public $incrementing = FALSE;
+    public $incrementing = false;
 
     protected $casts = [
-        'menu_id' => 'integer',
+        'menu_id'     => 'integer',
         'category_id' => 'integer',
     ];
 
     public $relation = [
         'belongsTo' => [
-            'menu' => ['Admin\Models\Menus_model'],
+            'menu'     => ['Admin\Models\Menus_model'],
             'category' => ['Admin\Models\Categories_model'],
         ],
     ];

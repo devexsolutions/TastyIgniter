@@ -7,7 +7,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Create location_areas table
+ * Create location_areas table.
  */
 class CreateLocationAreasTable extends Migration
 {

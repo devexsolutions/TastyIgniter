@@ -1,12 +1,10 @@
 <?php
 
 /**
- * TastyIgniter - An online ordering and restaurant management system
+ * TastyIgniter - An online ordering and restaurant management system.
  *
- * @package  TastyIgniter
  * @author   Samuel Adepoyigi
  */
-
 $uri = urldecode(
     parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)
 );

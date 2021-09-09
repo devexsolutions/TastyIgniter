@@ -5,7 +5,8 @@ namespace Admin\Models;
 use Igniter\Flame\Database\Model;
 
 /**
- * Location tables Model Class
+ * Location tables Model Class.
+ *
  * @deprecated remove before v4. Added for backward compatibility, see Locationable
  */
 class Location_tables_model extends Model
@@ -17,11 +18,11 @@ class Location_tables_model extends Model
 
     protected $primaryKey = 'table_id';
 
-    public $incrementing = FALSE;
+    public $incrementing = false;
 
     protected $casts = [
         'location_id' => 'integer',
-        'table_id' => 'integer',
+        'table_id'    => 'integer',
     ];
 
     public $relation = [

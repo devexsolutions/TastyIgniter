@@ -35,9 +35,9 @@ class DataTable extends BaseFormWidget
 
     public $searchableFields = [];
 
-    public $showRefreshButton = FALSE;
+    public $showRefreshButton = false;
 
-    public $useAjax = FALSE;
+    public $useAjax = false;
 
     //
     // Object properties
@@ -88,13 +88,14 @@ class DataTable extends BaseFormWidget
     public function getLoadValue()
     {
         $value = parent::getLoadValue();
-        if ($value instanceof Collection)
+        if ($value instanceof Collection) {
             return $value->toArray();
+        }
 
         // Sync the array keys as the ID to make the
         // table widget happy!
-        foreach ((array)$value as $key => $_value) {
-            $value[$key] = ['id' => $key] + (array)$_value;
+        foreach ((array) $value as $key => $_value) {
+            $value[$key] = ['id' => $key] + (array) $_value;
         }
 
         return $value;
@@ -119,7 +120,7 @@ class DataTable extends BaseFormWidget
     }
 
     /**
-     * @return \Admin\Widgets\Table   The table to be displayed.
+     * @return \Admin\Widgets\Table The table to be displayed.
      */
     public function getTable()
     {
@@ -127,7 +128,7 @@ class DataTable extends BaseFormWidget
     }
 
     /**
-     * Prepares the list data
+     * Prepares the list data.
      */
     public function prepareVars()
     {
@@ -163,23 +164,23 @@ class DataTable extends BaseFormWidget
      * to obtain values for autocomplete field types.
      *
      * @param string $field Table field name
-     * @param string $data Data for the entire table
+     * @param string $data  Data for the entire table
+     *
+     * @throws \Exception
      *
      * @return array
-     * @throws \Exception
      */
     public function getDataTableOptions($field, $data)
     {
         $methodName = 'get'.studly_case($this->fieldName).'DataTableOptions';
 
-        if (!$this->model->methodExists($methodName) AND !$this->model->methodExists('getDataTableOptions')) {
+        if (!$this->model->methodExists($methodName) and !$this->model->methodExists('getDataTableOptions')) {
             throw new Exception(sprintf(lang('admin::lang.alert_missing_method'), 'getDataTableOptions', get_class($this->model)));
         }
 
         if ($this->model->methodExists($methodName)) {
             $result = $this->model->$methodName($field, $data);
-        }
-        else {
+        } else {
             $result = $this->model->getDataTableOptions($this->fieldName, $field, $data);
         }
 
@@ -191,15 +192,16 @@ class DataTable extends BaseFormWidget
     }
 
     /**
-     * Populate data
+     * Populate data.
      */
     protected function populateTableWidget()
     {
         $dataSource = $this->table->getDataSource();
 
         $records = [];
-        if (!$this->useAjax)
+        if (!$this->useAjax) {
             $records = $this->getLoadValue() ?: [];
+        }
 
         $dataSource->purge();
         $dataSource->initRecords($records);

@@ -10,6 +10,7 @@ class AdminLocation extends Facade
      * Get the registered name of the component.
      *
      * @return string
+     *
      * @see \Admin\Classes\User
      */
     protected static function getFacadeAccessor()

@@ -14,32 +14,32 @@ class Mealtimes extends \Admin\Classes\AdminController
 
     public $listConfig = [
         'list' => [
-            'model' => 'Admin\Models\Mealtimes_model',
-            'title' => 'lang:admin::lang.mealtimes.text_title',
+            'model'        => 'Admin\Models\Mealtimes_model',
+            'title'        => 'lang:admin::lang.mealtimes.text_title',
             'emptyMessage' => 'lang:admin::lang.mealtimes.text_empty',
-            'defaultSort' => ['mealtime_id', 'DESC'],
-            'configFile' => 'mealtimes_model',
+            'defaultSort'  => ['mealtime_id', 'DESC'],
+            'configFile'   => 'mealtimes_model',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:admin::lang.mealtimes.text_form_name',
-        'model' => 'Admin\Models\Mealtimes_model',
+        'name'    => 'lang:admin::lang.mealtimes.text_form_name',
+        'model'   => 'Admin\Models\Mealtimes_model',
         'request' => 'Admin\Requests\Mealtime',
-        'create' => [
-            'title' => 'lang:admin::lang.form.create_title',
-            'redirect' => 'mealtimes/edit/{mealtime_id}',
+        'create'  => [
+            'title'         => 'lang:admin::lang.form.create_title',
+            'redirect'      => 'mealtimes/edit/{mealtime_id}',
             'redirectClose' => 'mealtimes',
-            'redirectNew' => 'mealtimes/create',
+            'redirectNew'   => 'mealtimes/create',
         ],
         'edit' => [
-            'title' => 'lang:admin::lang.form.edit_title',
-            'redirect' => 'mealtimes/edit/{mealtime_id}',
+            'title'         => 'lang:admin::lang.form.edit_title',
+            'redirect'      => 'mealtimes/edit/{mealtime_id}',
             'redirectClose' => 'mealtimes',
-            'redirectNew' => 'mealtimes/create',
+            'redirectNew'   => 'mealtimes/create',
         ],
         'preview' => [
-            'title' => 'lang:admin::lang.form.preview_title',
+            'title'    => 'lang:admin::lang.form.preview_title',
             'redirect' => 'mealtimes',
         ],
         'delete' => [

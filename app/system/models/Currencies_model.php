@@ -6,7 +6,7 @@ use Igniter\Flame\Currency\Models\Currency;
 use Igniter\Flame\Exception\ValidationException;
 
 /**
- * Currencies Model Class
+ * Currencies Model Class.
  */
 class Currencies_model extends Currency
 {
@@ -27,11 +27,11 @@ class Currencies_model extends Currency
     /**
      * @var array The model table column to convert to dates on insert/update
      */
-    public $timestamps = TRUE;
+    public $timestamps = true;
 
     protected $casts = [
-        'country_id' => 'integer',
-        'currency_rate' => 'float',
+        'country_id'      => 'integer',
+        'currency_rate'   => 'float',
         'symbol_position' => 'boolean',
         'currency_status' => 'boolean',
     ];
@@ -52,11 +52,11 @@ class Currencies_model extends Currency
     public function scopeListFrontEnd($query, $options = [])
     {
         extract(array_merge([
-            'page' => 1,
+            'page'      => 1,
             'pageLimit' => 20,
-            'enabled' => TRUE,
-            'sort' => 'currency_name asc',
-            'search' => '',
+            'enabled'   => true,
+            'sort'      => 'currency_name asc',
+            'search'    => '',
         ], $options));
 
         $searchableFields = ['currency_name', 'currency_code'];
@@ -97,7 +97,8 @@ class Currencies_model extends Currency
     {
         if (!$this->currency_status) {
             throw new ValidationException(['currency_status' => sprintf(
-                lang('admin::lang.alert_error_set_default'), $this->currency_name
+                lang('admin::lang.alert_error_set_default'),
+                $this->currency_name
             )]);
         }
 
@@ -107,6 +108,7 @@ class Currencies_model extends Currency
 
     /**
      * Returns the default currency defined.
+     *
      * @return self
      */
     public static function getDefault()
@@ -142,7 +144,7 @@ class Currencies_model extends Currency
     {
         return [
             'openexchangerates' => 'lang:system::lang.settings.text_openexchangerates',
-            'fixerio' => 'lang:system::lang.settings.text_fixerio',
+            'fixerio'           => 'lang:system::lang.settings.text_fixerio',
         ];
     }
 

@@ -1,11 +1,12 @@
 <?php
 /**
- * Assets helper functions
+ * Assets helper functions.
  */
 if (!function_exists('get_metas')) {
     /**
-     * Get metas html tags
-     * @return    string
+     * Get metas html tags.
+     *
+     * @return string
      */
     function get_metas()
     {
@@ -15,7 +16,7 @@ if (!function_exists('get_metas')) {
 
 if (!function_exists('set_meta')) {
     /**
-     * Set metas html tags
+     * Set metas html tags.
      *
      * @param array $meta
      */
@@ -27,8 +28,9 @@ if (!function_exists('set_meta')) {
 
 if (!function_exists('get_favicon')) {
     /**
-     * Get favicon html tag
-     * @return    string
+     * Get favicon html tag.
+     *
+     * @return string
      */
     function get_favicon()
     {
@@ -38,7 +40,7 @@ if (!function_exists('get_favicon')) {
 
 if (!function_exists('set_favicon')) {
     /**
-     * Set favicon html tag
+     * Set favicon html tag.
      *
      * @param string $href
      */
@@ -50,7 +52,7 @@ if (!function_exists('set_favicon')) {
 
 if (!function_exists('get_style_tags')) {
     /**
-     * Get multiple stylesheet html tags
+     * Get multiple stylesheet html tags.
      *
      * @param string|array $sortBy
      *
@@ -64,7 +66,7 @@ if (!function_exists('get_style_tags')) {
 
 if (!function_exists('set_style_tag')) {
     /**
-     * Set single stylesheet html tag
+     * Set single stylesheet html tag.
      *
      * @param string $href
      * @param string $name
@@ -77,7 +79,7 @@ if (!function_exists('set_style_tag')) {
 
 if (!function_exists('set_style_tags')) {
     /**
-     * Set multiple stylesheet html tags
+     * Set multiple stylesheet html tags.
      *
      * @param array $tags
      */
@@ -89,7 +91,7 @@ if (!function_exists('set_style_tags')) {
 
 if (!function_exists('get_script_tags')) {
     /**
-     * Get multiple scripts html tags
+     * Get multiple scripts html tags.
      *
      * @param string|array $sortBy
      *
@@ -103,7 +105,7 @@ if (!function_exists('get_script_tags')) {
 
 if (!function_exists('set_script_tag')) {
     /**
-     * Set single scripts html tags
+     * Set single scripts html tags.
      *
      * @param string $href
      * @param string $name
@@ -116,7 +118,7 @@ if (!function_exists('set_script_tag')) {
 
 if (!function_exists('set_script_tags')) {
     /**
-     * Set multiple scripts html tags
+     * Set multiple scripts html tags.
      *
      * @param array $tags
      */

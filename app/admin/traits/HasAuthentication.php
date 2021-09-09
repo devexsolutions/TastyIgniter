@@ -5,15 +5,15 @@ namespace Admin\Traits;
 use Admin\Facades\AdminAuth;
 
 /**
- * Has Authentication Trait Class
+ * Has Authentication Trait Class.
  */
 trait HasAuthentication
 {
     /**
      * @var bool If TRUE, this class requires the user to be logged in before
-     * accessing any method.
+     *           accessing any method.
      */
-    protected $requireAuthentication = TRUE;
+    protected $requireAuthentication = true;
 
     /**
      * @var \Admin\Models\Users_model Stores the logged in admin user model.

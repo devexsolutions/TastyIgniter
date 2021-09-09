@@ -6,7 +6,7 @@ use Igniter\Flame\Database\Model;
 use Igniter\Flame\Database\Traits\Sortable;
 
 /**
- * Countries Model Class
+ * Countries Model Class.
  */
 class Countries_model extends Model
 {
@@ -27,7 +27,7 @@ class Countries_model extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'status' => 'boolean',
+        'status'   => 'boolean',
         'priority' => 'integer',
     ];
 
@@ -47,7 +47,8 @@ class Countries_model extends Model
     //
 
     /**
-     * Scope a query to only include enabled country
+     * Scope a query to only include enabled country.
+     *
      * @return $this
      */
     public function scopeIsEnabled($query)

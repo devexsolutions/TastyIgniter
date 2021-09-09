@@ -45,36 +45,38 @@ class DropStaleUnusedColumns extends Migration
 
     protected function copyRecordsFromExtensionsToThemes()
     {
-        if (DB::table('themes')->count())
+        if (DB::table('themes')->count()) {
             return;
+        }
 
         DB::table('extensions')->where('type', 'theme')->get()->each(function ($model) {
             DB::table('themes')->insert([
-                'name' => $model->title,
-                'code' => $model->name,
-                'version' => $model->version,
-                'data' => $model->data,
-                'status' => $model->status,
-                'is_default' => FALSE,
+                'name'       => $model->title,
+                'code'       => $model->name,
+                'version'    => $model->version,
+                'data'       => $model->data,
+                'status'     => $model->status,
+                'is_default' => false,
             ]);
         });
     }
 
     protected function copyRecordsFromExtensionsToPayments()
     {
-        if (DB::table('payments')->count())
+        if (DB::table('payments')->count()) {
             return;
+        }
 
         DB::table('extensions')->where('type', 'payment')->get()->each(function ($model) {
             $code = str_replace(['-', '_'], '', $model->name);
             DB::table('payments')->insert([
-                'name' => $model->title,
-                'code' => $code,
-                'class_name' => 'Igniter\\PayRegister\\Payments\\'.studly_case($model->name),
-                'data' => $model->data,
-                'status' => $model->status,
-                'is_default' => FALSE,
-                'date_added' => Carbon::now(),
+                'name'         => $model->title,
+                'code'         => $code,
+                'class_name'   => 'Igniter\\PayRegister\\Payments\\'.studly_case($model->name),
+                'data'         => $model->data,
+                'status'       => $model->status,
+                'is_default'   => false,
+                'date_added'   => Carbon::now(),
                 'date_updated' => Carbon::now(),
             ]);
         });

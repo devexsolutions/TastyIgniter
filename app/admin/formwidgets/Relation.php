@@ -90,7 +90,7 @@ class Relation extends BaseFormWidget
 
     public function getSaveValue($value)
     {
-        if ($this->formField->disabled OR $this->formField->hidden) {
+        if ($this->formField->disabled or $this->formField->hidden) {
             return FormField::NO_SAVE_DATA;
         }
 
@@ -113,7 +113,7 @@ class Relation extends BaseFormWidget
     /**
      * Returns the final model and attribute name of
      * a nested HTML array attribute.
-     * Eg: list($model, $attribute) = $this->resolveModelAttribute($this->valueFrom);
+     * Eg: list($model, $attribute) = $this->resolveModelAttribute($this->valueFrom);.
      *
      * @param string $attribute .
      *
@@ -127,7 +127,7 @@ class Relation extends BaseFormWidget
     }
 
     /**
-     * Makes the form object used for rendering a simple field type
+     * Makes the form object used for rendering a simple field type.
      */
     protected function makeFormField()
     {
@@ -145,15 +145,13 @@ class Relation extends BaseFormWidget
             $field->type = 'selectlist';
             if (in_array($relationType, ['belongsToMany', 'morphToMany', 'morphedByMany', 'hasMany'])) {
                 $field->config['mode'] = 'checkbox';
-            }
-            elseif (in_array($relationType, ['belongsTo', 'hasOne'])) {
+            } elseif (in_array($relationType, ['belongsTo', 'hasOne'])) {
                 $field->config['mode'] = 'radio';
             }
 
             if ($this->order) {
                 $query->orderByRaw($this->order);
-            }
-            elseif (method_exists($this->relatedModel, 'scopeSorted')) {
+            } elseif (method_exists($this->relatedModel, 'scopeSorted')) {
                 $query->sorted();
             }
 
@@ -181,8 +179,7 @@ class Relation extends BaseFormWidget
                 $nameFrom = 'selection';
                 $selectColumn = $this->relatedModel->getKeyName();
                 $result = $query->select($selectColumn, DB::raw($this->sqlSelect.' AS '.$nameFrom));
-            }
-            else {
+            } else {
                 $nameFrom = $this->nameFrom;
                 $result = $query->getQuery()->get();
             }
@@ -195,8 +192,9 @@ class Relation extends BaseFormWidget
 
     protected function processFieldValue($value, $model)
     {
-        if ($value instanceof Collection)
+        if ($value instanceof Collection) {
             $value = $value->pluck($model->getKeyName())->toArray();
+        }
 
         return $value;
     }
@@ -204,15 +202,18 @@ class Relation extends BaseFormWidget
     /**
      * Returns the value as a relation object from the model,
      * supports nesting via HTML array.
-     * @return \Admin\FormWidgets\Relation
+     *
      * @throws \Exception
+     *
+     * @return \Admin\FormWidgets\Relation
      */
     protected function getRelationObject()
     {
         [$model, $attribute] = $this->resolveModelAttribute($this->valueFrom);
 
-        if (!$model OR !$model->hasRelation($attribute)) {
-            throw new Exception(sprintf(lang('admin::lang.alert_missing_model_definition'),
+        if (!$model or !$model->hasRelation($attribute)) {
+            throw new Exception(sprintf(
+                lang('admin::lang.alert_missing_model_definition'),
                 get_class($this->model),
                 $this->valueFrom
             ));

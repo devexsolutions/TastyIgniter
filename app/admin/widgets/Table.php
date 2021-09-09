@@ -20,7 +20,7 @@ class Table extends BaseWidget
     /**
      * @var bool Show data table header
      */
-    protected $showHeader = TRUE;
+    protected $showHeader = true;
 
     /**
      * @var \Admin\Widgets\Table\Source\DataSource
@@ -39,9 +39,9 @@ class Table extends BaseWidget
 
     protected $dataSourceAliases = 'Admin\Widgets\Table\Source\DataSource';
 
-    public $showPagination = TRUE;
+    public $showPagination = true;
 
-    public $useAjax = FALSE;
+    public $useAjax = false;
 
     public $pageLimit = 10;
 
@@ -67,11 +67,10 @@ class Table extends BaseWidget
 
         $this->dataSource = new $dataSourceClass($this->recordsKeyFrom);
 
-        if (Request::method() == 'post' AND $this->isClientDataSource()) {
-            if (strpos($this->fieldName, '[') === FALSE) {
+        if (Request::method() == 'post' and $this->isClientDataSource()) {
+            if (strpos($this->fieldName, '[') === false) {
                 $requestDataField = $this->fieldName.'TableData';
-            }
-            else {
+            } else {
                 $requestDataField = $this->fieldName.'[TableData]';
             }
 
@@ -85,6 +84,7 @@ class Table extends BaseWidget
 
     /**
      * Returns the data source object.
+     *
      * @return \Admin\Widgets\Table\Source\DataSource
      */
     public function getDataSource()
@@ -103,7 +103,7 @@ class Table extends BaseWidget
     }
 
     /**
-     * Prepares the view data
+     * Prepares the view data.
      */
     public function prepareVars()
     {
@@ -114,14 +114,15 @@ class Table extends BaseWidget
 
         $this->vars['showPagination'] = $this->getConfig('showPagination', $this->showPagination);
         $this->vars['pageLimit'] = $this->getConfig('pageLimit', $this->pageLimit);
-        $this->vars['toolbar'] = $this->getConfig('toolbar', TRUE);
+        $this->vars['toolbar'] = $this->getConfig('toolbar', true);
         $this->vars['height'] = $this->getConfig('height', 'undefined');
-        $this->vars['dynamicHeight'] = $this->getConfig('dynamicHeight', FALSE);
-        $this->vars['useAjax'] = $this->getConfig('useAjax', FALSE);
+        $this->vars['dynamicHeight'] = $this->getConfig('dynamicHeight', false);
+        $this->vars['useAjax'] = $this->getConfig('useAjax', false);
 
         $isClientDataSource = $this->isClientDataSource();
         $this->vars['clientDataSourceClass'] = $isClientDataSource ? 'client' : 'server';
-        $this->vars['data'] = json_encode($isClientDataSource
+        $this->vars['data'] = json_encode(
+            $isClientDataSource
             ? $this->processRecords($this->dataSource->getAllRecords()) : []
         );
     }
@@ -142,8 +143,9 @@ class Table extends BaseWidget
         foreach ($this->columns as $key => $data) {
             $data['field'] = $key;
 
-            if (isset($data['title']))
+            if (isset($data['title'])) {
                 $data['title'] = lang($data['title']);
+            }
 
             if (isset($data['partial'])) {
                 unset($data['partial']);
@@ -171,12 +173,12 @@ class Table extends BaseWidget
         $offset = Request::post('offset');
         $limit = Request::post('limit', $this->getConfig('pageLimit', $this->pageLimit));
 
-        $eventResults = $this->fireEvent('table.getRecords', [$offset, $limit, $search], TRUE);
+        $eventResults = $this->fireEvent('table.getRecords', [$offset, $limit, $search], true);
 
         $records = $eventResults->getCollection()->toArray();
 
         return [
-            'rows' => $this->processRecords($records),
+            'rows'  => $this->processRecords($records),
             'total' => $eventResults->total(),
         ];
     }
@@ -214,7 +216,7 @@ class Table extends BaseWidget
                 $record[$key] = $this->makePartial($column['partial'], [
                     'column' => $column,
                     'record' => $record,
-                    'item' => $record[$key],
+                    'item'   => $record[$key],
                 ]);
             }
         }

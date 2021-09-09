@@ -14,7 +14,8 @@ class LocationAwareController extends ControllerAction
      *      'applyScopeOnListQuery'  => true',
      *      'applyScopeOnFormQuery'  => true',
      *      'addAbsenceConstraint'  => false',
-     *  ];
+     *  ];.
+     *
      * @var array
      */
     public $locationConfig;
@@ -53,13 +54,15 @@ class LocationAwareController extends ControllerAction
 
     public function locationApplyScope($query)
     {
-        if (!in_array(\Admin\Traits\Locationable::class, class_uses($query->getModel())))
+        if (!in_array(\Admin\Traits\Locationable::class, class_uses($query->getModel()))) {
             return;
+        }
 
-        if (is_null($ids = AdminLocation::getIdOrAll()))
+        if (is_null($ids = AdminLocation::getIdOrAll())) {
             return;
+        }
 
-        (bool)$this->getConfig('addAbsenceConstraint', TRUE)
+        (bool) $this->getConfig('addAbsenceConstraint', true)
             ? $query->whereHasOrDoesntHaveLocation($ids)
             : $query->whereHasLocation($ids);
     }
@@ -68,21 +71,25 @@ class LocationAwareController extends ControllerAction
     {
         if ($this->controller->isClassExtendedWith('Admin\Actions\ListController')) {
             Event::listen('admin.list.extendQuery', function ($listWidget, $query) {
-                if ((bool)$this->getConfig('applyScopeOnListQuery', TRUE))
+                if ((bool) $this->getConfig('applyScopeOnListQuery', true)) {
                     $this->locationApplyScope($query);
+                }
             });
 
             Event::listen('admin.filter.extendQuery', function ($filterWidget, $query, $scope) {
-                if (array_get($scope->config, 'locationAware') === TRUE
-                    AND (bool)$this->getConfig('applyScopeOnListQuery', TRUE)
-                ) $this->locationApplyScope($query);
+                if (array_get($scope->config, 'locationAware') === true
+                    and (bool) $this->getConfig('applyScopeOnListQuery', true)
+                ) {
+                    $this->locationApplyScope($query);
+                }
             });
         }
 
         if ($this->controller->isClassExtendedWith('Admin\Actions\FormController')) {
             $this->controller->bindEvent('controller.form.extendQuery', function ($query) {
-                if ((bool)$this->getConfig('applyScopeOnFormQuery', TRUE))
+                if ((bool) $this->getConfig('applyScopeOnFormQuery', true)) {
                     $this->locationApplyScope($query);
+                }
             });
         }
     }

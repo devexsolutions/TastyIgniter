@@ -13,7 +13,7 @@ use Main\Classes\MainController;
 use System\Traits\SendsMailTemplate;
 
 /**
- * Reservations Model Class
+ * Reservations Model Class.
  */
 class Reservations_model extends Model
 {
@@ -40,7 +40,7 @@ class Reservations_model extends Model
     /**
      * @var array The model table column to convert to dates on insert/update
      */
-    public $timestamps = TRUE;
+    public $timestamps = true;
 
     /**
      * The storage format of the model's date columns.
@@ -54,22 +54,22 @@ class Reservations_model extends Model
     public $guarded = ['ip_address', 'user_agent', 'hash'];
 
     protected $casts = [
-        'location_id' => 'integer',
-        'table_id' => 'integer',
-        'guest_num' => 'integer',
-        'occasion_id' => 'integer',
-        'assignee_id' => 'integer',
+        'location_id'  => 'integer',
+        'table_id'     => 'integer',
+        'guest_num'    => 'integer',
+        'occasion_id'  => 'integer',
+        'assignee_id'  => 'integer',
         'reserve_time' => 'time',
         'reserve_date' => 'date',
-        'notify' => 'boolean',
-        'duration' => 'integer',
-        'processed' => 'boolean',
+        'notify'       => 'boolean',
+        'duration'     => 'integer',
+        'processed'    => 'boolean',
     ];
 
     public $relation = [
         'belongsTo' => [
             'related_table' => ['Admin\Models\Tables_model', 'foreignKey' => 'table_id'],
-            'location' => 'Admin\Models\Locations_model',
+            'location'      => 'Admin\Models\Locations_model',
         ],
         'belongsToMany' => [
             'tables' => ['Admin\Models\Tables_model', 'table' => 'reservation_tables'],
@@ -102,7 +102,7 @@ class Reservations_model extends Model
         $this->restorePurgedValues();
 
         if (array_key_exists('tables', $this->attributes)) {
-            $this->addReservationTables((array)$this->attributes['tables']);
+            $this->addReservationTables((array) $this->attributes['tables']);
         }
     }
 
@@ -113,12 +113,12 @@ class Reservations_model extends Model
     public function scopeListFrontEnd($query, $options = [])
     {
         extract(array_merge([
-            'page' => 1,
-            'pageLimit' => 20,
-            'sort' => 'address_id desc',
-            'customer' => null,
-            'location' => null,
-            'search' => '',
+            'page'           => 1,
+            'pageLimit'      => 20,
+            'sort'           => 'address_id desc',
+            'customer'       => null,
+            'location'       => null,
+            'search'         => '',
             'dateTimeFilter' => [],
         ], $options));
 
@@ -128,15 +128,13 @@ class Reservations_model extends Model
 
         if ($location instanceof Locations_model) {
             $query->where('location_id', $location->getKey());
-        }
-        elseif (strlen($location)) {
+        } elseif (strlen($location)) {
             $query->where('location_id', $location);
         }
 
         if ($customer instanceof Customers_model) {
             $query->where('customer_id', $customer->getKey());
-        }
-        elseif (strlen($customer)) {
+        } elseif (strlen($customer)) {
             $query->where('customer_id', $customer);
         }
 
@@ -160,7 +158,7 @@ class Reservations_model extends Model
             $query->search($search, $searchableFields);
         }
 
-        if ($startDateTime = array_get($dateTimeFilter, 'reservationDateTime.startAt', FALSE) AND $endDateTime = array_get($dateTimeFilter, 'reservationDateTime.endAt', FALSE)) {
+        if ($startDateTime = array_get($dateTimeFilter, 'reservationDateTime.startAt', false) and $endDateTime = array_get($dateTimeFilter, 'reservationDateTime.endAt', false)) {
             $query = $this->scopeWhereBetweenReservationDateTime($query, Carbon::parse($startDateTime)->format('Y-m-d H:i:s'), Carbon::parse($endDateTime)->format('Y-m-d H:i:s'));
         }
 
@@ -196,22 +194,26 @@ class Reservations_model extends Model
 
     public function getDurationAttribute($value)
     {
-        if (!is_null($value))
+        if (!is_null($value)) {
             return $value;
+        }
 
-        if (!$location = $this->location)
+        if (!$location = $this->location) {
             return $value;
+        }
 
         return $location->getOption('reservation_stay_time');
     }
 
     public function getReserveEndTimeAttribute($value)
     {
-        if (!$this->reservation_datetime)
+        if (!$this->reservation_datetime) {
             return null;
+        }
 
-        if ($this->duration)
+        if ($this->duration) {
             return $this->reservation_datetime->copy()->addMinutes($this->duration);
+        }
 
         return $this->reservation_datetime->copy()->endOfDay();
     }
@@ -219,8 +221,10 @@ class Reservations_model extends Model
     public function getReservationDatetimeAttribute($value)
     {
         if (!isset($this->attributes['reserve_date'])
-            AND !isset($this->attributes['reserve_time'])
-        ) return null;
+            and !isset($this->attributes['reserve_time'])
+        ) {
+            return null;
+        }
 
         return make_carbon($this->attributes['reserve_date'])
             ->setTimeFromTimeString($this->attributes['reserve_time']);
@@ -245,8 +249,9 @@ class Reservations_model extends Model
 
     public function setDurationAttribute($value)
     {
-        if (empty($value))
+        if (empty($value)) {
             $value = optional($this->location)->getOption('reservation_stay_time') ?? $value;
+        }
 
         $this->attributes['duration'] = $value;
     }
@@ -258,7 +263,8 @@ class Reservations_model extends Model
     public function isCompleted()
     {
         return $this->status_history()->where(
-            'status_id', setting('confirmed_reservation_status')
+            'status_id',
+            setting('confirmed_reservation_status')
         )->exists();
     }
 
@@ -283,8 +289,9 @@ class Reservations_model extends Model
             date('Y-m-d H:i:s', strtotime($endAt)),
         ]);
 
-        if (!is_null($locationId))
+        if (!is_null($locationId)) {
             $query->whereHasLocation($locationId);
+        }
 
         $collection = $query->get();
 
@@ -301,24 +308,24 @@ class Reservations_model extends Model
         $tables = $this->tables;
 
         return [
-            'id' => $this->getKey(),
-            'title' => $this->customer_name,
-            'start' => $this->reservation_datetime->toIso8601String(),
-            'end' => $this->reservation_end_datetime->toIso8601String(),
-            'allDay' => $this->isReservedAllDay(),
-            'color' => $status ? $status->status_color : null,
-            'location_name' => ($location = $this->location) ? $location->location_name : null,
-            'first_name' => $this->first_name,
-            'last_name' => $this->last_name,
-            'email' => $this->email,
-            'telephone' => $this->telephone,
-            'guest_num' => $this->guest_num,
-            'reserve_date' => $this->reserve_date->toDateString(),
-            'reserve_time' => $this->reserve_time,
+            'id'               => $this->getKey(),
+            'title'            => $this->customer_name,
+            'start'            => $this->reservation_datetime->toIso8601String(),
+            'end'              => $this->reservation_end_datetime->toIso8601String(),
+            'allDay'           => $this->isReservedAllDay(),
+            'color'            => $status ? $status->status_color : null,
+            'location_name'    => ($location = $this->location) ? $location->location_name : null,
+            'first_name'       => $this->first_name,
+            'last_name'        => $this->last_name,
+            'email'            => $this->email,
+            'telephone'        => $this->telephone,
+            'guest_num'        => $this->guest_num,
+            'reserve_date'     => $this->reserve_date->toDateString(),
+            'reserve_time'     => $this->reserve_time,
             'reserve_end_time' => $this->reserve_end_time->toTimeString(),
-            'duration' => $this->duration,
-            'status' => $status ? $status->toArray() : [],
-            'tables' => $tables ? $tables->toArray() : [],
+            'duration'         => $this->duration,
+            'status'           => $status ? $status->toArray() : [],
+            'tables'           => $tables ? $tables->toArray() : [],
         ];
     }
 
@@ -326,7 +333,7 @@ class Reservations_model extends Model
     {
         $diffInMinutes = $this->reservation_datetime->diffInMinutes($this->reservation_end_datetime);
 
-        return $diffInMinutes >= (60 * 23) OR $diffInMinutes == 0;
+        return $diffInMinutes >= (60 * 23) or $diffInMinutes == 0;
     }
 
     public function getOccasionOptions()
@@ -342,7 +349,7 @@ class Reservations_model extends Model
     }
 
     /**
-     * Return the dates of all reservations
+     * Return the dates of all reservations.
      *
      * @return array
      */
@@ -353,6 +360,7 @@ class Reservations_model extends Model
 
     /**
      * Generate a unique hash for this reservation.
+     *
      * @return string
      */
     protected function generateHash()
@@ -365,6 +373,7 @@ class Reservations_model extends Model
 
     /**
      * Create a hash for this reservation.
+     *
      * @return string
      */
     protected function createHash()
@@ -373,7 +382,7 @@ class Reservations_model extends Model
     }
 
     /**
-     * Create new or update existing reservation tables
+     * Create new or update existing reservation tables.
      *
      * @param array $tableIds if empty all existing records will be deleted
      *
@@ -381,8 +390,9 @@ class Reservations_model extends Model
      */
     public function addReservationTables(array $tableIds = [])
     {
-        if (!$this->exists)
-            return FALSE;
+        if (!$this->exists) {
+            return false;
+        }
 
         $this->tables()->sync($tableIds);
     }
@@ -394,7 +404,7 @@ class Reservations_model extends Model
     public function mailGetRecipients($type)
     {
         $emailSetting = setting('reservation_email', []);
-        is_array($emailSetting) OR $emailSetting = [];
+        is_array($emailSetting) or $emailSetting = [];
 
         $recipients = [];
         if (in_array($type, $emailSetting)) {
@@ -415,7 +425,7 @@ class Reservations_model extends Model
     }
 
     /**
-     * Return the order data to build mail template
+     * Return the order data to build mail template.
      *
      * @return array
      */
@@ -444,7 +454,7 @@ class Reservations_model extends Model
         $data['status_name'] = $statusHistory ? optional($statusHistory->status)->status_name : null;
         $data['status_comment'] = $statusHistory ? $statusHistory->comment : null;
 
-        $controller = MainController::getController() ?: new MainController;
+        $controller = MainController::getController() ?: new MainController();
         $data['reservation_view_url'] = $controller->pageUrl('account/reservations', [
             'reservationId' => $model->reservation_id,
         ]);

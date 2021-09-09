@@ -24,7 +24,7 @@ class ChainFileSource extends AbstractSource implements SourceInterface
     /**
      * @var bool Flag on whether the cache should respect refresh requests
      */
-    protected $allowCacheRefreshes = TRUE;
+    protected $allowCacheRefreshes = true;
 
     /**
      * @var string The key for the source to perform CRUD operations on
@@ -43,25 +43,27 @@ class ChainFileSource extends AbstractSource implements SourceInterface
 
         $this->populateCache();
 
-        $this->finder = new Finder;
-        $this->processor = new Processor;
+        $this->finder = new Finder();
+        $this->processor = new Processor();
     }
 
     /**
-     * Populate the local cache of paths available in each source
+     * Populate the local cache of paths available in each source.
      *
      * @param bool $refresh Default false, set to true to force the cache to be rebuilt
+     *
      * @return void
      */
-    protected function populateCache($refresh = FALSE)
+    protected function populateCache($refresh = false)
     {
         $pathCache = [];
         foreach ($this->sources as $source) {
             $cacheKey = $source->getPathsCacheKey();
 
             // Remove any existing cache data
-            if ($refresh AND $this->allowCacheRefreshes)
+            if ($refresh and $this->allowCacheRefreshes) {
                 Cache::forget($cacheKey);
+            }
 
             // Load the cache
             $pathCache[] = Cache::rememberForever($cacheKey, function () use ($source) {
@@ -73,7 +75,7 @@ class ChainFileSource extends AbstractSource implements SourceInterface
     }
 
     /**
-     * Get the source for use with CRUD operations
+     * Get the source for use with CRUD operations.
      *
      * @return SourceInterface
      */
@@ -83,9 +85,10 @@ class ChainFileSource extends AbstractSource implements SourceInterface
     }
 
     /**
-     * Get the appropriate source for the provided path
+     * Get the appropriate source for the provided path.
      *
      * @param string $path
+     *
      * @return \Igniter\Flame\Pagic\Source\SourceInterface
      */
     protected function getSourceForPath(string $path)
@@ -111,6 +114,7 @@ class ChainFileSource extends AbstractSource implements SourceInterface
      * @param string $dirName
      * @param string $fileName
      * @param string $extension
+     *
      * @return string
      */
     protected function makeFilePath(string $dirName, string $fileName, string $extension)
@@ -121,9 +125,9 @@ class ChainFileSource extends AbstractSource implements SourceInterface
     /**
      * Returns a single source.
      *
-     * @param  string $dirName
-     * @param  string $fileName
-     * @param  string $extension
+     * @param string $dirName
+     * @param string $fileName
+     * @param string $extension
      *
      * @return mixed
      */
@@ -133,8 +137,7 @@ class ChainFileSource extends AbstractSource implements SourceInterface
             $result = $this->getSourceForPath(
                 $this->makeFilePath($dirName, $fileName, $extension)
             )->select($dirName, $fileName, $extension);
-        }
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             $result = null;
         }
 
@@ -144,8 +147,8 @@ class ChainFileSource extends AbstractSource implements SourceInterface
     /**
      * Returns all sources.
      *
-     * @param  string $dirName
-     * @param  array $options
+     * @param string $dirName
+     * @param array  $options
      *
      * @return array
      */
@@ -166,10 +169,10 @@ class ChainFileSource extends AbstractSource implements SourceInterface
     /**
      * Creates a new source.
      *
-     * @param  string $dirName
-     * @param  string $fileName
-     * @param  string $extension
-     * @param  string $content
+     * @param string $dirName
+     * @param string $fileName
+     * @param string $extension
+     * @param string $content
      *
      * @return bool
      */
@@ -178,7 +181,7 @@ class ChainFileSource extends AbstractSource implements SourceInterface
         $result = $this->getActiveSource()->insert($dirName, $fileName, $extension, $content);
 
         // Refresh the cache
-        $this->populateCache(TRUE);
+        $this->populateCache(true);
 
         return $result;
     }
@@ -186,10 +189,10 @@ class ChainFileSource extends AbstractSource implements SourceInterface
     /**
      * Updates an existing source.
      *
-     * @param  string $dirName
-     * @param  string $fileName
-     * @param  string $extension
-     * @param  string $content
+     * @param string $dirName
+     * @param string $fileName
+     * @param string $extension
+     * @param string $content
      * @param string $oldFileName
      * @param string $oldExtension
      *
@@ -202,23 +205,22 @@ class ChainFileSource extends AbstractSource implements SourceInterface
 
         // Ensure that files that are being renamed have their old names marked as deleted prior to inserting the renamed file
         // Also ensure that the cache only gets updated at the end of this operation instead of twice, once here and again at the end
-        if ($searchFileName !== $fileName OR $searchExt !== $extension) {
-            $this->allowCacheRefreshes = FALSE;
+        if ($searchFileName !== $fileName or $searchExt !== $extension) {
+            $this->allowCacheRefreshes = false;
             $this->delete($dirName, $searchFileName, $searchExt);
-            $this->allowCacheRefreshes = TRUE;
+            $this->allowCacheRefreshes = true;
         }
 
         $source = $this->getActiveSource();
 
         if (!empty($source->select($dirName, $searchFileName, $searchExt))) {
             $result = $source->update($dirName, $fileName, $extension, $content, $oldFileName, $oldExtension);
-        }
-        else {
+        } else {
             $result = $source->insert($dirName, $fileName, $extension, $content);
         }
 
         // Refresh the cache
-        $this->populateCache(TRUE);
+        $this->populateCache(true);
 
         return $result;
     }
@@ -226,9 +228,9 @@ class ChainFileSource extends AbstractSource implements SourceInterface
     /**
      * Run a delete statement against the source.
      *
-     * @param  string $dirName
-     * @param  string $fileName
-     * @param  string $extension
+     * @param string $dirName
+     * @param string $fileName
+     * @param string $extension
      *
      * @return int
      */
@@ -238,15 +240,15 @@ class ChainFileSource extends AbstractSource implements SourceInterface
         $this->getActiveSource()->delete($dirName, $fileName, $extension);
 
         // Refresh the cache
-        $this->populateCache(TRUE);
+        $this->populateCache(true);
     }
 
     /**
-     * Return the last modified date of an object
+     * Return the last modified date of an object.
      *
-     * @param  string $dirName
-     * @param  string $fileName
-     * @param  string $extension
+     * @param string $dirName
+     * @param string $fileName
+     * @param string $extension
      *
      * @return int
      */
@@ -260,7 +262,7 @@ class ChainFileSource extends AbstractSource implements SourceInterface
     /**
      * Generate a cache key unique to this source.
      *
-     * @param  string $name
+     * @param string $name
      *
      * @return string
      */
@@ -276,7 +278,7 @@ class ChainFileSource extends AbstractSource implements SourceInterface
     }
 
     /**
-     * Generate a paths cache key unique to this source
+     * Generate a paths cache key unique to this source.
      *
      * @return string
      */
@@ -286,7 +288,7 @@ class ChainFileSource extends AbstractSource implements SourceInterface
     }
 
     /**
-     * Get all available paths within this source
+     * Get all available paths within this source.
      *
      * @return array $paths ['path/to/file1.md' => true (path can be handled and exists), 'path/to/file2.md' => false (path can be handled but doesn't exist)]
      */

@@ -9,8 +9,9 @@ class Allocator
 {
     public static function allocate()
     {
-        if (!$availableSlotCount = self::countAvailableSlot())
+        if (!$availableSlotCount = self::countAvailableSlot()) {
             return;
+        }
 
         $queue = Assignable_logs_model::getUnAssignedQueue($availableSlotCount);
 
@@ -21,17 +22,18 @@ class Allocator
 
     public static function isEnabled()
     {
-        return (bool)params('allocator_is_enabled', FALSE);
+        return (bool) params('allocator_is_enabled', false);
     }
 
     public static function addSlot($slot)
     {
-        $slots = (array)params('allocator_slots', []);
-        if (!is_array($slot))
+        $slots = (array) params('allocator_slots', []);
+        if (!is_array($slot)) {
             $slot = [$slot];
+        }
 
         foreach ($slot as $item) {
-            $slots[$item] = TRUE;
+            $slots[$item] = true;
         }
 
         params()->set('allocator_slots', $slots);
@@ -40,7 +42,7 @@ class Allocator
 
     public static function removeSlot($slot)
     {
-        $slots = (array)params('allocator_slots', []);
+        $slots = (array) params('allocator_slots', []);
 
         unset($slots[$slot]);
 
@@ -50,8 +52,8 @@ class Allocator
 
     protected static function countAvailableSlot()
     {
-        $slotMaxCount = (int)params('allocator_slot_size', 10);
-        $slotSize = count((array)params('allocator_slots', []));
+        $slotMaxCount = (int) params('allocator_slot_size', 10);
+        $slotSize = count((array) params('allocator_slots', []));
 
         return ($slotSize < $slotMaxCount)
             ? $slotMaxCount - $slotSize : 0;

@@ -29,7 +29,7 @@ class AssigneeUpdated implements ActivityInterface
     }
 
     /**
-     * @param \Admin\Models\Assignable_logs_model $assignableLog
+     * @param \Admin\Models\Assignable_logs_model  $assignableLog
      * @param \Igniter\Flame\Auth\Models\User|null $user
      */
     public static function log(Assignable_logs_model $assignableLog, User $user = null)
@@ -38,7 +38,9 @@ class AssigneeUpdated implements ActivityInterface
 
         $recipients = [];
         foreach ($assignableLog->assignable->listGroupAssignees() as $assignee) {
-            if ($user AND $assignee->getKey() === $user->staff->getKey()) continue;
+            if ($user and $assignee->getKey() === $user->staff->getKey()) {
+                continue;
+            }
             $recipients[] = $assignee->user;
         }
 
@@ -77,10 +79,10 @@ class AssigneeUpdated implements ActivityInterface
         $keyName = $this->type == self::ORDER_ASSIGNED_TYPE ? 'order_id' : 'reservation_id';
 
         return [
-            $keyName => $this->subject->getKey(),
-            'assignee_id' => $this->subject->assignee_id,
-            'assignee_name' => optional($this->subject->assignee)->staff_name,
-            'assignee_group_id' => $this->subject->assignee_group_id,
+            $keyName              => $this->subject->getKey(),
+            'assignee_id'         => $this->subject->assignee_id,
+            'assignee_name'       => optional($this->subject->assignee)->staff_name,
+            'assignee_group_id'   => $this->subject->assignee_group_id,
             'assignee_group_name' => optional($this->subject->assignee_group)->staff_group_name,
         ];
     }
@@ -101,8 +103,9 @@ class AssigneeUpdated implements ActivityInterface
     public static function getUrl(Activity $activity)
     {
         $url = $activity->type == self::ORDER_ASSIGNED_TYPE ? 'orders' : 'reservations';
-        if ($activity->subject)
+        if ($activity->subject) {
             $url .= '/edit/'.$activity->subject->getKey();
+        }
 
         return admin_url($url);
     }

@@ -5,7 +5,7 @@ namespace Admin\Models;
 use Igniter\Flame\Database\Model;
 
 /**
- * CustomerGroups Model Class
+ * CustomerGroups Model Class.
  */
 class Customer_groups_model extends Model
 {
@@ -61,7 +61,8 @@ class Customer_groups_model extends Model
     }
 
     /**
-     * Update the default group
+     * Update the default group.
+     *
      * @param $groupId
      */
     public static function updateDefault($groupId)
@@ -69,7 +70,7 @@ class Customer_groups_model extends Model
         if ($model = self::find($groupId)) {
             $model->makeDefault();
 
-            return TRUE;
+            return true;
         }
     }
 

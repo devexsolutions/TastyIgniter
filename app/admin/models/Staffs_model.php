@@ -8,7 +8,7 @@ use Igniter\Flame\Database\Model;
 use Igniter\Flame\Database\Traits\Purgeable;
 
 /**
- * Staffs Model Class
+ * Staffs Model Class.
  */
 class Staffs_model extends Model
 {
@@ -34,27 +34,27 @@ class Staffs_model extends Model
     /**
      * @var array The model table column to convert to dates on insert/update
      */
-    public $timestamps = TRUE;
+    public $timestamps = true;
 
     protected $guarded = [];
 
     protected $casts = [
-        'staff_role_id' => 'integer',
+        'staff_role_id'     => 'integer',
         'staff_location_id' => 'integer',
-        'sale_permission' => 'integer',
-        'language_id' => 'integer',
-        'staff_status' => 'boolean',
+        'sale_permission'   => 'integer',
+        'language_id'       => 'integer',
+        'staff_status'      => 'boolean',
     ];
 
     public $relation = [
         'hasOne' => [
-            'user' => ['Admin\Models\Users_model', 'foreignKey' => 'staff_id', 'otherKey' => 'staff_id', 'delete' => TRUE],
+            'user' => ['Admin\Models\Users_model', 'foreignKey' => 'staff_id', 'otherKey' => 'staff_id', 'delete' => true],
         ],
         'hasMany' => [
             'assignable_logs' => ['Admin\Models\Assignable_logs_model', 'foreignKey' => 'assignee_id'],
         ],
         'belongsTo' => [
-            'role' => ['Admin\Models\Staff_roles_model', 'foreignKey' => 'staff_role_id'],
+            'role'     => ['Admin\Models\Staff_roles_model', 'foreignKey' => 'staff_role_id'],
             'language' => ['System\Models\Languages_model'],
         ],
         'belongsToMany' => [
@@ -89,7 +89,8 @@ class Staffs_model extends Model
     //
 
     /**
-     * Scope a query to only include enabled staff
+     * Scope a query to only include enabled staff.
+     *
      * @return $this
      */
     public function scopeIsEnabled($query)
@@ -119,8 +120,9 @@ class Staffs_model extends Model
     {
         $this->restorePurgedValues();
 
-        if (array_key_exists('user', $this->attributes))
+        if (array_key_exists('user', $this->attributes)) {
             $this->addStaffUser($this->attributes['user']);
+        }
     }
 
     protected function beforeDelete()
@@ -134,7 +136,8 @@ class Staffs_model extends Model
     //
 
     /**
-     * Return the dates of all staff
+     * Return the dates of all staff.
+     *
      * @return array
      */
     public function getStaffDates()
@@ -149,16 +152,18 @@ class Staffs_model extends Model
         $userModel->username = array_get($user, 'username', $userModel->username);
         $userModel->super_user = array_get($user, 'super_user', $userModel->super_user);
 
-        if ($password = array_get($user, 'password'))
+        if ($password = array_get($user, 'password')) {
             $userModel->password = $password;
+        }
 
-        if (array_get($user, 'activate', TRUE)) {
-            $userModel->is_activated = TRUE;
+        if (array_get($user, 'activate', true)) {
+            $userModel->is_activated = true;
             $userModel->date_activated = date('Y-m-d');
         }
 
-        if ($sendInvite = array_get($user, 'send_invite', FALSE))
+        if ($sendInvite = array_get($user, 'send_invite', false)) {
             $userModel->send_invite = $sendInvite;
+        }
 
         $userModel->save();
 
@@ -168,7 +173,7 @@ class Staffs_model extends Model
     }
 
     /**
-     * Create a new or update existing staff locations
+     * Create a new or update existing staff locations.
      *
      * @param array $locations
      *
@@ -180,7 +185,7 @@ class Staffs_model extends Model
     }
 
     /**
-     * Create a new or update existing staff groups
+     * Create a new or update existing staff groups.
      *
      * @param array $groups
      *

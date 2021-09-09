@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Assignable logs Model Class
+ * Assignable logs Model Class.
  */
 class Assignable_logs_model extends Model
 {
@@ -24,13 +24,13 @@ class Assignable_logs_model extends Model
 
     protected $guarded = [];
 
-    public $timestamps = TRUE;
+    public $timestamps = true;
 
     public $relation = [
         'belongsTo' => [
-            'assignee' => 'Admin\Models\Staffs_model',
+            'assignee'       => 'Admin\Models\Staffs_model',
             'assignee_group' => 'Admin\Models\Staff_groups_model',
-            'status' => 'Admin\Models\Statuses_model',
+            'status'         => 'Admin\Models\Statuses_model',
         ],
         'morphTo' => [
             'assignable' => [],
@@ -38,24 +38,26 @@ class Assignable_logs_model extends Model
     ];
 
     protected $casts = [
-        'assignable_id' => 'integer',
+        'assignable_id'     => 'integer',
         'assignee_group_id' => 'integer',
-        'assignee_id' => 'integer',
-        'status_id' => 'integer',
+        'assignee_id'       => 'integer',
+        'status_id'         => 'integer',
     ];
 
     /**
      * @param \Igniter\Flame\Database\Model|mixed $assignable
-     * @return static|bool
+     *
      * @throws \Exception
+     *
+     * @return static|bool
      */
     public static function createLog($assignable)
     {
         $attributes = [
-            'assignable_type' => $assignable->getMorphClass(),
-            'assignable_id' => $assignable->getKey(),
+            'assignable_type'   => $assignable->getMorphClass(),
+            'assignable_id'     => $assignable->getKey(),
             'assignee_group_id' => $assignable->assignee_group_id,
-            'assignee_id' => null,
+            'assignee_id'       => null,
         ];
 
         self::query()->where($attributes)->delete();
@@ -77,6 +79,7 @@ class Assignable_logs_model extends Model
 
     /**
      * @param $limit
+     *
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function getUnAssignedQueue($limit)
@@ -100,7 +103,8 @@ class Assignable_logs_model extends Model
 
     /**
      * @param \Igniter\Flame\Database\Query\Builder $query
-     * @param \Igniter\Flame\Database\Model $assignable
+     * @param \Igniter\Flame\Database\Model         $assignable
+     *
      * @return mixed
      */
     public function scopeApplyAssignable($query, $assignable)
@@ -112,6 +116,7 @@ class Assignable_logs_model extends Model
 
     /**
      * @param \Igniter\Flame\Database\Query\Builder $query
+     *
      * @return mixed
      */
     public function scopeApplyRoundRobinScope($query)
@@ -128,6 +133,7 @@ class Assignable_logs_model extends Model
     /**
      * @param \Igniter\Flame\Database\Query\Builder $query
      * @param $limit
+     *
      * @return mixed
      */
     public function scopeApplyLoadBalancedScope($query, $limit)
@@ -144,6 +150,7 @@ class Assignable_logs_model extends Model
 
     /**
      * @param \Igniter\Flame\Database\Query\Builder $query
+     *
      * @return mixed
      */
     public function scopeWhereUnAssigned($query)
@@ -154,6 +161,7 @@ class Assignable_logs_model extends Model
     /**
      * @param \Igniter\Flame\Database\Query\Builder $query
      * @param $assigneeId
+     *
      * @return mixed
      */
     public function scopeWhereAssignTo($query, $assigneeId)
@@ -164,6 +172,7 @@ class Assignable_logs_model extends Model
     /**
      * @param \Igniter\Flame\Database\Query\Builder $query
      * @param $assigneeGroupId
+     *
      * @return mixed
      */
     public function scopeWhereAssignToGroup($query, $assigneeGroupId)
@@ -173,7 +182,8 @@ class Assignable_logs_model extends Model
 
     /**
      * @param \Igniter\Flame\Database\Query\Builder $query
-     * @param array $assigneeGroupIds
+     * @param array                                 $assigneeGroupIds
+     *
      * @return mixed
      */
     public function scopeWhereInAssignToGroup($query, array $assigneeGroupIds)
@@ -183,6 +193,7 @@ class Assignable_logs_model extends Model
 
     /**
      * @param \Igniter\Flame\Database\Query\Builder $query
+     *
      * @return mixed
      */
     public function scopeWhereHasAutoAssignGroup($query)

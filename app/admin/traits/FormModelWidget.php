@@ -8,7 +8,7 @@ use Igniter\Flame\Exception\ApplicationException;
 use Illuminate\Support\Facades\Lang;
 
 /**
- * Form Model Widget Trait
+ * Form Model Widget Trait.
  *
  * Special logic for for form widgets that use a database stored model.
  */
@@ -24,13 +24,15 @@ trait FormModelWidget
 
         $class = $this->modelClass;
 
-        return new $class;
+        return new $class();
     }
 
     /**
      * @param $recordId
-     * @return \Igniter\Flame\Database\Model
+     *
      * @throws \Igniter\Flame\Exception\ApplicationException
+     *
+     * @return \Igniter\Flame\Database\Model
      */
     public function findFormModel($recordId)
     {
@@ -45,8 +47,9 @@ trait FormModelWidget
         $query = $model->newQuery();
         $result = $query->find($recordId);
 
-        if (!$result)
+        if (!$result) {
             throw new Exception(sprintf(lang('admin::lang.form.record_not_found_in_model'), $recordId, get_class($model)));
+        }
 
         return $result;
     }
@@ -54,7 +57,7 @@ trait FormModelWidget
     /**
      * Returns the final model and attribute name of
      * a nested HTML array attribute.
-     * Eg: list($model, $attribute) = $this->resolveModelAttribute($this->valueFrom);
+     * Eg: list($model, $attribute) = $this->resolveModelAttribute($this->valueFrom);.
      *
      * @param string $attribute .
      *
@@ -64,10 +67,9 @@ trait FormModelWidget
     {
         try {
             return $this->formField->resolveModelAttribute($this->model, $attribute);
-        }
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             throw new ApplicationException(Lang::get('backend::lang.model.missing_relation', [
-                'class' => get_class($this->model),
+                'class'    => get_class($this->model),
                 'relation' => $attribute,
             ]));
         }
@@ -75,15 +77,18 @@ trait FormModelWidget
 
     /**
      * Returns the model of a relation type.
-     * @return \Admin\FormWidgets\Relation
+     *
      * @throws \Exception
+     *
+     * @return \Admin\FormWidgets\Relation
      */
     protected function getRelationModel()
     {
         [$model, $attribute] = $this->resolveModelAttribute($this->valueFrom);
 
-        if (!$model OR !$model->hasRelation($attribute)) {
-            throw new ApplicationException(sprintf(lang('admin::lang.alert_missing_model_definition'),
+        if (!$model or !$model->hasRelation($attribute)) {
+            throw new ApplicationException(sprintf(
+                lang('admin::lang.alert_missing_model_definition'),
                 get_class($this->model),
                 $this->valueFrom
             ));
@@ -96,8 +101,9 @@ trait FormModelWidget
     {
         [$model, $attribute] = $this->resolveModelAttribute($this->valueFrom);
 
-        if (!$model OR !$model->hasRelation($attribute)) {
-            throw new ApplicationException(sprintf(lang('admin::lang.alert_missing_model_definition'),
+        if (!$model or !$model->hasRelation($attribute)) {
+            throw new ApplicationException(sprintf(
+                lang('admin::lang.alert_missing_model_definition'),
                 get_class($this->model),
                 $this->valueFrom
             ));
@@ -124,15 +130,14 @@ trait FormModelWidget
     /**
      * Sets a data collection to a model attributes, relations will also be set.
      *
-     * @param \Igniter\Flame\Database\Model $model Model to save to
-     *
-     * @param array $saveData Data to save.
+     * @param \Igniter\Flame\Database\Model $model    Model to save to
+     * @param array                         $saveData Data to save.
      *
      * @return void
      */
     protected function setModelAttributes($model, $saveData)
     {
-        if (!is_array($saveData) OR !$model) {
+        if (!is_array($saveData) or !$model) {
             return;
         }
 
@@ -140,17 +145,17 @@ trait FormModelWidget
 
         $singularTypes = ['belongsTo', 'hasOne', 'morphTo', 'morphOne'];
         foreach ($saveData as $attribute => $value) {
-            $isNested = ($attribute == 'pivot' OR (
-                    $model->hasRelation($attribute) AND
+            $isNested = ($attribute == 'pivot' or (
+                    $model->hasRelation($attribute) and
                     in_array($model->getRelationType($attribute), $singularTypes)
                 ));
 
-            if ($isNested AND is_array($value)) {
+            if ($isNested and is_array($value)) {
                 $this->setModelAttributes($model->{$attribute}, $value);
-            }
-            elseif ($value !== FormField::NO_SAVE_DATA) {
-                if (!starts_with($attribute, '_'))
+            } elseif ($value !== FormField::NO_SAVE_DATA) {
+                if (!starts_with($attribute, '_')) {
                     $model->{$attribute} = $value;
+                }
             }
         }
     }

@@ -13,7 +13,7 @@ use System\Traits\ViewMaker;
 
 /**
  * Base Widget Class
- * Adapted from october\backend\classes\WidgetBase
+ * Adapted from october\backend\classes\WidgetBase.
  */
 class BaseWidget extends Extendable
 {
@@ -46,10 +46,10 @@ class BaseWidget extends Extendable
     protected $defaultAlias = 'widget';
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param \Illuminate\Routing\Controller $controller
-     * @param array $config
+     * @param array                          $config
      */
     public function __construct($controller, $config = [])
     {
@@ -71,11 +71,13 @@ class BaseWidget extends Extendable
         $this->configPath = $controller->configPath;
 
         // Set config values, if a parent constructor hasn't set already.
-        if ($this->config === null)
+        if ($this->config === null) {
             $this->setConfig($config);
+        }
 
-        if (is_null($this->alias))
+        if (is_null($this->alias)) {
             $this->alias = $this->config['alias'] ?? $this->defaultAlias;
+        }
 
         $this->loadAssets();
 
@@ -86,6 +88,7 @@ class BaseWidget extends Extendable
 
     /**
      * Initialize the widget called by the constructor.
+     *
      * @return void
      */
     public function initialize()
@@ -94,6 +97,7 @@ class BaseWidget extends Extendable
 
     /**
      * Renders the widgets primary contents.
+     *
      * @return string HTML markup supplied by this widget.
      */
     public function render()
@@ -102,6 +106,7 @@ class BaseWidget extends Extendable
 
     /**
      * Binds a widget to the controller for safe use.
+     *
      * @return void
      */
     public function bindToController()
@@ -120,7 +125,7 @@ class BaseWidget extends Extendable
     protected function fillFromConfig($properties = null)
     {
         if ($properties === null) {
-            $properties = array_keys((array)$this->config);
+            $properties = array_keys((array) $this->config);
         }
 
         foreach ($properties as $property) {
@@ -173,7 +178,7 @@ class BaseWidget extends Extendable
     }
 
     /**
-     * Sets the widget configuration values
+     * Sets the widget configuration values.
      *
      * @param array $config
      * @param array $required Required config items
@@ -186,15 +191,16 @@ class BaseWidget extends Extendable
     /**
      * Get the widget configuration values.
      *
-     * @param string $name Config name, supports array names like "field[key]"
-     * @param mixed $default Default value if nothing is found
+     * @param string $name    Config name, supports array names like "field[key]"
+     * @param mixed  $default Default value if nothing is found
      *
      * @return mixed
      */
     public function getConfig($name = null, $default = null)
     {
-        if (is_null($name))
+        if (is_null($name)) {
             return $this->config;
+        }
 
         $nameArray = name_to_array($name);
 
@@ -202,8 +208,9 @@ class BaseWidget extends Extendable
         $result = isset($this->config[$fieldName]) ? $this->config[$fieldName] : $default;
 
         foreach ($nameArray as $key) {
-            if (!is_array($result) OR !array_key_exists($key, $result))
+            if (!is_array($result) or !array_key_exists($key, $result)) {
                 return $default;
+            }
 
             $result = $result[$key];
         }
@@ -213,7 +220,8 @@ class BaseWidget extends Extendable
 
     /**
      * Adds widget specific asset files.
-     * use $this->addCss or $this->addJs
+     * use $this->addCss or $this->addJs.
+     *
      * @return void
      */
     public function loadAssets()
@@ -222,6 +230,7 @@ class BaseWidget extends Extendable
 
     /**
      * Returns a unique session identifier for this widget and controller action.
+     *
      * @return string
      */
     protected function makeSessionKey()

@@ -34,8 +34,9 @@ class ExtensionInstall extends Command
         ]]);
 
         $extensionDetails = array_first(array_get($response, 'data'));
-        if (!$extensionDetails)
+        if (!$extensionDetails) {
             return $this->output->writeln(sprintf('<info>Extension %s not found</info>', $extensionName));
+        }
 
         $code = array_get($extensionDetails, 'code');
         $hash = array_get($extensionDetails, 'hash');
@@ -45,7 +46,7 @@ class ExtensionInstall extends Command
         $manager->downloadFile($code, $hash, [
             'name' => $code,
             'type' => 'extension',
-            'ver' => $version,
+            'ver'  => $version,
         ]);
 
         $this->output->writeln(sprintf('<info>Extracting extension %s files</info>', $code));
@@ -58,6 +59,7 @@ class ExtensionInstall extends Command
 
     /**
      * Get the console command arguments.
+     *
      * @return array
      */
     protected function getArguments()

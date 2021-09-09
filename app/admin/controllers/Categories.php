@@ -16,32 +16,32 @@ class Categories extends AdminController
 
     public $listConfig = [
         'list' => [
-            'model' => 'Admin\Models\Categories_model',
-            'title' => 'lang:admin::lang.categories.text_title',
+            'model'        => 'Admin\Models\Categories_model',
+            'title'        => 'lang:admin::lang.categories.text_title',
             'emptyMessage' => 'lang:admin::lang.categories.text_empty',
-            'defaultSort' => ['category_id', 'DESC'],
-            'configFile' => 'categories_model',
+            'defaultSort'  => ['category_id', 'DESC'],
+            'configFile'   => 'categories_model',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:admin::lang.categories.text_form_name',
-        'model' => 'Admin\Models\Categories_model',
+        'name'    => 'lang:admin::lang.categories.text_form_name',
+        'model'   => 'Admin\Models\Categories_model',
         'request' => 'Admin\Requests\Category',
-        'create' => [
-            'title' => 'lang:admin::lang.form.create_title',
-            'redirect' => 'categories/edit/{category_id}',
+        'create'  => [
+            'title'         => 'lang:admin::lang.form.create_title',
+            'redirect'      => 'categories/edit/{category_id}',
             'redirectClose' => 'categories',
-            'redirectNew' => 'categories/create',
+            'redirectNew'   => 'categories/create',
         ],
         'edit' => [
-            'title' => 'lang:admin::lang.form.edit_title',
-            'redirect' => 'categories/edit/{category_id}',
+            'title'         => 'lang:admin::lang.form.edit_title',
+            'redirect'      => 'categories/edit/{category_id}',
             'redirectClose' => 'categories',
-            'redirectNew' => 'categories/create',
+            'redirectNew'   => 'categories/create',
         ],
         'preview' => [
-            'title' => 'lang:admin::lang.form.preview_title',
+            'title'    => 'lang:admin::lang.form.preview_title',
             'redirect' => 'categories',
         ],
         'delete' => [
@@ -61,10 +61,12 @@ class Categories extends AdminController
 
     public function formBeforeSave($model)
     {
-        if (!$model->getRgt() OR !$model->getLft())
+        if (!$model->getRgt() or !$model->getLft()) {
             $model->fixTree();
+        }
 
-        if (Categories_model::isBroken())
+        if (Categories_model::isBroken()) {
             Categories_model::fixTree();
+        }
     }
 }

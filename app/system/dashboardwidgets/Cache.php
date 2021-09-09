@@ -16,7 +16,7 @@ class Cache extends BaseDashboardWidget
 
     protected static $caches = [
         [
-            'path' => 'framework/views',
+            'path'  => 'framework/views',
             'color' => '#2980b9',
         ],
         [
@@ -56,10 +56,9 @@ class Cache extends BaseDashboardWidget
         $totalCacheSize = 0;
         $cacheSizes = [];
         foreach (self::$caches as $cacheInfo) {
-
             $size = $this->folderSize(storage_path().'/'.$cacheInfo['path']);
 
-            $cacheSizes[] = (object)[
+            $cacheSizes[] = (object) [
                 'label'         => $cacheInfo['path'],
                 'color'         => $cacheInfo['color'],
                 'size'          => $size,
@@ -77,10 +76,10 @@ class Cache extends BaseDashboardWidget
     public function onClearCache()
     {
         \Artisan::call('cache:clear');
+
         try {
             \Artisan::call('view:clear');
-        }
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             // ...
         }
 

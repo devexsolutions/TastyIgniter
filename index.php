@@ -1,9 +1,8 @@
 <?php
 
 /**
- * TastyIgniter - An online ordering and restaurant management system
+ * TastyIgniter - An online ordering and restaurant management system.
  *
- * @package  TastyIgniter
  * @author   Samuel Adepoyigi
  */
 

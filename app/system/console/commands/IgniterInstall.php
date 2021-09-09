@@ -51,7 +51,7 @@ class IgniterInstall extends Command
     {
         parent::__construct();
 
-        $this->configRewrite = new ConfigRewrite;
+        $this->configRewrite = new ConfigRewrite();
     }
 
     /**
@@ -62,8 +62,8 @@ class IgniterInstall extends Command
         $this->alert('INSTALLATION');
 
         if (
-            App::hasDatabase() AND
-            !$this->confirm('Application appears to be installed already. Continue anyway?', FALSE)
+            App::hasDatabase() and
+            !$this->confirm('Application appears to be installed already. Continue anyway?', false)
         ) {
             return;
         }
@@ -110,7 +110,9 @@ class IgniterInstall extends Command
         foreach ($this->dbConfig as $key => $value) {
             Config::set("database.connections.$name.".strtolower($key), $value);
 
-            if ($key === 'password') $value = '"'.$value.'"';
+            if ($key === 'password') {
+                $value = '"'.$value.'"';
+            }
             $this->replaceInEnv('DB_'.strtoupper($key).'=', 'DB_'.strtoupper($key).'='.$value);
         }
     }
@@ -132,11 +134,11 @@ class IgniterInstall extends Command
     {
         $name = Config::get('database.default');
         $this->dbConfig['host'] = $this->ask('MySQL Host', Config::get("database.connections.$name.host"));
-        $this->dbConfig['port'] = $this->ask('MySQL Port', Config::get("database.connections.$name.port") ?: FALSE) ?: '';
+        $this->dbConfig['port'] = $this->ask('MySQL Port', Config::get("database.connections.$name.port") ?: false) ?: '';
         $this->dbConfig['database'] = $this->ask('MySQL Database', Config::get("database.connections.$name.database"));
         $this->dbConfig['username'] = $this->ask('MySQL Username', Config::get("database.connections.$name.username"));
-        $this->dbConfig['password'] = $this->ask('MySQL Password', Config::get("database.connections.$name.password") ?: FALSE) ?: '';
-        $this->dbConfig['prefix'] = $this->ask('MySQL Table Prefix', Config::get("database.connections.$name.prefix") ?: FALSE) ?: '';
+        $this->dbConfig['password'] = $this->ask('MySQL Password', Config::get("database.connections.$name.password") ?: false) ?: '';
+        $this->dbConfig['prefix'] = $this->ask('MySQL Table Prefix', Config::get("database.connections.$name.prefix") ?: false) ?: '';
 
         DatabaseSeeder::$siteName = $this->ask('Site Name', DatabaseSeeder::$siteName);
         DatabaseSeeder::$siteUrl = $this->ask('Site URL', Config::get('app.url'));
@@ -151,7 +153,7 @@ class IgniterInstall extends Command
     {
         $username = $this->ask('Admin Username', 'admin');
         $password = $this->output->ask('Admin Password', '123456', function ($answer) {
-            if (!is_string($answer) OR strlen($answer) < 6) {
+            if (!is_string($answer) or strlen($answer) < 6) {
                 throw new \RuntimeException('Please specify the administrator password, at least 6 characters');
             }
 
@@ -162,7 +164,7 @@ class IgniterInstall extends Command
         $staff->staff_name = DatabaseSeeder::$staffName;
         $staff->staff_role_id = Staff_roles_model::first()->staff_role_id;
         $staff->language_id = Languages_model::first()->language_id;
-        $staff->staff_status = TRUE;
+        $staff->staff_status = true;
         $staff->save();
 
         $staff->groups()->attach(Staff_groups_model::first()->staff_group_id);
@@ -171,8 +173,8 @@ class IgniterInstall extends Command
         $user = Users_model::firstOrNew(['username' => $username]);
         $user->staff_id = $staff->staff_id;
         $user->password = $password;
-        $user->super_user = TRUE;
-        $user->is_activated = TRUE;
+        $user->super_user = true;
+        $user->is_activated = true;
         $user->date_activated = Carbon::now();
         $user->save();
 
@@ -184,7 +186,7 @@ class IgniterInstall extends Command
         params()->flushCache();
 
         params()->set([
-            'ti_setup' => 'installed',
+            'ti_setup'            => 'installed',
             'default_location_id' => Locations_model::first()->location_id,
         ]);
 
@@ -240,8 +242,9 @@ class IgniterInstall extends Command
     {
         // /$old.$name => /$new.$name
         if (file_exists(base_path().'/'.$old.'.'.$name)) {
-            if (file_exists(base_path().'/'.$new.'.'.$name))
+            if (file_exists(base_path().'/'.$new.'.'.$name)) {
                 unlink(base_path().'/'.$new.'.'.$name);
+            }
 
             copy(base_path().'/'.$old.'.'.$name, base_path().'/'.$new.'.'.$name);
         }

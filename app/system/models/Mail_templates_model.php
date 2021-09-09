@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\View;
 use System\Classes\MailManager;
 
 /**
- * Mail templates Model Class
+ * Mail templates Model Class.
  */
 class Mail_templates_model extends Model
 {
@@ -41,7 +41,7 @@ class Mail_templates_model extends Model
     /**
      * @var array The model table column to convert to dates on insert/update
      */
-    public $timestamps = TRUE;
+    public $timestamps = true;
 
     public static function getVariableOptions()
     {
@@ -92,6 +92,7 @@ class Mail_templates_model extends Model
 
     /**
      * Synchronise all templates to the database.
+     *
      * @return void
      */
     public static function syncAll()
@@ -99,17 +100,19 @@ class Mail_templates_model extends Model
         Mail_layouts_model::createLayouts();
         Mail_partials_model::createPartials();
 
-        $templates = (array)MailManager::instance()->listRegisteredTemplates();
+        $templates = (array) MailManager::instance()->listRegisteredTemplates();
         $dbTemplates = self::lists('is_custom', 'code')->all();
         $newTemplates = array_diff_key($templates, $dbTemplates);
 
         // Clean up non-customized templates
         foreach ($dbTemplates as $code => $is_custom) {
-            if ($is_custom)
+            if ($is_custom) {
                 continue;
+            }
 
-            if (!array_key_exists($code, $templates))
+            if (!array_key_exists($code, $templates)) {
                 self::whereCode($code)->delete();
+            }
         }
 
         // Create new templates
@@ -129,7 +132,7 @@ class Mail_templates_model extends Model
     public static function findOrMakeTemplate($code)
     {
         if (!$template = self::whereCode($code)->first()) {
-            $template = new self;
+            $template = new self();
             $template->code = $code;
             $template->fillFromView();
         }
@@ -139,8 +142,8 @@ class Mail_templates_model extends Model
 
     public static function listAllTemplates()
     {
-        $registeredTemplates = (array)MailManager::instance()->listRegisteredTemplates();
-        $dbTemplates = (array)self::lists('code', 'code');
+        $registeredTemplates = (array) MailManager::instance()->listRegisteredTemplates();
+        $dbTemplates = (array) self::lists('code', 'code');
         $templates = $registeredTemplates + $dbTemplates;
         ksort($templates);
 
@@ -158,6 +161,7 @@ class Mail_templates_model extends Model
 
     /**
      * @param callable $callback A callable function.
+     *
      * @deprecated see System\Classes\MailManager::registerCallback
      */
     public static function registerCallback(callable $callback)

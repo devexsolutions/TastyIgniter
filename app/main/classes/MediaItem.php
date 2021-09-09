@@ -48,14 +48,14 @@ class MediaItem
 
     /**
      * @var array Contains a default list of image files and directories to ignore.
-     * Override with config: cms.storage.media.imageExtensions
+     *            Override with config: cms.storage.media.imageExtensions
      */
     protected static $imageExtensions;
 
     /**
      * @param string $path
-     * @param int $size
-     * @param int $lastModified
+     * @param int    $size
+     * @param int    $lastModified
      * @param string $type
      * @param string $publicUrl
      */
@@ -101,6 +101,7 @@ class MediaItem
 
     /**
      * Returns the item size as string.
+     *
      * @return string Returns the size as string.
      */
     public function sizeToString()
@@ -112,6 +113,7 @@ class MediaItem
 
     /**
      * Returns the item last modification date as string.
+     *
      * @return string Returns the item's last modification date as string.
      */
     public function lastModifiedAsString()

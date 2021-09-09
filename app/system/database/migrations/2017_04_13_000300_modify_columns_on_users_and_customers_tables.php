@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Schema;
  * Update password fields on users and customers tables
  * Add new columns (reset_code, reset_time, activation_code,
  * remember_token, is_activated, date_activated, last_login)  to both tables
- * Add super_user column to users table
+ * Add super_user column to users table.
  */
 class ModifyColumnsOnUsersAndCustomersTables extends Migration
 {

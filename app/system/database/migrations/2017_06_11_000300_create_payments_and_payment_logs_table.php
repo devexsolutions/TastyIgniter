@@ -7,7 +7,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Create payments and payment_logs table and fill with records from extension data
+ * Create payments and payment_logs table and fill with records from extension data.
  */
 class CreatePaymentsAndPaymentLogsTable extends Migration
 {
@@ -15,7 +15,7 @@ class CreatePaymentsAndPaymentLogsTable extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->integer('payment_id', TRUE);
+            $table->integer('payment_id', true);
             $table->string('name');
             $table->string('code', 128)->unique();
             $table->text('class_name');
@@ -30,7 +30,7 @@ class CreatePaymentsAndPaymentLogsTable extends Migration
 
         Schema::create('payment_logs', function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->integer('payment_log_id', TRUE);
+            $table->integer('payment_log_id', true);
             $table->integer('order_id');
             $table->string('payment_name', 128);
             $table->string('message');

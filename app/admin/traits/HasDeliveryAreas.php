@@ -35,8 +35,9 @@ trait HasDeliveryAreas
 
     protected function geocodeAddressOnSave()
     {
-        if (!array_get($this->options, 'auto_lat_lng', TRUE))
+        if (!array_get($this->options, 'auto_lat_lng', true)) {
             return;
+        }
 
         if (!$this->isDirty([
             'location_address_1',
@@ -45,12 +46,14 @@ trait HasDeliveryAreas
             'location_state',
             'location_postcode',
             'location_country_id',
-        ])) return;
+        ])) {
+            return;
+        }
 
-        $address = format_address($this->getAddress(), FALSE);
+        $address = format_address($this->getAddress(), false);
 
         $geoLocation = Geocoder::geocode($address)->first();
-        if ($geoLocation AND $geoLocation->hasCoordinates()) {
+        if ($geoLocation and $geoLocation->hasCoordinates()) {
             $this->location_lat = $geoLocation->getCoordinates()->getLatitude();
             $this->location_lng = $geoLocation->getCoordinates()->getLongitude();
         }
@@ -73,36 +76,42 @@ trait HasDeliveryAreas
 
     /**
      * @param \Igniter\Flame\Geolite\Contracts\CoordinatesInterface $coordinates
+     *
      * @return \Igniter\Flame\Location\Contracts\AreaInterface|null
      */
     public function searchOrDefaultDeliveryArea($coordinates)
     {
-        if ($area = $this->searchDeliveryArea($coordinates))
+        if ($area = $this->searchDeliveryArea($coordinates)) {
             return $area;
+        }
 
         return $this->delivery_areas->where('is_default', 1)->first();
     }
 
     /**
      * @param \Igniter\Flame\Geolite\Contracts\CoordinatesInterface $coordinates
+     *
      * @return \Igniter\Flame\Location\Contracts\AreaInterface|null
      */
     public function searchOrFirstDeliveryArea($coordinates)
     {
-        if (!$area = $this->searchDeliveryArea($coordinates))
+        if (!$area = $this->searchDeliveryArea($coordinates)) {
             $area = $this->delivery_areas->first();
+        }
 
         return $area;
     }
 
     /**
      * @param \Igniter\Flame\Geolite\Contracts\CoordinatesInterface $coordinates
+     *
      * @return \Igniter\Flame\Location\Contracts\AreaInterface|null
      */
     public function searchDeliveryArea($coordinates)
     {
-        if (!$coordinates)
+        if (!$coordinates) {
             return null;
+        }
 
         return $this->delivery_areas
             ->sortBy('priority')
@@ -121,7 +130,7 @@ trait HasDeliveryAreas
     //
 
     /**
-     * Create a new or update existing location areas
+     * Create a new or update existing location areas.
      *
      * @param array $deliveryAreas
      *
@@ -130,11 +139,13 @@ trait HasDeliveryAreas
     public function addLocationAreas($deliveryAreas)
     {
         $locationId = $this->getKey();
-        if (!is_numeric($locationId))
-            return FALSE;
+        if (!is_numeric($locationId)) {
+            return false;
+        }
 
-        if (!is_array($deliveryAreas))
-            return FALSE;
+        if (!is_array($deliveryAreas)) {
+            return false;
+        }
 
         $idsToKeep = [];
         foreach ($deliveryAreas as $area) {
@@ -157,10 +168,14 @@ trait HasDeliveryAreas
         // to ['delivery_areas']['conditions']
         if (isset($value['delivery_areas'])) {
             foreach ($value['delivery_areas'] as &$area) {
-                if (!isset($charge['charge'])) continue;
+                if (!isset($charge['charge'])) {
+                    continue;
+                }
                 $area['conditions'] = is_array($area['charge']) ? $area['charge'] : [];
                 foreach ($area['conditions'] as $id => &$charge) {
-                    if (!isset($charge['condition'])) continue;
+                    if (!isset($charge['condition'])) {
+                        continue;
+                    }
                     $charge['type'] = $charge['condition'];
                     unset($charge['condition']);
                 }

@@ -5,7 +5,7 @@ namespace Main\Libraries;
 use Main\Classes\MediaLibrary;
 
 /**
- * MediaManager Class
+ * MediaManager Class.
  *
  * @deprecated replaced with \Main\Libraries\MediaLibrary
  */

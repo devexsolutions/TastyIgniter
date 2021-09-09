@@ -70,6 +70,7 @@ trait FormExtendable
      * @param string $recordId
      *
      * @return\Igniter\Flame\Database\Model
+     *
      * @throws \Exception
      */
     public function formFindModelObject($recordId)
@@ -100,6 +101,7 @@ trait FormExtendable
     /**
      * Creates a new instance of a form model. This logic can be changed
      * by overriding it in the controller.
+     *
      * @return\Igniter\Flame\Database\Model
      */
     public function formCreateModelObject()
@@ -132,8 +134,8 @@ trait FormExtendable
     /**
      * Called before the form is refreshed, should return an array of additional save data.
      *
-     * @param \Admin\Widgets\Form $host The hosting form widget
-     * @param array $saveData Current save data
+     * @param \Admin\Widgets\Form $host     The hosting form widget
+     * @param array               $saveData Current save data
      *
      * @return array
      */
@@ -144,8 +146,8 @@ trait FormExtendable
     /**
      * Called when the form is refreshed, giving the opportunity to modify the form fields.
      *
-     * @param \Admin\Widgets\Form $host The hosting form widget
-     * @param array $fields Current form fields
+     * @param \Admin\Widgets\Form $host   The hosting form widget
+     * @param array               $fields Current form fields
      *
      * @return array
      */
@@ -156,8 +158,8 @@ trait FormExtendable
     /**
      * Called after the form is refreshed, should return an array of additional result parameters.
      *
-     * @param \Admin\Widgets\Form $host The hosting form widget
-     * @param array $result Current result parameters.
+     * @param \Admin\Widgets\Form $host   The hosting form widget
+     * @param array               $result Current result parameters.
      *
      * @return array
      */
@@ -179,7 +181,7 @@ trait FormExtendable
 
     /**
      * Extend the query used for finding the form model. Extra conditions
-     * can be applied to the query, for example, $query->withTrashed();
+     * can be applied to the query, for example, $query->withTrashed();.
      *
      * @param \Igniter\Flame\Database\Builder $query
      *

@@ -3,7 +3,7 @@
 namespace System\Classes;
 
 /**
- * ComposerManager Class
+ * ComposerManager Class.
  */
 class ComposerManager
 {
@@ -42,18 +42,22 @@ class ComposerManager
         if (file_exists($file = $dir.'/autoload_namespaces.php')) {
             $map = require $file;
             foreach ($map as $namespace => $path) {
-                if (isset($this->namespacePool[$namespace])) continue;
+                if (isset($this->namespacePool[$namespace])) {
+                    continue;
+                }
                 $this->loader->set($namespace, $path);
-                $this->namespacePool[$namespace] = TRUE;
+                $this->namespacePool[$namespace] = true;
             }
         }
 
         if (file_exists($file = $dir.'/autoload_psr4.php')) {
             $map = require $file;
             foreach ($map as $namespace => $path) {
-                if (isset($this->psr4Pool[$namespace])) continue;
+                if (isset($this->psr4Pool[$namespace])) {
+                    continue;
+                }
                 $this->loader->setPsr4($namespace, $path);
-                $this->psr4Pool[$namespace] = TRUE;
+                $this->psr4Pool[$namespace] = true;
             }
         }
 
@@ -62,7 +66,7 @@ class ComposerManager
             if ($classMap) {
                 $classMapDiff = array_diff_key($classMap, $this->classMapPool);
                 $this->loader->addClassMap($classMapDiff);
-                $this->classMapPool += array_fill_keys(array_keys($classMapDiff), TRUE);
+                $this->classMapPool += array_fill_keys(array_keys($classMapDiff), true);
             }
         }
 
@@ -70,18 +74,20 @@ class ComposerManager
             $includeFiles = require $file;
             foreach ($includeFiles as $includeFile) {
                 $relativeFile = $this->stripVendorDir($includeFile, $vendorPath);
-                if (isset($this->includeFilesPool[$relativeFile])) continue;
+                if (isset($this->includeFilesPool[$relativeFile])) {
+                    continue;
+                }
                 require $includeFile;
-                $this->includeFilesPool[$relativeFile] = TRUE;
+                $this->includeFilesPool[$relativeFile] = true;
             }
         }
     }
 
     protected function preloadPools()
     {
-        $this->classMapPool = array_fill_keys(array_keys($this->loader->getClassMap()), TRUE);
-        $this->namespacePool = array_fill_keys(array_keys($this->loader->getPrefixes()), TRUE);
-        $this->psr4Pool = array_fill_keys(array_keys($this->loader->getPrefixesPsr4()), TRUE);
+        $this->classMapPool = array_fill_keys(array_keys($this->loader->getClassMap()), true);
+        $this->namespacePool = array_fill_keys(array_keys($this->loader->getPrefixes()), true);
+        $this->psr4Pool = array_fill_keys(array_keys($this->loader->getPrefixesPsr4()), true);
         $this->includeFilesPool = $this->preloadIncludeFilesPool();
     }
 
@@ -94,7 +100,7 @@ class ComposerManager
             $includeFiles = require $file;
             foreach ($includeFiles as $includeFile) {
                 $relativeFile = $this->stripVendorDir($includeFile, $vendorPath);
-                $result[$relativeFile] = TRUE;
+                $result[$relativeFile] = true;
             }
         }
 

@@ -12,7 +12,7 @@ use Igniter\Flame\Exception\ValidationException;
 use Illuminate\Support\Facades\Lang;
 
 /**
- * Payments Model Class
+ * Payments Model Class.
  */
 class Payments_model extends Model
 {
@@ -37,13 +37,13 @@ class Payments_model extends Model
 
     protected $fillable = ['name', 'code', 'class_name', 'description', 'data', 'status', 'is_default', 'priority'];
 
-    public $timestamps = TRUE;
+    public $timestamps = true;
 
     protected $casts = [
-        'data' => Serialize::class,
-        'status' => 'boolean',
+        'data'       => Serialize::class,
+        'status'     => 'boolean',
         'is_default' => 'boolean',
-        'priority' => 'integer',
+        'priority'   => 'integer',
     ];
 
     protected $purgeable = ['payment'];
@@ -103,27 +103,34 @@ class Payments_model extends Model
     {
         $this->applyGatewayClass();
 
-        if (is_array($this->data))
+        if (is_array($this->data)) {
             $this->attributes = array_merge($this->data, $this->attributes);
+        }
     }
 
     protected function beforeSave()
     {
-        if (!$this->exists)
+        if (!$this->exists) {
             return;
+        }
 
-        if ($this->is_default)
+        if ($this->is_default) {
             $this->makeDefault();
+        }
 
         $data = [];
         $fields = ($configFields = $this->getConfigFields()) ? $configFields : [];
         foreach ($fields as $name => $config) {
-            if (!array_key_exists($name, $this->attributes)) continue;
+            if (!array_key_exists($name, $this->attributes)) {
+                continue;
+            }
             $data[$name] = $this->attributes[$name];
         }
 
         foreach ($this->attributes as $name => $value) {
-            if (in_array($name, $this->fillable)) continue;
+            if (in_array($name, $this->fillable)) {
+                continue;
+            }
             unset($this->attributes[$name]);
         }
 
@@ -135,7 +142,7 @@ class Payments_model extends Model
     //
 
     /**
-     * Extends this class with the gateway class
+     * Extends this class with the gateway class.
      *
      * @param string $class Class name
      *
@@ -143,14 +150,15 @@ class Payments_model extends Model
      */
     public function applyGatewayClass($class = null)
     {
-        if (is_null($class))
+        if (is_null($class)) {
             $class = $this->class_name;
+        }
 
         if (!class_exists($class)) {
             $class = null;
         }
 
-        if ($class AND !$this->isClassExtendedWith($class)) {
+        if ($class and !$this->isClassExtendedWith($class)) {
             $this->extendClassWith($class);
         }
 
@@ -191,14 +199,15 @@ class Payments_model extends Model
     {
         if (!$this->status) {
             throw new ValidationException(['status' => sprintf(
-                lang('admin::lang.alert_error_set_default'), $this->name
+                lang('admin::lang.alert_error_set_default'),
+                $this->name
             )]);
         }
 
-        $this->timestamps = FALSE;
+        $this->timestamps = false;
         $this->newQuery()->where('is_default', '!=', 0)->update(['is_default' => 0]);
         $this->newQuery()->where('payment_id', $this->payment_id)->update(['is_default' => 1]);
-        $this->timestamps = TRUE;
+        $this->timestamps = true;
     }
 
     public static function getDefault()
@@ -207,7 +216,7 @@ class Payments_model extends Model
             return self::$defaultPayment;
         }
 
-        $defaultPayment = self::isEnabled()->where('is_default', TRUE)->first();
+        $defaultPayment = self::isEnabled()->where('is_default', true)->first();
 
         if (!$defaultPayment) {
             if ($defaultPayment = self::isEnabled()->first()) {
@@ -219,7 +228,7 @@ class Payments_model extends Model
     }
 
     /**
-     * Return all payments
+     * Return all payments.
      *
      * @return array
      */
@@ -236,15 +245,17 @@ class Payments_model extends Model
 
         $gatewayManager = PaymentGateways::instance();
         foreach ($gatewayManager->listGateways() as $code => $gateway) {
-            if (in_array($code, $payments)) continue;
+            if (in_array($code, $payments)) {
+                continue;
+            }
 
             $model = self::make([
-                'code' => $code,
-                'name' => Lang::get($gateway['name']),
+                'code'        => $code,
+                'name'        => Lang::get($gateway['name']),
                 'description' => Lang::get($gateway['description']),
-                'class_name' => $gateway['class'],
-                'status' => $code === 'cod',
-                'is_default' => $code === 'cod',
+                'class_name'  => $gateway['class'],
+                'status'      => $code === 'cod',
+                'is_default'  => $code === 'cod',
             ]);
 
             $model->applyGatewayClass();
@@ -260,13 +271,16 @@ class Payments_model extends Model
 
     /**
      * Finds and returns a customer payment profile for this payment method.
+     *
      * @param \Admin\Models\Customers_model $customer Specifies customer to find a profile for.
+     *
      * @return \Admin\Models\Payment_profiles_model|object Returns the payment profile object or NULL if the payment profile doesn't exist.
      */
     public function findPaymentProfile($customer)
     {
-        if (!$customer)
+        if (!$customer) {
             return null;
+        }
 
         $query = Payment_profiles_model::query();
 
@@ -278,7 +292,9 @@ class Payments_model extends Model
     /**
      * Initializes a new empty customer payment profile.
      * This method should be used by payment methods internally.
+     *
      * @param \Admin\Models\Customers_model $customer Specifies customer to initialize a profile for.
+     *
      * @return \Admin\Models\Payment_profiles_model Returns the payment profile object or NULL if the payment profile doesn't exist.
      */
     public function initPaymentProfile($customer)
@@ -292,7 +308,7 @@ class Payments_model extends Model
 
     public function paymentProfileExists($customer)
     {
-        return (bool)$this->findPaymentProfile($customer);
+        return (bool) $this->findPaymentProfile($customer);
     }
 
     public function deletePaymentProfile($customer)

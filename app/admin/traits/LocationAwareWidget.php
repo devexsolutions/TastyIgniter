@@ -9,18 +9,19 @@ trait LocationAwareWidget
 {
     protected function isLocationAware($config)
     {
-        $locationAware = $config['locationAware'] ?? FALSE;
+        $locationAware = $config['locationAware'] ?? false;
 
-        return $locationAware AND $this->controller->getUserLocation();
+        return $locationAware and $this->controller->getUserLocation();
     }
 
     /**
-     * Apply location scope where required
+     * Apply location scope where required.
      */
     protected function locationApplyScope($query)
     {
-        if (is_null($ids = AdminLocation::getAll()))
+        if (is_null($ids = AdminLocation::getAll())) {
             return;
+        }
 
         $model = $query->getModel();
         if ($model instanceof Locations_model) {
@@ -29,8 +30,9 @@ trait LocationAwareWidget
             return;
         }
 
-        if (!in_array(\Admin\Traits\Locationable::class, class_uses($model)))
+        if (!in_array(\Admin\Traits\Locationable::class, class_uses($model))) {
             return;
+        }
 
         $query->whereHasLocation($ids);
     }

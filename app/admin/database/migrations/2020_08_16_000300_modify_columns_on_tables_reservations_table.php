@@ -30,9 +30,9 @@ class ModifyColumnsOnTablesReservationsTable extends Migration
     {
         DB::table('location_tables')->get()->each(function ($model) {
             DB::table('locationables')->insert([
-                'location_id' => $model->location_id,
+                'location_id'       => $model->location_id,
                 'locationable_type' => 'tables',
-                'locationable_id' => $model->table_id,
+                'locationable_id'   => $model->table_id,
             ]);
         });
     }

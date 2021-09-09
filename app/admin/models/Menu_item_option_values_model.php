@@ -7,7 +7,7 @@ use Igniter\Flame\Database\Traits\Validation;
 use Illuminate\Support\Facades\Event;
 
 /**
- * MenuOptions Model Class
+ * MenuOptions Model Class.
  */
 class Menu_item_option_values_model extends Model
 {
@@ -31,18 +31,18 @@ class Menu_item_option_values_model extends Model
 
     protected $casts = [
         'menu_option_value_id' => 'integer',
-        'menu_option_id' => 'integer',
-        'option_value_id' => 'integer',
-        'new_price' => 'float',
-        'quantity' => 'integer',
-        'priority' => 'integer',
-        'is_default' => 'boolean',
+        'menu_option_id'       => 'integer',
+        'option_value_id'      => 'integer',
+        'new_price'            => 'float',
+        'quantity'             => 'integer',
+        'priority'             => 'integer',
+        'is_default'           => 'boolean',
     ];
 
     public $relation = [
         'belongsTo' => [
             'option_value' => ['Admin\Models\Menu_option_values_model'],
-            'menu_option' => ['Admin\Models\Menu_item_options_model'],
+            'menu_option'  => ['Admin\Models\Menu_item_options_model'],
         ],
     ];
 
@@ -55,11 +55,13 @@ class Menu_item_option_values_model extends Model
 
     public function getOptionValueIdOptions()
     {
-        if (!$optionId = optional($this->menu_option)->option_id)
+        if (!$optionId = optional($this->menu_option)->option_id) {
             return [];
+        }
 
-        if (!empty(self::$optionValuesCollection[$optionId]))
+        if (!empty(self::$optionValuesCollection[$optionId])) {
             return self::$optionValuesCollection[$optionId];
+        }
 
         $result = Menu_option_values_model::where('option_id', $optionId)->dropdown('value');
 
@@ -75,8 +77,9 @@ class Menu_item_option_values_model extends Model
 
     public function getPriceAttribute()
     {
-        if (is_null($this->new_price) AND $this->option_value)
+        if (is_null($this->new_price) and $this->option_value) {
             return $this->option_value->price;
+        }
 
         return $this->new_price;
     }
@@ -87,18 +90,20 @@ class Menu_item_option_values_model extends Model
     }
 
     /**
-     * Subtract or add to menu option item stock quantity
+     * Subtract or add to menu option item stock quantity.
      *
-     * @param int $quantity
+     * @param int  $quantity
      * @param bool $subtract
+     *
      * @return bool TRUE on success, or FALSE on failure
      */
-    public function updateStock($quantity = 0, $subtract = TRUE)
+    public function updateStock($quantity = 0, $subtract = true)
     {
-        if ($this->quantity == 0)
-            return FALSE;
+        if ($this->quantity == 0) {
+            return false;
+        }
 
-        $stockQty = ($subtract === TRUE)
+        $stockQty = ($subtract === true)
             ? $this->quantity - $quantity
             : $this->quantity + $quantity;
 
@@ -111,6 +116,6 @@ class Menu_item_option_values_model extends Model
 
         Event::fire('admin.menuOption.stockUpdated', [$this, $quantity, $subtract]);
 
-        return TRUE;
+        return true;
     }
 }

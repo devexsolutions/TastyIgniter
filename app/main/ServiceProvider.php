@@ -49,8 +49,7 @@ class ServiceProvider extends AppServiceProvider
             $this->registerSingletons();
             $this->registerAssets();
             $this->registerCombinerEvent();
-        }
-        else {
+        } else {
             $this->registerFormWidgets();
             $this->registerPermissions();
             $this->registerSystemSettings();
@@ -106,8 +105,9 @@ class ServiceProvider extends AppServiceProvider
         });
 
         Event::listen('pages.menuitem.resolveItem', function ($item, $url, $theme) {
-            if ($item->type == 'theme-page')
+            if ($item->type == 'theme-page') {
                 return Page::resolveMenuItem($item, $url, $theme);
+            }
         });
     }
 
@@ -116,12 +116,12 @@ class ServiceProvider extends AppServiceProvider
         Widgets::instance()->registerFormWidgets(function (Widgets $manager) {
             $manager->registerFormWidget('Main\FormWidgets\Components', [
                 'label' => 'Components',
-                'code' => 'components',
+                'code'  => 'components',
             ]);
 
             $manager->registerFormWidget('Main\FormWidgets\TemplateEditor', [
                 'label' => 'Template editor',
-                'code' => 'templateeditor',
+                'code'  => 'templateeditor',
             ]);
         });
     }
@@ -145,13 +145,13 @@ class ServiceProvider extends AppServiceProvider
         Settings_model::registerCallback(function (Settings_model $manager) {
             $manager->registerSettingItems('core', [
                 'media' => [
-                    'label' => 'main::lang.settings.text_tab_media_manager',
+                    'label'       => 'main::lang.settings.text_tab_media_manager',
                     'description' => 'main::lang.settings.text_tab_desc_media_manager',
-                    'icon' => 'fa fa-image',
-                    'priority' => 4,
-                    'permission' => ['Site.Settings'],
-                    'url' => admin_url('settings/edit/media'),
-                    'form' => '~/app/main/models/config/media_settings',
+                    'icon'        => 'fa fa-image',
+                    'priority'    => 4,
+                    'permission'  => ['Site.Settings'],
+                    'url'         => admin_url('settings/edit/media'),
+                    'form'        => '~/app/main/models/config/media_settings',
                 ],
             ]);
         });

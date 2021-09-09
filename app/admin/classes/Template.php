@@ -5,7 +5,7 @@ namespace Admin\Classes;
 use Igniter\Flame\Html\HtmlFacade as Html;
 
 /**
- * Template Class
+ * Template Class.
  */
 class Template
 {
@@ -22,7 +22,7 @@ class Template
     /**
      * Returns the layout block contents but does not deletes the block from memory.
      *
-     * @param string $name Specifies the block name.
+     * @param string $name    Specifies the block name.
      * @param string $default Specifies a default block value to use if the block requested is not exists.
      *
      * @return string
@@ -39,7 +39,7 @@ class Template
     /**
      * Appends a content of the layout block.
      *
-     * @param string $name Specifies the block name.
+     * @param string $name     Specifies the block name.
      * @param string $contents Specifies the block content.
      */
     public function appendBlock($name, $contents)
@@ -54,7 +54,7 @@ class Template
     /**
      * Sets a content of the layout block.
      *
-     * @param string $name Specifies the block name.
+     * @param string $name     Specifies the block name.
      * @param string $contents Specifies the block content.
      */
     public function setBlock($name, $contents)

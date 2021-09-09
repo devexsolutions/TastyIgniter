@@ -23,13 +23,13 @@ class DatePicker extends BaseFormWidget
 
     /**
      * @var string the minimum/earliest date that can be selected.
-     * eg: 2000-01-01
+     *             eg: 2000-01-01
      */
     public $startDate = null;
 
     /**
      * @var string the maximum/latest date that can be selected.
-     * eg: 2020-12-31
+     *             eg: 2020-12-31
      */
     public $endDate = null;
 
@@ -82,8 +82,9 @@ class DatePicker extends BaseFormWidget
             $this->addJs('~/app/system/assets/ui/js/vendor/moment.min.js', 'moment-js');
             $this->addCss('vendor/datepicker/bootstrap-datepicker.min.css', 'bootstrap-datepicker-css');
             $this->addJs('vendor/datepicker/bootstrap-datepicker.min.js', 'bootstrap-datepicker-js');
-            if (setting('default_language') != 'en')
+            if (setting('default_language') != 'en') {
                 $this->addJs('vendor/datepicker/locales/bootstrap-datepicker.'.strtolower(str_replace('_', '-', setting('default_language'))).'.min.js', 'bootstrap-datepicker-js');
+            }
             $this->addCss('css/datepicker.css', 'datepicker-css');
             $this->addJs('js/datepicker.js', 'datepicker-js');
         }
@@ -105,24 +106,22 @@ class DatePicker extends BaseFormWidget
     }
 
     /**
-     * Prepares the list data
+     * Prepares the list data.
      */
     public function prepareVars()
     {
         $this->vars['name'] = $this->formField->getName();
 
         if ($value = $this->getLoadValue()) {
-            $value = make_carbon($value, FALSE);
+            $value = make_carbon($value, false);
         }
 
         // Display alias, used by preview mode
         if ($this->mode == 'time') {
             $formatAlias = lang('system::lang.php.time_format');
-        }
-        elseif ($this->mode == 'date') {
+        } elseif ($this->mode == 'date') {
             $formatAlias = lang('system::lang.php.date_format');
-        }
-        else {
+        } else {
             $formatAlias = lang('system::lang.php.date_time_format');
         }
 
@@ -147,7 +146,7 @@ class DatePicker extends BaseFormWidget
 
     public function getSaveValue($value)
     {
-        if ($this->formField->disabled OR $this->formField->hidden) {
+        if ($this->formField->disabled or $this->formField->hidden) {
             return FormField::NO_SAVE_DATA;
         }
 

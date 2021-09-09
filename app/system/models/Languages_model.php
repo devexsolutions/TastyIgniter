@@ -8,7 +8,7 @@ use Igniter\Flame\Translation\Models\Language;
 use Illuminate\Support\Facades\Lang;
 
 /**
- * Languages Model Class
+ * Languages Model Class.
  */
 class Languages_model extends Language
 {
@@ -18,17 +18,18 @@ class Languages_model extends Language
 
     protected $casts = [
         'original_id' => 'integer',
-        'status' => 'boolean',
+        'status'      => 'boolean',
     ];
 
     public $relation = [
         'hasMany' => [
-            'translations' => ['System\Models\Translations_model', 'foreignKey' => 'locale', 'otherKey' => 'code', 'delete' => TRUE],
+            'translations' => ['System\Models\Translations_model', 'foreignKey' => 'locale', 'otherKey' => 'code', 'delete' => true],
         ],
     ];
 
     /**
-     *  List of variables that cannot be mass assigned
+     *  List of variables that cannot be mass assigned.
+     *
      * @var array
      */
     protected $guarded = [];
@@ -78,8 +79,9 @@ class Languages_model extends Language
 
         $this->restorePurgedValues();
 
-        if (array_key_exists('translations', $this->attributes))
-            $this->addTranslations((array)$this->attributes['translations']);
+        if (array_key_exists('translations', $this->attributes)) {
+            $this->addTranslations((array) $this->attributes['translations']);
+        }
     }
 
     //
@@ -87,7 +89,7 @@ class Languages_model extends Language
     //
 
     /**
-     * Scope a query to only include enabled language
+     * Scope a query to only include enabled language.
      *
      * @param $query
      *
@@ -104,11 +106,13 @@ class Languages_model extends Language
 
     public static function findByCode($code = null)
     {
-        if (!$code)
+        if (!$code) {
             return null;
+        }
 
-        if (isset(self::$localesCache[$code]))
+        if (isset(self::$localesCache[$code])) {
             return self::$localesCache[$code];
+        }
 
         return self::$localesCache[$code] = self::whereCode($code)->first();
     }
@@ -117,7 +121,8 @@ class Languages_model extends Language
     {
         if (!$this->status) {
             throw new ValidationException(['status' => sprintf(
-                lang('admin::lang.alert_error_set_default'), $this->name
+                lang('admin::lang.alert_error_set_default'),
+                $this->name
             )]);
         }
 
@@ -127,6 +132,7 @@ class Languages_model extends Language
 
     /**
      * Returns the default language defined.
+     *
      * @return self
      */
     public static function getDefault()
@@ -206,14 +212,16 @@ class Languages_model extends Language
     public function addTranslations($translations)
     {
         $languageId = $this->getKey();
-        if (!is_numeric($languageId))
-            return FALSE;
+        if (!is_numeric($languageId)) {
+            return false;
+        }
 
         foreach ($translations as $key => $translation) {
             preg_match('/^(.+)::(?:(.+?))\.(.+)+$/', $key, $matches);
 
-            if (!$matches OR count($matches) !== 4)
+            if (!$matches or count($matches) !== 4) {
                 continue;
+            }
 
             [$code, $namespace, $group, $item] = $matches;
 
@@ -234,13 +242,14 @@ class Languages_model extends Language
     {
         $oldText = Lang::get("{$namespace}::{$group}.{$key}", [], $this->code);
 
-        if (strcmp($text, $oldText) === 0)
-            return FALSE;
+        if (strcmp($text, $oldText) === 0) {
+            return false;
+        }
 
         $translation = $this->translations()->firstOrNew([
-            'group' => $group,
+            'group'     => $group,
             'namespace' => $namespace,
-            'item' => $key,
+            'item'      => $key,
         ]);
 
         $translation->updateAndLock($text);

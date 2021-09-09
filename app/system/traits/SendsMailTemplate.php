@@ -21,16 +21,18 @@ trait SendsMailTemplate
         $vars = $this->mailGetData();
 
         $result = $this->fireEvent('model.mailGetData', [$view, $recipientType]);
-        if ($result AND is_array($result))
+        if ($result and is_array($result)) {
             $vars = array_merge(...$result) + $vars;
+        }
 
         Mail::queue($view, $vars, $this->mailBuildMessage($recipientType));
     }
 
     protected function mailBuildMessage($recipientType = null)
     {
-        if (is_callable($recipientType))
+        if (is_callable($recipientType)) {
             return $recipientType;
+        }
 
         $recipients = $this->mailGetRecipients($recipientType);
 

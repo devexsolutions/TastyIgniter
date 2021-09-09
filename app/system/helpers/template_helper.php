@@ -1,11 +1,12 @@
 <?php
 
 /**
- * Template helper functions
+ * Template helper functions.
  */
 if (!function_exists('page')) {
     /**
-     * Get the page content
+     * Get the page content.
+     *
      * @return string
      */
     function page()
@@ -16,10 +17,10 @@ if (!function_exists('page')) {
 
 if (!function_exists('content')) {
     /**
-     * Load a content template file
+     * Load a content template file.
      *
      * @param string $content
-     * @param array $data
+     * @param array  $data
      *
      * @return string
      */
@@ -31,10 +32,10 @@ if (!function_exists('content')) {
 
 if (!function_exists('partial')) {
     /**
-     * Load a partial template file
+     * Load a partial template file.
      *
      * @param string $partial
-     * @param array $data
+     * @param array  $data
      *
      * @return string
      */
@@ -46,7 +47,7 @@ if (!function_exists('partial')) {
 
 if (!function_exists('has_component')) {
     /**
-     * Check if a component is loaded
+     * Check if a component is loaded.
      *
      * @param string $component
      *
@@ -60,7 +61,7 @@ if (!function_exists('has_component')) {
 
 if (!function_exists('component')) {
     /**
-     * Check if Partial Area has rendered components
+     * Check if Partial Area has rendered components.
      *
      * @param string $component
      * @param $params
@@ -75,8 +76,9 @@ if (!function_exists('component')) {
 
 if (!function_exists('get_title')) {
     /**
-     * Get page title html tag
-     * @return    string
+     * Get page title html tag.
+     *
+     * @return string
      */
     function get_title()
     {

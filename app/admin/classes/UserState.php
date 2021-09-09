@@ -7,7 +7,7 @@ use Admin\Models\User_preferences_model;
 use Carbon\Carbon;
 
 /**
- * Admin User State
+ * Admin User State.
  */
 class UserState
 {
@@ -24,10 +24,10 @@ class UserState
     protected $user;
 
     protected $defaultStateConfig = [
-        'status' => 1,
-        'isAway' => FALSE,
-        'awayMessage' => null,
-        'updatedAt' => null,
+        'status'            => 1,
+        'isAway'            => false,
+        'awayMessage'       => null,
+        'updatedAt'         => null,
         'clearAfterMinutes' => 0,
     ];
 
@@ -35,7 +35,7 @@ class UserState
 
     public static function forUser($user = null)
     {
-        $instance = new static;
+        $instance = new static();
         $instance->user = $user ?: AdminAuth::getUser();
 
         return $instance;
@@ -43,12 +43,12 @@ class UserState
 
     public function isAway()
     {
-        return (bool)$this->getConfig('isAway');
+        return (bool) $this->getConfig('isAway');
     }
 
     public function getStatus()
     {
-        return (int)$this->getConfig('status');
+        return (int) $this->getConfig('status');
     }
 
     public function getMessage()
@@ -58,7 +58,7 @@ class UserState
 
     public function getClearAfterMinutes()
     {
-        return (int)$this->getConfig('clearAfterMinutes', 0);
+        return (int) $this->getConfig('clearAfterMinutes', 0);
     }
 
     public function getUpdatedAt()
@@ -68,8 +68,9 @@ class UserState
 
     public function getClearAfterAt()
     {
-        if ($this->getStatus() !== static::CUSTOM_STATUS)
+        if ($this->getStatus() !== static::CUSTOM_STATUS) {
             return null;
+        }
 
         return make_carbon($this->getConfig('updatedAt'))
             ->addMinutes($this->getClearAfterMinutes());
@@ -83,10 +84,10 @@ class UserState
     public static function getStatusDropdownOptions()
     {
         return [
-            static::ONLINE_STATUS => 'admin::lang.staff_status.text_online',
+            static::ONLINE_STATUS    => 'admin::lang.staff_status.text_online',
             static::BACK_SOON_STATUS => 'admin::lang.staff_status.text_back_soon',
-            static::AWAY_STATUS => 'admin::lang.staff_status.text_away',
-            static::CUSTOM_STATUS => 'admin::lang.staff_status.text_custom_status',
+            static::AWAY_STATUS      => 'admin::lang.staff_status.text_away',
+            static::CUSTOM_STATUS    => 'admin::lang.staff_status.text_custom_status',
         ];
     }
 
@@ -94,9 +95,9 @@ class UserState
     {
         return [
             1440 => 'admin::lang.staff_status.text_clear_tomorrow',
-            240 => 'admin::lang.staff_status.text_clear_hours',
-            30 => 'admin::lang.staff_status.text_clear_minutes',
-            0 => 'admin::lang.staff_status.text_dont_clear',
+            240  => 'admin::lang.staff_status.text_clear_hours',
+            30   => 'admin::lang.staff_status.text_clear_minutes',
+            0    => 'admin::lang.staff_status.text_dont_clear',
         ];
     }
 
@@ -106,14 +107,17 @@ class UserState
 
     public function clearExpiredStatus()
     {
-        if (!$this->isAway())
+        if (!$this->isAway()) {
             return;
+        }
 
-        if (!$clearAfterAt = $this->getClearAfterAt())
+        if (!$clearAfterAt = $this->getClearAfterAt()) {
             return;
+        }
 
-        if (Carbon::now()->lessThan($clearAfterAt))
+        if (Carbon::now()->lessThan($clearAfterAt)) {
             return;
+        }
 
         $this->updateState();
     }
@@ -129,20 +133,23 @@ class UserState
 
     protected function getConfig($key = null, $default = null)
     {
-        if (is_null($this->stateConfigCache))
+        if (is_null($this->stateConfigCache)) {
             $this->stateConfigCache = $this->loadConfigFromPreference();
+        }
 
         $result = array_merge($this->defaultStateConfig, $this->stateConfigCache);
-        if (is_null($key))
+        if (is_null($key)) {
             return $result;
+        }
 
         return array_get($result, $key, $default);
     }
 
     protected function loadConfigFromPreference()
     {
-        if (!$this->user)
+        if (!$this->user) {
             return [];
+        }
 
         return User_preferences_model::onUser($this->user)->get(self::USER_PREFERENCE_KEY, []);
     }

@@ -8,7 +8,7 @@ use Igniter\Flame\Database\Model;
 use Igniter\Flame\Database\Traits\Purgeable;
 
 /**
- * MenuOptions Model Class
+ * MenuOptions Model Class.
  */
 class Menu_options_model extends Model
 {
@@ -33,18 +33,18 @@ class Menu_options_model extends Model
 
     protected $casts = [
         'option_id' => 'integer',
-        'priority' => 'integer',
+        'priority'  => 'integer',
     ];
 
     public $relation = [
         'hasMany' => [
-            'menu_options' => ['Admin\Models\Menu_item_options_model', 'foreignKey' => 'option_id', 'delete' => TRUE],
-            'option_values' => ['Admin\Models\Menu_option_values_model', 'foreignKey' => 'option_id', 'delete' => TRUE],
+            'menu_options'  => ['Admin\Models\Menu_item_options_model', 'foreignKey' => 'option_id', 'delete' => true],
+            'option_values' => ['Admin\Models\Menu_option_values_model', 'foreignKey' => 'option_id', 'delete' => true],
         ],
         'hasManyThrough' => [
             'menu_option_values' => [
                 'Admin\Models\Menu_item_option_values_model',
-                'through' => 'Admin\Models\Menu_item_options_model',
+                'through'    => 'Admin\Models\Menu_item_options_model',
                 'throughKey' => 'menu_option_id',
                 'foreignKey' => 'option_id',
             ],
@@ -60,8 +60,9 @@ class Menu_options_model extends Model
     {
         $query = self::selectRaw('option_id, concat(option_name, " (", display_type, ")") AS display_name');
 
-        if (!is_null($ids = AdminLocation::getIdOrAll()))
+        if (!is_null($ids = AdminLocation::getIdOrAll())) {
             $query->whereHasLocation($ids);
+        }
 
         return $query->dropdown('display_name');
     }
@@ -69,9 +70,9 @@ class Menu_options_model extends Model
     public function getDisplayTypeOptions()
     {
         return [
-            'radio' => 'lang:admin::lang.menu_options.text_radio',
+            'radio'    => 'lang:admin::lang.menu_options.text_radio',
             'checkbox' => 'lang:admin::lang.menu_options.text_checkbox',
-            'select' => 'lang:admin::lang.menu_options.text_select',
+            'select'   => 'lang:admin::lang.menu_options.text_select',
             'quantity' => 'lang:admin::lang.menu_options.text_quantity',
         ];
     }
@@ -84,11 +85,13 @@ class Menu_options_model extends Model
     {
         $this->restorePurgedValues();
 
-        if (array_key_exists('option_values', $this->attributes))
+        if (array_key_exists('option_values', $this->attributes)) {
             $this->addOptionValues($this->attributes['option_values']);
+        }
 
-        if ($this->update_related_menu_item)
+        if ($this->update_related_menu_item) {
             $this->updateRelatedMenuItemsOptionValues();
+        }
     }
 
     protected function beforeDelete()
@@ -101,7 +104,7 @@ class Menu_options_model extends Model
     //
 
     /**
-     * Return all option values by option_id
+     * Return all option values by option_id.
      *
      * @param int $option_id
      *
@@ -111,7 +114,7 @@ class Menu_options_model extends Model
     {
         $query = self::orderBy('priority')->from('option_values');
 
-        if ($option_id !== FALSE) {
+        if ($option_id !== false) {
             $query->where('option_id', $option_id);
         }
 
@@ -119,7 +122,7 @@ class Menu_options_model extends Model
     }
 
     /**
-     * Create a new or update existing option values
+     * Create a new or update existing option values.
      *
      * @param array $optionValues
      *
@@ -131,12 +134,13 @@ class Menu_options_model extends Model
 
         $idsToKeep = [];
         foreach ($optionValues as $value) {
-            if (!array_key_exists('allergens', $value))
+            if (!array_key_exists('allergens', $value)) {
                 $value['allergens'] = [];
+            }
 
             $optionValue = $this->option_values()->firstOrNew([
                 'option_value_id' => array_get($value, 'option_value_id'),
-                'option_id' => $optionId,
+                'option_id'       => $optionId,
             ])->fill(array_except($value, ['option_value_id', 'option_id']));
 
             $optionValue->saveOrFail();
@@ -153,7 +157,7 @@ class Menu_options_model extends Model
     }
 
     /**
-     * Overwrite any menu items this option is attached to
+     * Overwrite any menu items this option is attached to.
      *
      * @return void
      */
@@ -161,11 +165,11 @@ class Menu_options_model extends Model
     {
         $optionValues = $this->option_values()->get()->map(function ($optionValue) {
             return [
-                'menu_option_id' => $this->option_id,
+                'menu_option_id'  => $this->option_id,
                 'option_value_id' => $optionValue->option_value_id,
-                'new_price' => $optionValue->price,
-                'quantity' => 0,
-                'priority' => $optionValue->priority,
+                'new_price'       => $optionValue->price,
+                'quantity'        => 0,
+                'priority'        => $optionValue->priority,
             ];
         })->all();
 

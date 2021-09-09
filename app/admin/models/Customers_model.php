@@ -9,7 +9,7 @@ use Igniter\Flame\Database\Traits\Purgeable;
 use System\Traits\SendsMailTemplate;
 
 /**
- * Customers Model Class
+ * Customers Model Class.
  */
 class Customers_model extends AuthUserModel
 {
@@ -34,16 +34,16 @@ class Customers_model extends AuthUserModel
 
     protected $hidden = ['password'];
 
-    public $timestamps = TRUE;
+    public $timestamps = true;
 
     public $relation = [
         'hasMany' => [
-            'addresses' => ['Admin\Models\Addresses_model', 'delete' => TRUE],
-            'orders' => ['Admin\Models\Orders_model'],
+            'addresses'    => ['Admin\Models\Addresses_model', 'delete' => true],
+            'orders'       => ['Admin\Models\Orders_model'],
             'reservations' => ['Admin\Models\Reservations_model'],
         ],
         'belongsTo' => [
-            'group' => ['Admin\Models\Customer_groups_model', 'foreignKey' => 'customer_group_id'],
+            'group'   => ['Admin\Models\Customer_groups_model', 'foreignKey' => 'customer_group_id'],
             'address' => 'Admin\Models\Addresses_model',
         ],
     ];
@@ -53,16 +53,16 @@ class Customers_model extends AuthUserModel
     public $appends = ['full_name'];
 
     protected $casts = [
-        'customer_id' => 'integer',
-        'address_id' => 'integer',
+        'customer_id'       => 'integer',
+        'address_id'        => 'integer',
         'customer_group_id' => 'integer',
-        'newsletter' => 'boolean',
-        'status' => 'boolean',
-        'is_activated' => 'boolean',
-        'last_login' => 'datetime',
-        'date_invited' => 'datetime',
-        'date_activated' => 'datetime',
-        'reset_time' => 'datetime',
+        'newsletter'        => 'boolean',
+        'status'            => 'boolean',
+        'is_activated'      => 'boolean',
+        'last_login'        => 'datetime',
+        'date_invited'      => 'datetime',
+        'date_activated'    => 'datetime',
+        'reset_time'        => 'datetime',
     ];
 
     public static function getDropdownOptions()
@@ -99,14 +99,17 @@ class Customers_model extends AuthUserModel
 
     public function beforeLogin()
     {
-        if (!$this->group OR !$this->group->requiresApproval())
+        if (!$this->group or !$this->group->requiresApproval()) {
             return;
+        }
 
-        if ($this->is_activated AND $this->status)
+        if ($this->is_activated and $this->status) {
             return;
+        }
 
         throw new Exception(sprintf(
-            lang('admin::lang.customers.alert_customer_not_active'), $this->email
+            lang('admin::lang.customers.alert_customer_not_active'),
+            $this->email
         ));
     }
 
@@ -125,11 +128,13 @@ class Customers_model extends AuthUserModel
     {
         $this->restorePurgedValues();
 
-        if (!$this->exists)
+        if (!$this->exists) {
             return;
+        }
 
-        if (array_key_exists('addresses', $this->attributes))
+        if (array_key_exists('addresses', $this->attributes)) {
             $this->saveAddresses($this->attributes['addresses']);
+        }
     }
 
     //
@@ -154,7 +159,7 @@ class Customers_model extends AuthUserModel
     }
 
     /**
-     * Return all customer registration dates
+     * Return all customer registration dates.
      *
      * @return array
      */
@@ -165,14 +170,15 @@ class Customers_model extends AuthUserModel
 
     /**
      * Reset a customer password,
-     * new password is sent to registered email
+     * new password is sent to registered email.
      *
      * @return string Reset code
      */
     public function resetPassword()
     {
-        if (!$this->enabled())
-            return FALSE;
+        if (!$this->enabled()) {
+            return false;
+        }
 
         $this->reset_code = $resetCode = $this->generateResetCode();
         $this->reset_time = Carbon::now();
@@ -184,8 +190,9 @@ class Customers_model extends AuthUserModel
     public function saveAddresses($addresses)
     {
         $customerId = $this->getKey();
-        if (!is_numeric($customerId))
-            return FALSE;
+        if (!is_numeric($customerId)) {
+            return false;
+        }
 
         $idsToKeep = [];
         foreach ($addresses as $address) {
@@ -202,15 +209,15 @@ class Customers_model extends AuthUserModel
 
     /**
      * Update guest orders, address and reservations
-     * matching customer email
+     * matching customer email.
      *
      * @return bool TRUE on success, or FALSE on failure
      */
     public function saveCustomerGuestOrder()
     {
-        $query = FALSE;
+        $query = false;
 
-        if (is_numeric($this->customer_id) AND !empty($this->email)) {
+        if (is_numeric($this->customer_id) and !empty($this->email)) {
             $customer_id = $this->customer_id;
             $customer_email = $this->email;
             $update = ['customer_id' => $customer_id];
@@ -218,9 +225,11 @@ class Customers_model extends AuthUserModel
             Orders_model::where('email', $customer_email)->update($update);
             if ($orders = Orders_model::where('email', $customer_email)->get()) {
                 foreach ($orders as $row) {
-                    if (empty($row['order_id'])) continue;
+                    if (empty($row['order_id'])) {
+                        continue;
+                    }
 
-                    if ($row['order_type'] == '1' AND !empty($row['address_id'])) {
+                    if ($row['order_type'] == '1' and !empty($row['address_id'])) {
                         Addresses_model::where('address_id', $row['address_id'])->update($update);
                     }
                 }
@@ -228,7 +237,7 @@ class Customers_model extends AuthUserModel
 
             Reservations_model::where('email', $customer_email)->update($update);
 
-            $query = TRUE;
+            $query = true;
         }
 
         return $query;
@@ -260,7 +269,7 @@ class Customers_model extends AuthUserModel
     {
         return [
             'full_name' => $this->full_name,
-            'email' => $this->email,
+            'email'     => $this->email,
         ];
     }
 }

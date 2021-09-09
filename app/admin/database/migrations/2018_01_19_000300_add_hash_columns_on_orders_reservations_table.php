@@ -7,7 +7,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Add hash column on orders and reservations table
+ * Add hash column on orders and reservations table.
  */
 class AddHashColumnsOnOrdersReservationsTable extends Migration
 {

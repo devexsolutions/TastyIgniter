@@ -25,8 +25,9 @@ class OnboardingSteps
 
     public function getStep($code)
     {
-        if (!$this->steps)
+        if (!$this->steps) {
             $this->loadSteps();
+        }
 
         return $this->steps[$code] ?? null;
     }
@@ -43,8 +44,9 @@ class OnboardingSteps
      */
     public function listSteps()
     {
-        if (is_null($this->steps))
+        if (is_null($this->steps)) {
             $this->loadSteps();
+        }
 
         return $this->steps;
     }
@@ -85,7 +87,7 @@ class OnboardingSteps
 
     protected function stepIsCompleted($callable)
     {
-        return is_callable($callable) ? $callable() : FALSE;
+        return is_callable($callable) ? $callable() : false;
     }
 
     //
@@ -94,8 +96,9 @@ class OnboardingSteps
 
     protected function loadSteps()
     {
-        if (!$this->steps)
+        if (!$this->steps) {
             $this->steps = [];
+        }
 
         // Load manually registered components
         foreach (static::$callbacks as $callback) {
@@ -105,8 +108,9 @@ class OnboardingSteps
         // Load extensions payment gateways
         $extensions = ExtensionManager::instance()->getExtensions();
         foreach ($extensions as $id => $extension) {
-            if (!method_exists($extension, 'registerOnboardingSteps'))
+            if (!method_exists($extension, 'registerOnboardingSteps')) {
                 continue;
+            }
 
             $onboardingSteps = $extension->registerOnboardingSteps();
             if (!is_array($onboardingSteps)) {
@@ -130,18 +134,18 @@ class OnboardingSteps
     public function registerSteps(array $definitions)
     {
         $defaultDefinitions = [
-            'code' => null,
-            'label' => null,
+            'code'        => null,
+            'label'       => null,
             'description' => null,
-            'icon' => null,
-            'url' => null,
-            'priority' => null,
-            'complete' => null,
+            'icon'        => null,
+            'url'         => null,
+            'priority'    => null,
+            'complete'    => null,
         ];
 
         foreach ($definitions as $code => $definition) {
             $definition['code'] = $code;
-            $item = (object)array_merge($defaultDefinitions, $definition);
+            $item = (object) array_merge($defaultDefinitions, $definition);
             $item->completed = function () use ($item) {
                 $callable = $item->complete ?? null;
 
@@ -159,7 +163,7 @@ class OnboardingSteps
      *   Onboarding::registerCallback(function($manager){
      *       $manager->registerSteps([...]);
      *   });
-     * </pre>
+     * </pre>.
      *
      * @param callable $callback A callable function.
      */

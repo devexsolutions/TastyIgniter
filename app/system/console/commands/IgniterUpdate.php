@@ -53,12 +53,12 @@ class IgniterUpdate extends Command
 
         $addonUpdates = $updatesCollection->flatten(1);
 
-        if ($coreCode AND $coreHash) {
+        if ($coreCode and $coreHash) {
             $this->output->writeln('<info>Downloading application files</info>');
             $updateManager->downloadFile($coreCode, $coreHash, [
                 'name' => $coreCode,
                 'type' => 'core',
-                'ver' => $coreVersion,
+                'ver'  => $coreVersion,
             ]);
         }
 
@@ -74,11 +74,11 @@ class IgniterUpdate extends Command
             $updateManager->downloadFile($addonCode, $addonHash, [
                 'name' => $addonCode,
                 'type' => $addonType,
-                'ver' => $addonVersion,
+                'ver'  => $addonVersion,
             ]);
         });
 
-        if ($coreCode AND $coreHash) {
+        if ($coreCode and $coreHash) {
             $this->output->writeln('<info>Extracting application files</info>');
             $updateManager->extractCore($coreCode);
             $updateManager->setCoreVersion($coreVersion, $coreHash);

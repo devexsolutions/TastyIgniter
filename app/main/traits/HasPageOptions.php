@@ -3,7 +3,8 @@
 namespace Main\Traits;
 
 /**
- * Trait HasPageOptions
+ * Trait HasPageOptions.
+ *
  * @todo remove in v3.1
  */
 trait HasPageOptions

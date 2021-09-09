@@ -26,12 +26,12 @@ class PermissionEditor extends BaseFormWidget
     }
 
     /**
-     * Prepares the list data
+     * Prepares the list data.
      */
     public function prepareVars()
     {
         $this->vars['groupedPermissions'] = $this->listPermissions();
-        $this->vars['checkedPermissions'] = (array)$this->formField->value;
+        $this->vars['checkedPermissions'] = (array) $this->formField->value;
         $this->vars['field'] = $this->formField;
         $this->vars['tabs'] = $this->tabs;
         $this->vars['actionCssClasses'] = $this->actionCssClasses;

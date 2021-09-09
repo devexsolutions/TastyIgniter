@@ -9,7 +9,7 @@ use Igniter\Flame\Database\Traits\Purgeable;
 use System\Traits\SendsMailTemplate;
 
 /**
- * Users Model Class
+ * Users Model Class.
  */
 class Users_model extends AuthUserModel
 {
@@ -30,13 +30,13 @@ class Users_model extends AuthUserModel
     protected $hidden = ['password'];
 
     protected $casts = [
-        'staff_id' => 'integer',
-        'super_user' => 'boolean',
-        'is_activated' => 'boolean',
-        'reset_time' => 'datetime',
-        'date_invited' => 'datetime',
+        'staff_id'       => 'integer',
+        'super_user'     => 'boolean',
+        'is_activated'   => 'boolean',
+        'reset_time'     => 'datetime',
+        'date_invited'   => 'datetime',
         'date_activated' => 'datetime',
-        'last_login' => 'datetime',
+        'last_login'     => 'datetime',
     ];
 
     public $relation = [
@@ -88,8 +88,9 @@ class Users_model extends AuthUserModel
 
     public function getStaffNameAttribute()
     {
-        if (!$staff = $this->staff)
+        if (!$staff = $this->staff) {
             return null;
+        }
 
         return $staff->staff_name;
     }
@@ -100,7 +101,7 @@ class Users_model extends AuthUserModel
     }
 
     /**
-     * Reset a staff password,
+     * Reset a staff password,.
      */
     public function resetPassword()
     {
@@ -122,25 +123,32 @@ class Users_model extends AuthUserModel
 
     public function hasAnyPermission($permissions)
     {
-        return $this->hasPermission($permissions, FALSE);
+        return $this->hasPermission($permissions, false);
     }
 
-    public function hasPermission($permissions, $checkAll = TRUE)
+    public function hasPermission($permissions, $checkAll = true)
     {
         // Bail out if the staff is a super user
-        if ($this->isSuperUser())
-            return TRUE;
+        if ($this->isSuperUser()) {
+            return true;
+        }
 
         $staffPermissions = $this->getPermissions();
 
-        if (!is_array($permissions))
+        if (!is_array($permissions)) {
             $permissions = [$permissions];
+        }
 
         if (PermissionManager::instance()->checkPermission(
-            $staffPermissions, $permissions, $checkAll)
-        ) return TRUE;
+            $staffPermissions,
+            $permissions,
+            $checkAll
+        )
+        ) {
+            return true;
+        }
 
-        return FALSE;
+        return false;
     }
 
     public function getPermissions()
@@ -148,7 +156,7 @@ class Users_model extends AuthUserModel
         $role = $this->staff->role;
 
         $permissions = [];
-        if ($role AND is_array($role->permissions)) {
+        if ($role and is_array($role->permissions)) {
             $permissions = $role->permissions;
         }
 
@@ -176,9 +184,9 @@ class Users_model extends AuthUserModel
     public function mailGetData()
     {
         return [
-            'staff_name' => $this->staff_name,
+            'staff_name'  => $this->staff_name,
             'staff_email' => $this->staff->staff_email,
-            'username' => $this->username,
+            'username'    => $this->username,
         ];
     }
 }

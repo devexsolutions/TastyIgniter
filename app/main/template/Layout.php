@@ -3,7 +3,7 @@
 namespace Main\Template;
 
 /**
- * Layout Template Class
+ * Layout Template Class.
  */
 class Layout extends Model
 {
@@ -26,6 +26,7 @@ class Layout extends Model
     /**
      * Returns name of a PHP class to use as parent
      * for the PHP class created for the template's PHP section.
+     *
      * @return mixed Returns the class name or null.
      */
     public function getCodeClassParent()

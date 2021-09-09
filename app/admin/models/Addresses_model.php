@@ -5,7 +5,7 @@ namespace Admin\Models;
 use Igniter\Flame\Database\Model;
 
 /**
- * Addresses Model Class
+ * Addresses Model Class.
  */
 class Addresses_model extends Model
 {
@@ -24,13 +24,13 @@ class Addresses_model extends Model
     public $relation = [
         'belongsTo' => [
             'customer' => 'Admin\Models\Customers_model',
-            'country' => 'System\Models\Countries_model',
+            'country'  => 'System\Models\Countries_model',
         ],
     ];
 
     protected $casts = [
         'customer_id' => 'integer',
-        'country_id' => 'integer',
+        'country_id'  => 'integer',
     ];
 
     public static $allowedSortingColumns = [
@@ -52,16 +52,15 @@ class Addresses_model extends Model
     public function scopeListFrontEnd($query, $options = [])
     {
         extract(array_merge([
-            'page' => 1,
+            'page'      => 1,
             'pageLimit' => 20,
-            'customer' => null,
-            'sort' => 'address_id desc',
+            'customer'  => null,
+            'sort'      => 'address_id desc',
         ], $options));
 
         if ($customer instanceof Customers_model) {
             $query->where('customer_id', $customer->getKey());
-        }
-        elseif (strlen($customer)) {
+        } elseif (strlen($customer)) {
             $query->where('customer_id', $customer);
         }
 
@@ -89,6 +88,6 @@ class Addresses_model extends Model
 
     public function getFormattedAddressAttribute($value)
     {
-        return format_address($this->toArray(), FALSE);
+        return format_address($this->toArray(), false);
     }
 }

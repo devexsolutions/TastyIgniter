@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * System Error Handler
  * Handles application exception events.
- * Based on: october\ErrorHandler
+ * Based on: october\ErrorHandler.
  */
 class ErrorHandler extends BaseErrorHandler
 {
@@ -30,22 +30,24 @@ class ErrorHandler extends BaseErrorHandler
     /**
      * Looks up an error page using the route "/error". If the route does not
      * exist, this function will use the error view found in the MAIN app.
+     *
      * @return mixed Error page contents.
      */
     public function handleCustomError()
     {
-        if (Config::get('app.debug', FALSE)) {
-            return FALSE;
+        if (Config::get('app.debug', false)) {
+            return false;
         }
 
-        if (!App::hasDatabase())
+        if (!App::hasDatabase()) {
             return View::make('main::error');
+        }
 
         $theme = ThemeManager::instance()->getActiveTheme();
         $router = new Router($theme);
 
         // Use the default view if no "/error" URL is found.
-        if (!$router OR !$router->findByUrl('/error')) {
+        if (!$router or !$router->findByUrl('/error')) {
             return View::make('main::error');
         }
 

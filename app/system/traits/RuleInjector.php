@@ -14,19 +14,20 @@ trait RuleInjector
      */
     public function getInjectRuleParameters()
     {
-        return $this->injectRuleParameters ?? TRUE;
+        return $this->injectRuleParameters ?? true;
     }
 
     /**
      * Set the model to add unique identifier to rules when performing
      * validation.
      *
-     * @param  bool $value
+     * @param bool $value
+     *
      * @return void
      */
     public function setInjectRuleParameters($value)
     {
-        $this->injectRuleParameters = (bool)$value;
+        $this->injectRuleParameters = (bool) $value;
     }
 
     /**
@@ -38,7 +39,8 @@ trait RuleInjector
      * primary key to the unique rules so that the validation
      * will work as expected.
      *
-     * @param  array $rules
+     * @param array $rules
+     *
      * @return array
      */
     protected function injectParametersToRules(array $rules)
@@ -70,22 +72,24 @@ trait RuleInjector
      * Get the dynamic method name for a unique identifier or custom injector rule if it
      * exists, otherwise return false.
      *
-     * @param  string $validationRule
+     * @param string $validationRule
+     *
      * @return mixed
      */
     protected function getRuleInjectorMethod($validationRule)
     {
         $method = 'prepare'.Str::studly($validationRule).'Rule';
 
-        return method_exists($this, $method) ? $method : FALSE;
+        return method_exists($this, $method) ? $method : false;
     }
 
     /**
      * Prepare a rule, adding the table name, column and model identifier
      * if required.
      *
-     * @param  array $parameters
-     * @param  string $field
+     * @param array  $parameters
+     * @param string $field
+     *
      * @return string
      */
     protected function prepareUniqueRule($parameters, $field)
@@ -96,7 +100,7 @@ trait RuleInjector
         }
 
         // If the connection name isn't set but exists, infer it.
-        if ((strpos($parameters[0], '.') === FALSE) && (($connectionName = $this->getModel()->getConnectionName()) !== null)) {
+        if ((strpos($parameters[0], '.') === false) && (($connectionName = $this->getModel()->getConnectionName()) !== null)) {
             $parameters[0] = $connectionName.'.'.$parameters[0];
         }
 
@@ -119,7 +123,7 @@ trait RuleInjector
             // If the additional where clause isn't set, infer it.
             // Example: unique:users,email,123,id,username,NULL
             foreach ($parameters as $key => $parameter) {
-                if (strtolower((string)$parameter) === 'null') {
+                if (strtolower((string) $parameter) === 'null') {
                     // Maintain NULL as string in case the model returns a null value
                     $value = $this->getModel()->{$parameters[$key - 1]};
                     $parameters[$key] = is_null($value) ? 'NULL' : $value;
@@ -133,8 +137,9 @@ trait RuleInjector
     /**
      * Prepare a unique_with rule, adding the model identifier if required.
      *
-     * @param  array $parameters
-     * @param  string $field
+     * @param array  $parameters
+     * @param string $field
+     *
      * @return string
      */
     protected function prepareUniqueWithRule($parameters, $field)

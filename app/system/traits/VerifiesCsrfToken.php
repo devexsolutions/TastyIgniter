@@ -11,11 +11,11 @@ use Illuminate\Support\Facades\Session;
 use Symfony\Component\HttpFoundation\Cookie;
 
 /**
- * Verifies CSRF token Trait
+ * Verifies CSRF token Trait.
  */
 trait VerifiesCsrfToken
 {
-    public $enableCsrfProtection = TRUE;
+    public $enableCsrfProtection = true;
 
     protected function makeXsrfCookie()
     {
@@ -24,30 +24,33 @@ trait VerifiesCsrfToken
         return new Cookie(
             'XSRF-TOKEN',
             Session::token(),
-            Carbon::now()->addMinutes((int)$config['lifetime'])->getTimestamp(),
+            Carbon::now()->addMinutes((int) $config['lifetime'])->getTimestamp(),
             $config['path'],
             $config['domain'],
             $config['secure'],
-            FALSE,
-            FALSE,
+            false,
+            false,
             $config['same_site'] ?? null
         );
     }
 
     protected function verifyCsrfToken()
     {
-        if (!config('system.enableCsrfProtection', TRUE) OR !$this->enableCsrfProtection)
-            return TRUE;
+        if (!config('system.enableCsrfProtection', true) or !$this->enableCsrfProtection) {
+            return true;
+        }
 
-        if (in_array(Request::method(), ['HEAD', 'GET', 'OPTIONS']))
-            return TRUE;
+        if (in_array(Request::method(), ['HEAD', 'GET', 'OPTIONS'])) {
+            return true;
+        }
 
-        if (!strlen($token = $this->getCsrfTokenFromRequest()))
-            return FALSE;
+        if (!strlen($token = $this->getCsrfTokenFromRequest())) {
+            return false;
+        }
 
         return is_string(Request::session()->token())
-            AND is_string($token)
-            AND hash_equals(Request::session()->token(), $token);
+            and is_string($token)
+            and hash_equals(Request::session()->token(), $token);
     }
 
     /**
@@ -62,8 +65,7 @@ trait VerifiesCsrfToken
         if (!$token && $header = Request::header('X-XSRF-TOKEN')) {
             try {
                 $token = Crypt::decrypt($header, static::serialized());
-            }
-            catch (DecryptException $e) {
+            } catch (DecryptException $e) {
                 $token = '';
             }
         }

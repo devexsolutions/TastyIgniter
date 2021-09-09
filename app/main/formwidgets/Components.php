@@ -71,7 +71,7 @@ class Components extends BaseFormWidget
     }
 
     /**
-     * Prepares the list data
+     * Prepares the list data.
      */
     public function prepareVars()
     {
@@ -83,7 +83,7 @@ class Components extends BaseFormWidget
     {
         $result = [];
         $components = array_get($this->data->settings, 'components');
-        foreach ((array)$value as $index => $alias) {
+        foreach ((array) $value as $index => $alias) {
             $result[sprintf('[%s]', $alias)] = $components[$alias];
         }
 
@@ -98,8 +98,8 @@ class Components extends BaseFormWidget
 
         return $this->makePartial('~/app/admin/formwidgets/recordeditor/form', [
             'formRecordId' => $codeAlias,
-            'formTitle' => lang($context == 'create' ? $this->addTitle : $this->editTitle),
-            'formWidget' => $this->makeComponentFormWidget($context, $componentObj),
+            'formTitle'    => lang($context == 'create' ? $this->addTitle : $this->editTitle),
+            'formWidget'   => $this->makeComponentFormWidget($context, $componentObj),
         ]);
     }
 
@@ -116,23 +116,27 @@ class Components extends BaseFormWidget
             ? post($this->formField->arrayName.'[componentData][component]')
             : post('recordId');
 
-        if (!strlen($codeAlias))
+        if (!strlen($codeAlias)) {
             throw new ApplicationException('Invalid component selected');
+        }
 
-        if (!$template = $this->getTemplate())
+        if (!$template = $this->getTemplate()) {
             throw new ApplicationException('Template file not found');
+        }
 
         $this->updateComponent($codeAlias, $isCreateContext, $template);
 
-        flash()->success(sprintf(lang('admin::lang.alert_success'),
-            'Component '.($isCreateContext ? 'added' : 'updated')))->now();
+        flash()->success(sprintf(
+            lang('admin::lang.alert_success'),
+            'Component '.($isCreateContext ? 'added' : 'updated')
+        ))->now();
 
         $template = $this->getTemplate();
         $this->formField->value = array_get($template->settings, 'components');
         $this->controller->setTemplateValue('mTime', $template->mTime);
 
         return [
-            '#notification' => $this->makePartial('flash'),
+            '#notification'               => $this->makePartial('flash'),
             '#'.$this->getId('container') => $this->makePartial('container', [
                 'components' => $this->getComponents(),
             ]),
@@ -142,8 +146,9 @@ class Components extends BaseFormWidget
     public function onRemoveComponent()
     {
         $codeAlias = post('code');
-        if (!strlen($codeAlias))
+        if (!strlen($codeAlias)) {
             throw new ApplicationException('Invalid component selected');
+        }
 
         $template = $this->getTemplate();
 
@@ -164,28 +169,28 @@ class Components extends BaseFormWidget
     protected function getComponents()
     {
         $components = [];
-        if (!$loadValue = (array)$this->getLoadValue())
+        if (!$loadValue = (array) $this->getLoadValue()) {
             return $components;
+        }
 
         foreach ($loadValue as $codeAlias => $properties) {
             [$code, $alias] = $this->getCodeAlias($codeAlias);
 
             $definition = array_merge([
-                'alias' => $codeAlias,
-                'name' => $codeAlias,
+                'alias'       => $codeAlias,
+                'name'        => $codeAlias,
                 'description' => null,
-                'fatalError' => null,
+                'fatalError'  => null,
             ], $this->manager->findComponent($code) ?? []);
 
             try {
                 $this->manager->makeComponent($code, $alias, $properties);
                 $definition['alias'] = $codeAlias;
-            }
-            catch (Exception $ex) {
+            } catch (Exception $ex) {
                 $definition['fatalError'] = $ex->getMessage();
             }
 
-            $components[$codeAlias] = (object)$definition;
+            $components[$codeAlias] = (object) $definition;
         }
 
         return $components;
@@ -196,7 +201,7 @@ class Components extends BaseFormWidget
         $componentObj = null;
         if (strlen($codeAlias)) {
             [$code, $alias] = $this->getCodeAlias($codeAlias);
-            $propertyValues = array_get((array)$this->getLoadValue(), $codeAlias, []);
+            $propertyValues = array_get((array) $this->getLoadValue(), $codeAlias, []);
             $componentObj = $this->manager->makeComponent($code, $alias, $propertyValues);
             $componentObj->alias = $codeAlias;
         }
@@ -244,10 +249,11 @@ class Components extends BaseFormWidget
 
     protected function getUniqueAlias($alias)
     {
-        $existingComponents = (array)$this->getLoadValue();
+        $existingComponents = (array) $this->getLoadValue();
         while (isset($existingComponents[$alias])) {
-            if (strpos($alias, ' ') === FALSE)
+            if (strpos($alias, ' ') === false) {
                 $alias .= ' '.$alias;
+            }
 
             $alias .= 'Copy';
         }
@@ -262,7 +268,8 @@ class Components extends BaseFormWidget
 
     protected function getTemplate()
     {
-        $fileName = sprintf('%s/%s',
+        $fileName = sprintf(
+            '%s/%s',
             $this->controller->getTemplateValue('type'),
             $this->controller->getTemplateValue('file')
         );
@@ -298,8 +305,9 @@ class Components extends BaseFormWidget
         $properties['alias'] = sprintf('[%s]', $properties['alias']);
 
         return array_map(function ($propertyValue) {
-            if (is_numeric($propertyValue))
-                $propertyValue += 0; // Convert to int or float
+            if (is_numeric($propertyValue)) {
+                $propertyValue += 0;
+            } // Convert to int or float
 
             return $propertyValue;
         }, $properties);

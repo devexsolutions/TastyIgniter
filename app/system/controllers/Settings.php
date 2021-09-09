@@ -51,10 +51,10 @@ class Settings extends \Admin\Classes\AdminController
     {
         Mail_templates_model::syncAll();
 
-        $this->validateSettingItems(TRUE);
+        $this->validateSettingItems(true);
 
         // For security reasons, delete setup files if still exists.
-        if (File::isFile(base_path('setup.php')) OR File::isDirectory(base_path('setup'))) {
+        if (File::isFile(base_path('setup.php')) or File::isDirectory(base_path('setup'))) {
             flash()->danger(lang('system::lang.settings.alert_delete_setup_files'))->important()->now();
         }
 
@@ -74,8 +74,9 @@ class Settings extends \Admin\Classes\AdminController
                 throw new Exception(lang('system::lang.settings.alert_settings_not_found'));
             }
 
-            if ($definition->permission AND !AdminAuth::user()->hasPermission($definition->permission))
+            if ($definition->permission and !AdminAuth::user()->hasPermission($definition->permission)) {
                 return Response::make(View::make('admin::access_denied'), 403);
+            }
 
             $pageTitle = sprintf(lang('system::lang.settings.text_edit_title'), lang($definition->label));
             Template::setTitle($pageTitle);
@@ -84,10 +85,10 @@ class Settings extends \Admin\Classes\AdminController
             $this->initWidgets($model, $definition);
 
             $this->validateSettingItems();
-            if ($errors = array_get($this->settingItemErrors, $settingCode))
+            if ($errors = array_get($this->settingItemErrors, $settingCode)) {
                 Session::flash('errors', $errors);
-        }
-        catch (Exception $ex) {
+            }
+        } catch (Exception $ex) {
             $this->handleError($ex);
         }
     }
@@ -99,13 +100,15 @@ class Settings extends \Admin\Classes\AdminController
             throw new Exception(lang('system::lang.settings.alert_settings_not_found'));
         }
 
-        if ($definition->permission AND !AdminAuth::user()->hasPermission($definition->permission))
+        if ($definition->permission and !AdminAuth::user()->hasPermission($definition->permission)) {
             return Response::make(View::make('admin::access_denied'), 403);
+        }
 
         $this->initWidgets($model, $definition);
 
-        if ($this->formValidate($this->formWidget) === FALSE)
-            return Request::ajax() ? ['#notification' => $this->makePartial('flash')] : FALSE;
+        if ($this->formValidate($this->formWidget) === false) {
+            return Request::ajax() ? ['#notification' => $this->makePartial('flash')] : false;
+        }
 
         $this->formBeforeSave($model);
 
@@ -132,8 +135,9 @@ class Settings extends \Admin\Classes\AdminController
 
         $this->initWidgets($model, $definition);
 
-        if ($this->formValidate($this->formWidget) === FALSE)
-            return Request::ajax() ? ['#notification' => $this->makePartial('flash')] : FALSE;
+        if ($this->formValidate($this->formWidget) === false) {
+            return Request::ajax() ? ['#notification' => $this->makePartial('flash')] : false;
+        }
 
         setting()->set($this->formWidget->getSaveData());
 
@@ -147,8 +151,7 @@ class Settings extends \Admin\Classes\AdminController
             });
 
             flash()->success(sprintf(lang('system::lang.settings.alert_email_sent'), $email));
-        }
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             flash()->error($ex->getMessage());
         }
 
@@ -171,7 +174,7 @@ class Settings extends \Admin\Classes\AdminController
         $this->formWidget->bindToController();
 
         // Prep the optional toolbar widget
-        if (isset($modelConfig['toolbar']) AND isset($this->widgets['toolbar'])) {
+        if (isset($modelConfig['toolbar']) and isset($this->widgets['toolbar'])) {
             $this->toolbarWidget = $this->widgets['toolbar'];
             $this->toolbarWidget->reInitialize($modelConfig['toolbar']);
         }
@@ -179,8 +182,9 @@ class Settings extends \Admin\Classes\AdminController
 
     protected function findSettingDefinitions($code)
     {
-        if (!strlen($code))
+        if (!strlen($code)) {
             throw new Exception(lang('admin::lang.form.missing_id'));
+        }
 
         // Prep the list widget config
         $model = $this->createModel();
@@ -192,7 +196,7 @@ class Settings extends \Admin\Classes\AdminController
 
     protected function createModel()
     {
-        if (!isset($this->modelClass) OR !strlen($this->modelClass)) {
+        if (!isset($this->modelClass) or !strlen($this->modelClass)) {
             throw new Exception(lang('system::lang.settings.alert_settings_missing_model'));
         }
 
@@ -201,22 +205,23 @@ class Settings extends \Admin\Classes\AdminController
 
     protected function formAfterSave($model)
     {
-        $this->validateSettingItems(TRUE);
+        $this->validateSettingItems(true);
     }
 
     protected function formValidate($form)
     {
-        if (!isset($form->config['rules']))
+        if (!isset($form->config['rules'])) {
             return null;
+        }
 
         return $this->validatePasses($form->getSaveData(), $form->config['rules']);
     }
 
-    protected function validateSettingItems($skipSession = FALSE)
+    protected function validateSettingItems($skipSession = false)
     {
         $settingItemErrors = Session::get('settings.errors', []);
 
-        if ($skipSession OR !$settingItemErrors) {
+        if ($skipSession or !$settingItemErrors) {
             $model = $this->createModel();
             $settingItems = array_get($model->listSettingItems(), 'core');
             $settingValues = array_undot($model->getFieldValues());
@@ -224,8 +229,9 @@ class Settings extends \Admin\Classes\AdminController
             foreach ($settingItems as $settingItem) {
                 $settingItemForm = $this->createModel()->getFieldConfig($settingItem->code);
 
-                if (!isset($settingItemForm['rules']))
+                if (!isset($settingItemForm['rules'])) {
                     continue;
+                }
 
                 $validator = $this->makeValidator($settingValues, $settingItemForm['rules']);
                 $errors = $validator->fails() ? $validator->errors() : [];

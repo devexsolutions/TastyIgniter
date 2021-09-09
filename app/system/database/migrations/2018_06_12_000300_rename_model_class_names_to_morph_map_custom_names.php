@@ -20,7 +20,7 @@ class RenameModelClassNamesToMorphMapCustomNames extends Migration
         $this->morphMap = array_flip($morphMap);
 
         $this->updateMorphClassName([
-            'activities' => ['subject_type', 'causer_type'],
+            'activities'     => ['subject_type', 'causer_type'],
             'status_history' => ['object_type'],
         ]);
     }
@@ -33,17 +33,22 @@ class RenameModelClassNamesToMorphMapCustomNames extends Migration
     protected function updateMorphClassName($definitions)
     {
         collect($definitions)->each(function ($columns, $tableName) {
-            if (!Schema::hasTable($tableName))
+            if (!Schema::hasTable($tableName)) {
                 return;
+            }
 
             DB::table($tableName)->get()->each(function ($model) use ($tableName, $columns) {
                 $columnsToUpdate = [];
                 foreach ($columns as $column) {
                     $columnValue = $model->{$column};
 
-                    if (!$columnValue) continue;
+                    if (!$columnValue) {
+                        continue;
+                    }
 
-                    if (!array_key_exists($columnValue, $this->morphMap)) continue;
+                    if (!array_key_exists($columnValue, $this->morphMap)) {
+                        continue;
+                    }
 
                     $columnsToUpdate[$column] = array_get($this->morphMap, $columnValue);
                 }

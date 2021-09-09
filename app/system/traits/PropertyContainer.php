@@ -54,10 +54,10 @@ trait PropertyContainer
     }
 
     /**
-     * Sets a property value
+     * Sets a property value.
      *
      * @param string $name
-     * @param mixed $value
+     * @param mixed  $value
      */
     public function setProperty($name, $value)
     {
@@ -66,6 +66,7 @@ trait PropertyContainer
 
     /**
      * Returns all properties.
+     *
      * @return array
      */
     public function getProperties()
@@ -76,7 +77,7 @@ trait PropertyContainer
     /**
      * Returns a defined property value or default if one is not set.
      *
-     * @param string $name The property name to look for.
+     * @param string $name    The property name to look for.
      * @param string $default A default value to return if no name is found.
      *
      * @return mixed The property value or the default specified.
@@ -89,7 +90,7 @@ trait PropertyContainer
     }
 
     /**
-     * Returns options for multi-option properties (drop-downs, etc.)
+     * Returns options for multi-option properties (drop-downs, etc.).
      *
      * @param string $property Specifies the property name
      *

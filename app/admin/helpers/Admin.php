@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\URL;
 
 /**
- * Admin Helper
+ * Admin Helper.
+ *
  * @see \Admin\Facades\Admin
  */
 class Admin
@@ -23,10 +24,10 @@ class Admin
     }
 
     /**
-     * Generate an absolute URL in context of the Admin
+     * Generate an absolute URL in context of the Admin.
      *
-     * @param string $path
-     * @param array $parameters
+     * @param string    $path
+     * @param array     $parameters
      * @param bool|null $secure
      *
      * @return string
@@ -60,9 +61,9 @@ class Admin
     /**
      * Create a new redirect response to a given admin path.
      *
-     * @param string $path
-     * @param int $status
-     * @param array $headers
+     * @param string    $path
+     * @param int       $status
+     * @param array     $headers
      * @param bool|null $secure
      *
      * @return \Illuminate\Http\RedirectResponse
@@ -76,9 +77,9 @@ class Admin
      * Create a new admin redirect response, while putting the current URL in the session.
      *
      * @param $path
-     * @param int $status
+     * @param int   $status
      * @param array $headers
-     * @param null $secure
+     * @param null  $secure
      *
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -91,9 +92,9 @@ class Admin
      * Create a new redirect response to the previously intended admin location.
      *
      * @param $path
-     * @param int $status
+     * @param int   $status
      * @param array $headers
-     * @param null $secure
+     * @param null  $secure
      *
      * @return \Illuminate\Http\RedirectResponse
      */

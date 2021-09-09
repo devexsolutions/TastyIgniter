@@ -3,14 +3,14 @@
 use Main\Classes\ThemeManager;
 
 /**
- * Theme helper functions
+ * Theme helper functions.
  */
 
 // ------------------------------------------------------------------------
 
 if (!function_exists('active_theme')) {
     /**
-     * Get the active theme code of the specified domain
+     * Get the active theme code of the specified domain.
      *
      * @return null
      */
@@ -24,7 +24,7 @@ if (!function_exists('active_theme')) {
 
 if (!function_exists('parent_theme')) {
     /**
-     * Get the parent theme code of the specified domain
+     * Get the parent theme code of the specified domain.
      *
      * @param string $theme
      *

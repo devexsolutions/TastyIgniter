@@ -24,7 +24,7 @@ class Onboarding extends BaseDashboardWidget
     {
         return [
             'title' => [
-                'label' => 'admin::lang.dashboard.label_widget_title',
+                'label'   => 'admin::lang.dashboard.label_widget_title',
                 'default' => 'admin::lang.dashboard.onboarding.title',
             ],
         ];

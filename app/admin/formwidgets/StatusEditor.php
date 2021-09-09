@@ -19,7 +19,7 @@ use Igniter\Flame\Exception\ApplicationException;
 use Igniter\Flame\Exception\ValidationException;
 
 /**
- * Status Editor
+ * Status Editor.
  */
 class StatusEditor extends BaseFormWidget
 {
@@ -128,8 +128,9 @@ class StatusEditor extends BaseFormWidget
     public function onLoadRecord()
     {
         $context = post('recordId');
-        if (!in_array($context, ['load-status', 'load-assignee']))
+        if (!in_array($context, ['load-status', 'load-assignee'])) {
             throw new ApplicationException(lang('admin::lang.statuses.alert_invalid_action'));
+        }
 
         $this->setMode(str_after($context, 'load-'));
 
@@ -137,7 +138,7 @@ class StatusEditor extends BaseFormWidget
         $model = $this->createFormModel();
 
         return $this->makePartial('statuseditor/form', [
-            'formTitle' => $formTitle,
+            'formTitle'  => $formTitle,
             'formWidget' => $this->makeEditorFormWidget($model),
         ]);
     }
@@ -150,8 +151,9 @@ class StatusEditor extends BaseFormWidget
         $arrayName = $this->getModeConfig('arrayName');
         $recordId = post($arrayName.'.'.$keyFrom);
 
-        if (!$this->isStatusMode)
+        if (!$this->isStatusMode) {
             $this->checkAssigneePermission();
+        }
 
         $model = $this->createFormModel();
         $form = $this->makeEditorFormWidget($model);
@@ -159,49 +161,51 @@ class StatusEditor extends BaseFormWidget
 
         try {
             $this->validateAfter(function ($validator) use ($context, $recordId, $keyFrom) {
-                if ($this->isStatusMode AND $recordId == $this->model->{$keyFrom}) {
+                if ($this->isStatusMode and $recordId == $this->model->{$keyFrom}) {
                     $validator->errors()->add($keyFrom, sprintf(
                         lang('admin::lang.statuses.alert_already_added'),
-                        $context, $context
+                        $context,
+                        $context
                     ));
                 }
             });
             $this->validate($saveData, $this->getFormRules());
-        }
-        catch (ValidationException $ex) {
+        } catch (ValidationException $ex) {
             throw new ApplicationException($ex->getMessage());
         }
 
         if ($this->saveRecord($saveData, $keyFrom)) {
             flash()->success(sprintf(lang('admin::lang.alert_success'), lang($this->getModeConfig('formName')).' '.'updated'))->now();
-        }
-        else {
+        } else {
             flash()->error(lang('admin::lang.alert_error_try_again'))->now();
         }
 
         $this->prepareVars();
 
         return [
-            '#notification' => $this->makePartial('flash'),
+            '#notification'    => $this->makePartial('flash'),
             '#'.$this->getId() => $this->makePartial('statuseditor/info'),
         ];
     }
 
     public function onLoadStatus()
     {
-        if (!strlen($statusId = post('statusId')))
+        if (!strlen($statusId = post('statusId'))) {
             throw new ApplicationException(lang('admin::lang.form.missing_id'));
+        }
 
-        if (!$status = Statuses_model::find($statusId))
+        if (!$status = Statuses_model::find($statusId)) {
             throw new Exception(sprintf(lang('admin::lang.statuses.alert_status_not_found'), $statusId));
+        }
 
         return $status->toArray();
     }
 
     public function onLoadAssigneeList()
     {
-        if (!strlen($groupId = post('groupId')))
+        if (!strlen($groupId = post('groupId'))) {
             throw new ApplicationException(lang('admin::lang.form.missing_id'));
+        }
 
         $this->setMode('assignee');
 
@@ -213,7 +217,7 @@ class StatusEditor extends BaseFormWidget
 
         return [
             '#'.$formField->getId() => $form->renderField($formField, [
-                'useContainer' => FALSE,
+                'useContainer' => false,
             ]),
         ];
     }
@@ -238,8 +242,9 @@ class StatusEditor extends BaseFormWidget
 
     public static function getAssigneeOptions($form, $field)
     {
-        if (!strlen($groupId = post('groupId', $form->getField('assignee_group_id')->value)))
+        if (!strlen($groupId = post('groupId', $form->getField('assignee_group_id')->value))) {
             return [];
+        }
 
         return Staffs_model::whereHas('groups', function ($query) use ($groupId) {
             $query->where('staff_groups.staff_group_id', $groupId);
@@ -337,8 +342,9 @@ class StatusEditor extends BaseFormWidget
 
         $permission = $this->getModeConfig($saleType);
 
-        if (!$this->controller->getUser()->hasPermission($permission))
+        if (!$this->controller->getUser()->hasPermission($permission)) {
             throw new ApplicationException(lang('admin::lang.alert_user_restricted'));
+        }
     }
 
     protected function saveRecord(array $saveData, string $keyFrom)
@@ -346,13 +352,14 @@ class StatusEditor extends BaseFormWidget
         if (!$this->isStatusMode) {
             $group = Staff_groups_model::find(array_get($saveData, $this->assigneeGroupKeyFrom));
             $staff = Staffs_model::find(array_get($saveData, $keyFrom));
-            if ($record = $this->model->updateAssignTo($group, $staff))
+            if ($record = $this->model->updateAssignTo($group, $staff)) {
                 AssigneeUpdated::log($record, $this->getController()->getUser());
-        }
-        else {
+            }
+        } else {
             $status = Statuses_model::find(array_get($saveData, $keyFrom));
-            if ($record = $this->model->addStatusHistory($status, $saveData))
+            if ($record = $this->model->addStatusHistory($status, $saveData)) {
                 StatusUpdated::log($record, $this->getController()->getUser());
+            }
         }
 
         return $record;

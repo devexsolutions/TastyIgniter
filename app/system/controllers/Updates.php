@@ -60,22 +60,22 @@ class Updates extends \Admin\Classes\AdminController
                 'class' => 'btn disabled text-muted pull-right', 'role' => 'button',
             ]);
 
-            if (!empty($updates['items']) OR !empty($updates['ignoredItems'])) {
+            if (!empty($updates['items']) or !empty($updates['ignoredItems'])) {
                 Template::setButton(lang('system::lang.updates.button_update'), [
                     'class' => 'btn btn-primary pull-left mr-2 ml-0',
-                    'id' => 'apply-updates', 'role' => 'button',
+                    'id'    => 'apply-updates', 'role' => 'button',
                 ]);
             }
-        }
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             Flash::warning($ex->getMessage())->now();
         }
     }
 
     public function browse($context, $itemType = null)
     {
-        if (!in_array($itemType, ['themes', 'extensions']))
+        if (!in_array($itemType, ['themes', 'extensions'])) {
             return $this->redirectBack();
+        }
 
         $updateManager = UpdateManager::instance();
 
@@ -104,14 +104,13 @@ class Updates extends \Admin\Classes\AdminController
     {
         $json = [];
 
-        if ($filter = input('filter') AND is_array($filter)) {
+        if ($filter = input('filter') and is_array($filter)) {
             $itemType = $filter['type'] ?? 'extension';
             $searchQuery = isset($filter['search']) ? strtolower($filter['search']) : '';
 
             try {
                 $json = UpdateManager::instance()->searchItems($itemType, $searchQuery);
-            }
-            catch (Exception $ex) {
+            } catch (Exception $ex) {
                 $json = $ex->getMessage();
             }
         }
@@ -129,7 +128,7 @@ class Updates extends \Admin\Classes\AdminController
     public function index_onCheckUpdates()
     {
         $updateManager = UpdateManager::instance();
-        $updateManager->requestUpdateList(TRUE);
+        $updateManager->requestUpdateList(true);
 
         return $this->redirect($this->checkUrl);
     }
@@ -147,8 +146,9 @@ class Updates extends \Admin\Classes\AdminController
     public function index_onIgnoreUpdate()
     {
         $items = post('items');
-        if (!$items OR count($items) < 1)
+        if (!$items or count($items) < 1) {
             throw new ApplicationException(lang('system::lang.updates.alert_item_to_ignore'));
+        }
 
         $updateManager = UpdateManager::instance();
 
@@ -173,7 +173,7 @@ class Updates extends \Admin\Classes\AdminController
 
         return [
             '#list-items' => $this->makePartial('browse/list', [
-                'items' => $items,
+                'items'    => $items,
                 'itemType' => $itemType,
             ]),
         ];
@@ -197,8 +197,9 @@ class Updates extends \Admin\Classes\AdminController
     protected function applyCarte()
     {
         $carteKey = post('carte_key');
-        if (!strlen($carteKey))
+        if (!strlen($carteKey)) {
             throw new ApplicationException(lang('system::lang.updates.alert_no_carte_key'));
+        }
 
         $response = UpdateManager::instance()->applySiteDetail($carteKey);
 
@@ -213,20 +214,20 @@ class Updates extends \Admin\Classes\AdminController
 
         $items = input('items') ?? [];
 
-// Uncomment this block to require carte key
+        // Uncomment this block to require carte key
 //        if (!params()->has('carte_key'))
 //            throw new ApplicationException(lang('system::lang.missing.carte_key'));
 
-        if (!count($items))
+        if (!count($items)) {
             throw new ApplicationException(lang('system::lang.updates.alert_no_items'));
+        }
 
         $this->validateItems();
 
         if ($context == 'index') {
             $updates = UpdateManager::instance()->requestUpdateList(input('check') == 'force');
             $response['data'] = array_get($updates, 'items');
-        }
-        else {
+        } else {
             $response = UpdateManager::instance()->requestApplyItems($items);
         }
 
@@ -238,23 +239,24 @@ class Updates extends \Admin\Classes\AdminController
     protected function buildProcessSteps($meta, $params = [])
     {
         $processSteps = [];
-        if (!count($meta['data']))
+        if (!count($meta['data'])) {
             return $processSteps;
+        }
 
         foreach (['download', 'extract', 'complete'] as $step) {
             // Silly way to sort the process
             $applySteps = [
-                'core' => [],
-                'extensions' => [],
-                'themes' => [],
+                'core'         => [],
+                'extensions'   => [],
+                'themes'       => [],
                 'translations' => [],
             ];
 
             if ($step == 'complete') {
                 $processSteps[$step][] = [
-                    'items' => $meta['data'],
+                    'items'   => $meta['data'],
                     'process' => $step,
-                    'label' => lang("system::lang.updates.progress_{$step}"),
+                    'label'   => lang("system::lang.updates.progress_{$step}"),
                     'success' => sprintf(lang('system::lang.updates.progress_success'), rtrim($step, 'e').'ing', ''),
                 ];
 
@@ -264,21 +266,20 @@ class Updates extends \Admin\Classes\AdminController
             foreach (array_get($meta, 'data') as $item) {
                 if ($item['type'] == 'core') {
                     $applySteps['core'][] = array_merge([
-                        'action' => 'update',
+                        'action'  => 'update',
                         'process' => "{$step}Core",
-                        'label' => sprintf(lang("system::lang.updates.progress_{$step}"), $item['name'].' update'),
+                        'label'   => sprintf(lang("system::lang.updates.progress_{$step}"), $item['name'].' update'),
                         'success' => sprintf(lang('system::lang.updates.progress_success'), $step.'ing', $item['name']),
                     ], $item);
-                }
-                else {
+                } else {
                     $singularType = str_singular($item['type']);
                     $pluralType = str_plural($item['type']);
 
                     $action = $this->getActionFromItems($item['code'], $params);
                     $applySteps[$pluralType][] = array_merge([
-                        'action' => $action,
+                        'action'  => $action,
                         'process' => $step.ucfirst($singularType),
-                        'label' => sprintf(lang("system::lang.updates.progress_{$step}"), "{$item['name']} {$singularType}"),
+                        'label'   => sprintf(lang("system::lang.updates.progress_{$step}"), "{$item['name']} {$singularType}"),
                         'success' => sprintf(lang('system::lang.updates.progress_success'), $step.'ing', $item['name']),
                     ], $item);
                 }
@@ -301,9 +302,9 @@ class Updates extends \Admin\Classes\AdminController
         $params = [];
         if (post('step') != 'complete') {
             $params = !isset($meta['code']) ? [] : [
-                'name' => $meta['code'],
-                'type' => $meta['type'],
-                'ver' => $meta['version'],
+                'name'   => $meta['code'],
+                'type'   => $meta['type'],
+                'ver'    => $meta['version'],
                 'action' => $meta['action'],
             ];
         }
@@ -316,26 +317,36 @@ class Updates extends \Admin\Classes\AdminController
             case 'downloadExtension':
             case 'downloadTheme':
                 $result = $updateManager->downloadFile($meta['code'], $meta['hash'], $params);
-                if ($result) $json['result'] = 'success';
+                if ($result) {
+                    $json['result'] = 'success';
+                }
                 break;
 
             case 'extractCore':
                 $response = $updateManager->extractCore($meta['code']);
-                if ($response) $json['result'] = 'success';
+                if ($response) {
+                    $json['result'] = 'success';
+                }
                 break;
 
             case 'extractExtension':
                 $response = $updateManager->extractFile($meta['code'], extension_path('/'));
-                if ($response) $json['result'] = 'success';
+                if ($response) {
+                    $json['result'] = 'success';
+                }
                 break;
             case 'extractTheme':
                 $response = $updateManager->extractFile($meta['code'], theme_path('/'));
-                if ($response) $json['result'] = 'success';
+                if ($response) {
+                    $json['result'] = 'success';
+                }
                 break;
 
             case 'complete':
                 $response = $this->completeProcess($meta['items']);
-                if ($response) $json['result'] = 'success';
+                if ($response) {
+                    $json['result'] = 'success';
+                }
                 break;
         }
 
@@ -344,8 +355,9 @@ class Updates extends \Admin\Classes\AdminController
 
     protected function completeProcess($items)
     {
-        if (!count($items))
-            return FALSE;
+        if (!count($items)) {
+            return false;
+        }
 
         $updateManager = UpdateManager::instance();
 
@@ -364,14 +376,15 @@ class Updates extends \Admin\Classes\AdminController
             }
         }
 
-        return TRUE;
+        return true;
     }
 
     protected function getActionFromItems($code, $itemNames)
     {
         foreach ($itemNames as $itemName) {
-            if ($code == $itemName['name'])
+            if ($code == $itemName['name']) {
                 return $itemName['action'];
+            }
         }
     }
 
@@ -397,8 +410,7 @@ class Updates extends \Admin\Classes\AdminController
             $rules[] = ['meta.hash', 'lang:system::lang.updates.label_meta_hash', 'required'];
             $rules[] = ['meta.description', 'lang:system::lang.updates.label_meta_description', 'sometimes'];
             $rules[] = ['meta.action', 'lang:system::lang.updates.label_meta_action', 'required|in:install,update'];
-        }
-        else {
+        } else {
             $rules[] = ['meta.items', 'lang:system::lang.updates.label_meta_items', 'required|array'];
         }
 

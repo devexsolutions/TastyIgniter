@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Request;
 use System\Classes\ControllerAction;
 
 /**
- * Form Controller Class
+ * Form Controller Class.
  */
 class FormController extends ControllerAction
 {
@@ -44,6 +44,7 @@ class FormController extends ControllerAction
 
     /**
      * Define controller list configuration array.
+     *
      * @var array
      */
     public $formConfig;
@@ -62,8 +63,8 @@ class FormController extends ControllerAction
 
     /**
      * @var array Configuration values that must exist when applying the primary config file.
-     * - modelClass: Class name for the model
-     * - form: Form field configs
+     *            - modelClass: Class name for the model
+     *            - form: Form field configs
      */
     protected $requiredConfig = ['model', 'configFile'];
 
@@ -134,18 +135,20 @@ class FormController extends ControllerAction
     }
 
     /**
-     * Prepare the widgets used by this action
+     * Prepare the widgets used by this action.
      *
      * @param \Igniter\Flame\Database\Model $model
+     * @param null                          $context
      *
-     * @param null $context
-     * @return void
      * @throws \Exception
+     *
+     * @return void
      */
     public function initForm($model, $context = null)
     {
-        if ($context !== null)
+        if ($context !== null) {
             $this->context = $context;
+        }
 
         $context = $this->getFormContext();
 
@@ -154,11 +157,9 @@ class FormController extends ControllerAction
 
         if ($context == self::CONTEXT_CREATE) {
             $configFile = $this->getConfig('create[configFile]', $configFile);
-        }
-        elseif ($context == self::CONTEXT_EDIT) {
+        } elseif ($context == self::CONTEXT_EDIT) {
             $configFile = $this->getConfig('edit[configFile]', $configFile);
-        }
-        elseif ($context == self::CONTEXT_PREVIEW) {
+        } elseif ($context == self::CONTEXT_PREVIEW) {
             $configFile = $this->getConfig('preview[configFile]', $configFile);
         }
 
@@ -185,7 +186,9 @@ class FormController extends ControllerAction
 
         $this->formWidget->bindEvent('form.beforeRefresh', function ($holder) {
             $result = $this->controller->formExtendRefreshData($this->formWidget, $holder->data);
-            if (is_array($result)) $holder->data = $result;
+            if (is_array($result)) {
+                $holder->data = $result;
+            }
         });
 
         $this->formWidget->bindEvent('form.refreshFields', function ($fields) {
@@ -199,7 +202,7 @@ class FormController extends ControllerAction
         $this->formWidget->bindToController();
 
         // Prep the optional toolbar widget
-        if (isset($modelConfig['toolbar']) AND isset($this->controller->widgets['toolbar'])) {
+        if (isset($modelConfig['toolbar']) and isset($this->controller->widgets['toolbar'])) {
             $this->toolbarWidget = $this->controller->widgets['toolbar'];
             if ($this->toolbarWidget instanceof Toolbar) {
                 $this->toolbarWidget->reInitialize($modelConfig['toolbar']);
@@ -211,7 +214,8 @@ class FormController extends ControllerAction
     }
 
     /**
-     * Prepares common form data
+     * Prepares common form data.
+     *
      * @param $model
      */
     protected function prepareVars($model)
@@ -231,8 +235,7 @@ class FormController extends ControllerAction
             $model = $this->controller->formCreateModelObject();
             $model = $this->controller->formExtendModel($model) ?: $model;
             $this->initForm($model, $context);
-        }
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             $this->controller->handleError($ex);
         }
     }
@@ -251,8 +254,9 @@ class FormController extends ControllerAction
 
         $this->validateFormRequest($model);
 
-        if ($this->controller->formValidate($model, $this->formWidget) === FALSE)
-            return Request::ajax() ? ['#notification' => $this->makePartial('flash')] : FALSE;
+        if ($this->controller->formValidate($model, $this->formWidget) === false) {
+            return Request::ajax() ? ['#notification' => $this->makePartial('flash')] : false;
+        }
 
         DB::transaction(function () use ($modelsToSave) {
             foreach ($modelsToSave as $modelToSave) {
@@ -281,8 +285,7 @@ class FormController extends ControllerAction
             $model = $this->controller->formFindModelObject($recordId);
 
             $this->initForm($model, $context);
-        }
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             $this->controller->handleError($ex);
         }
     }
@@ -301,8 +304,9 @@ class FormController extends ControllerAction
 
         $this->validateFormRequest($model);
 
-        if ($this->controller->formValidate($model, $this->formWidget) === FALSE)
-            return Request::ajax() ? ['#notification' => $this->makePartial('flash')] : FALSE;
+        if ($this->controller->formValidate($model, $this->formWidget) === false) {
+            return Request::ajax() ? ['#notification' => $this->makePartial('flash')] : false;
+        }
 
         DB::transaction(function () use ($modelsToSave) {
             foreach ($modelsToSave as $modelToSave) {
@@ -330,8 +334,7 @@ class FormController extends ControllerAction
 
         if (!$model->delete()) {
             flash()->warning(lang('admin::lang.form.delete_failed'));
-        }
-        else {
+        } else {
             $this->controller->formAfterDelete($model);
 
             $title = lang($this->getConfig('name'));
@@ -352,8 +355,7 @@ class FormController extends ControllerAction
 
             $model = $this->controller->formFindModelObject($recordId);
             $this->initForm($model, $context);
-        }
-        catch (Exception $ex) {
+        } catch (Exception $ex) {
             $this->controller->handleError($ex);
         }
     }
@@ -367,8 +369,9 @@ class FormController extends ControllerAction
      *
      * @param array $options Custom options to pass to the form widget.
      *
-     * @return string Rendered HTML for the form.
      * @throws \Exception
+     *
+     * @return string Rendered HTML for the form.
      */
     public function renderForm($options = [])
     {
@@ -387,6 +390,7 @@ class FormController extends ControllerAction
 
     /**
      * Returns the model initialized by this form behavior.
+     *
      * @return Model
      */
     public function getFormModel()
@@ -396,12 +400,14 @@ class FormController extends ControllerAction
 
     /**
      * Returns the form context from the postback or configuration.
+     *
      * @return string
      */
     public function getFormContext()
     {
-        if ($context = post('form_context'))
+        if ($context = post('form_context')) {
             return $context;
+        }
 
         return $this->context;
     }
@@ -411,7 +417,7 @@ class FormController extends ControllerAction
         $title = lang($this->getConfig('name'));
         $lang = lang($this->getConfig($this->context.'[title]', $default));
 
-        $pageTitle = (strpos($lang, ':name') !== FALSE)
+        $pageTitle = (strpos($lang, ':name') !== false)
             ? str_replace(':name', $title, $lang) : $lang;
 
         Template::setTitle($pageTitle);
@@ -419,42 +425,43 @@ class FormController extends ControllerAction
     }
 
     /**
-     * Internal method, prepare the form model object
+     * Internal method, prepare the form model object.
+     *
      * @return Model
      */
     protected function createModel()
     {
         $class = $this->config['model'];
 
-        return new $class;
+        return new $class();
     }
 
     /**
      * Returns a Redirect object based on supplied context and parses the model primary key.
      *
      * @param string $context Redirect context, eg: create, edit, delete
-     * @param Model $model The active model to parse in it's ID and attributes.
+     * @param Model  $model   The active model to parse in it's ID and attributes.
      *
      * @return Redirect
      */
     public function makeRedirect($context = null, $model = null)
     {
         $redirectUrl = null;
-        if (post('new') AND !ends_with($context, '-new')) {
+        if (post('new') and !ends_with($context, '-new')) {
             $context .= '-new';
         }
 
-        if (post('close') AND !ends_with($context, '-close')) {
+        if (post('close') and !ends_with($context, '-close')) {
             $context .= '-close';
         }
 
-        if (post('refresh', FALSE)) {
+        if (post('refresh', false)) {
             return $this->controller->refresh();
         }
 
         $redirectUrl = $this->getRedirectUrl($context);
 
-        if ($model AND $redirectUrl) {
+        if ($model and $redirectUrl) {
             $redirectUrl = parse_values($model->getAttributes(), $redirectUrl);
         }
 
@@ -494,15 +501,14 @@ class FormController extends ControllerAction
     /**
      * Sets a data collection to a model attributes, relations will also be set.
      *
-     * @param \Igniter\Flame\Database\Model $model Model to save to
-     *
-     * @param array $saveData Data to save.
+     * @param \Igniter\Flame\Database\Model $model    Model to save to
+     * @param array                         $saveData Data to save.
      *
      * @return void
      */
     protected function setModelAttributes($model, $saveData)
     {
-        if (!is_array($saveData) OR !$model) {
+        if (!is_array($saveData) or !$model) {
             return;
         }
 
@@ -510,30 +516,32 @@ class FormController extends ControllerAction
 
         $singularTypes = ['belongsTo', 'hasOne', 'morphOne'];
         foreach ($saveData as $attribute => $value) {
-            $isNested = ($attribute == 'pivot' OR (
-                    $model->hasRelation($attribute) AND
+            $isNested = ($attribute == 'pivot' or (
+                    $model->hasRelation($attribute) and
                     in_array($model->getRelationType($attribute), $singularTypes)
                 ));
 
-            if ($isNested AND is_array($value) AND $model->{$attribute}) {
+            if ($isNested and is_array($value) and $model->{$attribute}) {
                 $this->setModelAttributes($model->{$attribute}, $value);
-            }
-            elseif ($value !== FormField::NO_SAVE_DATA) {
-                if (!starts_with($attribute, '_'))
+            } elseif ($value !== FormField::NO_SAVE_DATA) {
+                if (!starts_with($attribute, '_')) {
                     $model->{$attribute} = $value;
+                }
             }
         }
     }
 
     protected function validateFormRequest($model)
     {
-        $requestClass = $this->getConfig('request', FALSE);
+        $requestClass = $this->getConfig('request', false);
 
-        if ($requestClass === FALSE)
+        if ($requestClass === false) {
             return;
+        }
 
-        if (!class_exists($requestClass))
+        if (!class_exists($requestClass)) {
             throw new ApplicationException(sprintf(lang('admin::lang.form.request_class_not_found'), $requestClass));
+        }
 
         $this->resolveFormRequest($requestClass);
     }
@@ -541,11 +549,13 @@ class FormController extends ControllerAction
     protected function resolveFormRequest($requestClass)
     {
         app()->resolving($requestClass, function ($request, $app) {
-            if (method_exists($request, 'setController'))
+            if (method_exists($request, 'setController')) {
                 $request->setController($this->controller);
+            }
 
-            if (method_exists($request, 'setInputKey'))
+            if (method_exists($request, 'setInputKey')) {
                 $request->setInputKey(strip_class_basename($request));
+            }
         });
 
         return app()->make($requestClass);

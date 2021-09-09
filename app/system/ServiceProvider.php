@@ -44,6 +44,7 @@ class ServiceProvider extends AppServiceProvider
 {
     /**
      * Register the service provider.
+     *
      * @return void
      */
     public function register()
@@ -81,6 +82,7 @@ class ServiceProvider extends AppServiceProvider
 
     /**
      * Bootstrap the module events.
+     *
      * @return void
      */
     public function boot()
@@ -117,20 +119,20 @@ class ServiceProvider extends AppServiceProvider
     }
 
     /**
-     * Register singletons
+     * Register singletons.
      */
     protected function registerSingletons()
     {
         App::singleton('admin.helper', function () {
-            return new AdminHelper;
+            return new AdminHelper();
         });
 
         App::singleton('admin.auth', function () {
-            return new User;
+            return new User();
         });
 
         App::singleton('auth', function () {
-            return new Customer;
+            return new Customer();
         });
 
         App::singleton('assets', function () {
@@ -142,15 +144,15 @@ class ServiceProvider extends AppServiceProvider
         });
 
         App::singleton('admin.template', function ($app) {
-            return new Template;
+            return new Template();
         });
 
         App::singleton('admin.location', function ($app) {
-            return new Location;
+            return new Location();
         });
 
         App::singleton('country', function ($app) {
-            $country = new Libraries\Country;
+            $country = new Libraries\Country();
 
             $country->setDefaultFormat("{address_1}\n{address_2}\n{city} {postcode}\n{state}\n{country}", [
                 '{address_1}', '{address_2}', '{city}', '{postcode}', '{state}', '{country}',
@@ -163,7 +165,7 @@ class ServiceProvider extends AppServiceProvider
     }
 
     /**
-     * Register command line specifics
+     * Register command line specifics.
      */
     protected function registerConsole()
     {
@@ -206,14 +208,14 @@ class ServiceProvider extends AppServiceProvider
     protected function registerErrorHandler()
     {
         Event::listen('exception.beforeRender', function ($exception, $httpCode, $request) {
-            $handler = new ErrorHandler;
+            $handler = new ErrorHandler();
 
             return $handler->handleException($exception);
         });
     }
 
     /**
-     * Extends the validator with custom rules
+     * Extends the validator with custom rules.
      */
     protected function extendValidator()
     {
@@ -223,12 +225,12 @@ class ServiceProvider extends AppServiceProvider
 
         Validator::extend('valid_date', function ($attribute, $value, $parameters, $validator) {
             return !(!preg_match('/^(0[1-9]|[1-2][0-9]|3[0-1])-(0[1-9]|1[0-2])-[0-9]{4}$/', $value)
-                AND !preg_match('/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/', $value));
+                and !preg_match('/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/', $value));
         });
 
         Validator::extend('valid_time', function ($attribute, $value, $parameters, $validator) {
             return !(!preg_match('/^([01]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/', $value)
-                AND !preg_match('/^(1[012]|[1-9]):[0-5][0-9](\s)?(?i)(am|pm)$/', $value));
+                and !preg_match('/^(1[012]|[1-9]):[0-5][0-9](\s)?(?i)(am|pm)$/', $value));
         });
 
         Event::listen('validator.beforeMake', function ($args) {
@@ -246,12 +248,12 @@ class ServiceProvider extends AppServiceProvider
             ]);
 
             $manager->registerMailPartials([
-                'header' => 'system::_mail.partials.header',
-                'footer' => 'system::_mail.partials.footer',
-                'button' => 'system::_mail.partials.button',
-                'panel' => 'system::_mail.partials.panel',
-                'table' => 'system::_mail.partials.table',
-                'subcopy' => 'system::_mail.partials.subcopy',
+                'header'    => 'system::_mail.partials.header',
+                'footer'    => 'system::_mail.partials.footer',
+                'button'    => 'system::_mail.partials.button',
+                'panel'     => 'system::_mail.partials.panel',
+                'table'     => 'system::_mail.partials.table',
+                'subcopy'   => 'system::_mail.partials.subcopy',
                 'promotion' => 'system::_mail.partials.promotion',
             ]);
 
@@ -286,7 +288,7 @@ class ServiceProvider extends AppServiceProvider
 
         Paginator::currentPageResolver(function ($pageName = 'page') {
             $page = Request::get($pageName);
-            if (filter_var($page, FILTER_VALIDATE_INT) !== FALSE && (int)$page >= 1) {
+            if (filter_var($page, FILTER_VALIDATE_INT) !== false && (int) $page >= 1) {
                 return $page;
             }
 
@@ -315,7 +317,7 @@ class ServiceProvider extends AppServiceProvider
         $this->app->resolving('translator.localization', function ($localization, $app) {
             $app['config']->set('localization.locale', setting('default_language', $app['config']['app.locale']));
             $app['config']->set('localization.supportedLocales', setting('supported_languages', []) ?: ['en']);
-            $app['config']->set('localization.detectBrowserLocale', (bool)setting('detect_language', FALSE));
+            $app['config']->set('localization.detectBrowserLocale', (bool) setting('detect_language', false));
         });
 
         $this->app->resolving('geocoder', function ($geocoder, $app) {
@@ -330,7 +332,7 @@ class ServiceProvider extends AppServiceProvider
         });
 
         Event::listen(CommandStarting::class, function () {
-            config()->set('system.activityRecordsTTL', (int)setting('activity_log_timeout', 60));
+            config()->set('system.activityRecordsTTL', (int) setting('activity_log_timeout', 60));
         });
     }
 
@@ -361,17 +363,17 @@ class ServiceProvider extends AppServiceProvider
     protected function defineEloquentMorphMaps()
     {
         Relation::morphMap([
-            'activities' => 'System\Models\Activities_model',
-            'countries' => 'System\Models\Countries_model',
-            'currencies' => 'System\Models\Currencies_model',
-            'extensions' => 'System\Models\Extensions_model',
-            'languages' => 'System\Models\Languages_model',
-            'mail_layouts' => 'System\Models\Mail_layouts_model',
+            'activities'     => 'System\Models\Activities_model',
+            'countries'      => 'System\Models\Countries_model',
+            'currencies'     => 'System\Models\Currencies_model',
+            'extensions'     => 'System\Models\Extensions_model',
+            'languages'      => 'System\Models\Languages_model',
+            'mail_layouts'   => 'System\Models\Mail_layouts_model',
             'mail_templates' => 'System\Models\Mail_templates_model',
-            'pages' => 'System\Models\Pages_model',
-            'permissions' => 'System\Models\Permissions_model',
-            'settings' => 'System\Models\Settings_model',
-            'themes' => 'System\Models\Themes_model',
+            'pages'          => 'System\Models\Pages_model',
+            'permissions'    => 'System\Models\Permissions_model',
+            'settings'       => 'System\Models\Settings_model',
+            'themes'         => 'System\Models\Themes_model',
         ]);
     }
 
@@ -402,7 +404,7 @@ class ServiceProvider extends AppServiceProvider
         Event::listen('console.schedule', function (Schedule $schedule) {
             // Check for system updates every 12 hours
             $schedule->call(function () {
-                Classes\UpdateManager::instance()->requestUpdateList(TRUE);
+                Classes\UpdateManager::instance()->requestUpdateList(true);
             })->name('System Updates Checker')->cron('0 */12 * * *')->evenInMaintenanceMode();
 
             // Cleanup activity log
@@ -450,31 +452,31 @@ class ServiceProvider extends AppServiceProvider
         Settings_model::registerCallback(function (Settings_model $manager) {
             $manager->registerSettingItems('core', [
                 'general' => [
-                    'label' => 'system::lang.settings.text_tab_general',
+                    'label'       => 'system::lang.settings.text_tab_general',
                     'description' => 'system::lang.settings.text_tab_desc_general',
-                    'icon' => 'fa fa-sliders',
-                    'priority' => 0,
-                    'permission' => ['Site.Settings'],
-                    'url' => admin_url('settings/edit/general'),
-                    'form' => '~/app/system/models/config/general_settings',
+                    'icon'        => 'fa fa-sliders',
+                    'priority'    => 0,
+                    'permission'  => ['Site.Settings'],
+                    'url'         => admin_url('settings/edit/general'),
+                    'form'        => '~/app/system/models/config/general_settings',
                 ],
                 'mail' => [
-                    'label' => 'lang:system::lang.settings.text_tab_mail',
+                    'label'       => 'lang:system::lang.settings.text_tab_mail',
                     'description' => 'lang:system::lang.settings.text_tab_desc_mail',
-                    'icon' => 'fa fa-envelope',
-                    'priority' => 5,
-                    'permission' => ['Site.Settings'],
-                    'url' => admin_url('settings/edit/mail'),
-                    'form' => '~/app/system/models/config/mail_settings',
+                    'icon'        => 'fa fa-envelope',
+                    'priority'    => 5,
+                    'permission'  => ['Site.Settings'],
+                    'url'         => admin_url('settings/edit/mail'),
+                    'form'        => '~/app/system/models/config/mail_settings',
                 ],
                 'advanced' => [
-                    'label' => 'lang:system::lang.settings.text_tab_server',
+                    'label'       => 'lang:system::lang.settings.text_tab_server',
                     'description' => 'lang:system::lang.settings.text_tab_desc_server',
-                    'icon' => 'fa fa-cog',
-                    'priority' => 6,
-                    'permission' => ['Site.Settings'],
-                    'url' => admin_url('settings/edit/advanced'),
-                    'form' => '~/app/system/models/config/advanced_settings',
+                    'icon'        => 'fa fa-cog',
+                    'priority'    => 6,
+                    'permission'  => ['Site.Settings'],
+                    'url'         => admin_url('settings/edit/advanced'),
+                    'form'        => '~/app/system/models/config/advanced_settings',
                 ],
             ]);
         });
@@ -485,7 +487,7 @@ class ServiceProvider extends AppServiceProvider
         FileParser::setCache(new FileCache(config('system.parsedTemplateCachePath')));
 
         App::singleton('pagic.environment', function () {
-            $pagic = new Environment(new Loader, [
+            $pagic = new Environment(new Loader(), [
                 'cache' => new FileCache(config('view.compiled')),
             ]);
 

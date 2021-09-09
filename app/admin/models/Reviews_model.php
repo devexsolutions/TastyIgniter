@@ -8,7 +8,8 @@ use Igniter\Flame\Database\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
- * Reviews Model Class
+ * Reviews Model Class.
+ *
  * @deprecated remove before v4. Added for backward compatibility, see Igniter\Local\Models\Reviews_model
  */
 class Reviews_model extends Model
@@ -32,17 +33,17 @@ class Reviews_model extends Model
     /**
      * @var array The model table column to convert to dates on insert/update
      */
-    public $timestamps = TRUE;
+    public $timestamps = true;
 
     protected $guarded = [];
 
     protected $casts = [
-        'customer_id' => 'integer',
-        'sale_id' => 'integer',
-        'location_id' => 'integer',
-        'quality' => 'integer',
-        'service' => 'integer',
-        'delivery' => 'integer',
+        'customer_id'   => 'integer',
+        'sale_id'       => 'integer',
+        'location_id'   => 'integer',
+        'quality'       => 'integer',
+        'service'       => 'integer',
+        'delivery'      => 'integer',
         'review_status' => 'boolean',
     ];
 
@@ -59,21 +60,21 @@ class Reviews_model extends Model
     public static $allowedSortingColumns = ['date_added asc', 'date_added desc'];
 
     public static $relatedSaleTypes = [
-        'orders' => 'Admin\Models\Orders_model',
+        'orders'       => 'Admin\Models\Orders_model',
         'reservations' => 'Admin\Models\Reservations_model',
     ];
 
     public static function getSaleTypeOptions()
     {
         return [
-            'orders' => 'lang:admin::lang.reviews.text_order',
+            'orders'       => 'lang:admin::lang.reviews.text_order',
             'reservations' => 'lang:admin::lang.reviews.text_reservation',
         ];
     }
 
     public static function findBy($saleType, $saleId)
     {
-        $saleTypeModel = (new static)->getSaleTypeModel($saleType);
+        $saleTypeModel = (new static())->getSaleTypeModel($saleType);
 
         return $saleTypeModel->find($saleId);
     }
@@ -90,11 +91,11 @@ class Reviews_model extends Model
     public function scopeListFrontEnd($query, $options = [])
     {
         extract(array_merge([
-            'page' => 1,
+            'page'      => 1,
             'pageLimit' => 20,
-            'sort' => null,
-            'location' => null,
-            'customer' => null,
+            'sort'      => null,
+            'location'  => null,
+            'customer'  => null,
         ], $options));
 
         if (is_numeric($location)) {
@@ -103,11 +104,9 @@ class Reviews_model extends Model
 
         if ($customer instanceof User) {
             $query->where('customer_id', $customer->getKey());
-        }
-        elseif (strlen($customer)) {
+        } elseif (strlen($customer)) {
             $query->where('customer_id', $customer);
-        }
-        else {
+        } else {
             $query->has('customer');
         }
 
@@ -155,14 +154,15 @@ class Reviews_model extends Model
     public function getSaleTypeModel($saleType)
     {
         $model = self::$relatedSaleTypes[$saleType] ?? null;
-        if (!$model OR !class_exists($model))
-            throw new ModelNotFoundException;
+        if (!$model or !class_exists($model)) {
+            throw new ModelNotFoundException();
+        }
 
         return new $model();
     }
 
     /**
-     * Return the dates of all reviews
+     * Return the dates of all reviews.
      *
      * @return array
      */

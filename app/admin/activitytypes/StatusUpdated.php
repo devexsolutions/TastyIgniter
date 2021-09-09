@@ -29,7 +29,7 @@ class StatusUpdated implements ActivityInterface
     }
 
     /**
-     * @param \Admin\Models\Status_history_model $history
+     * @param \Admin\Models\Status_history_model   $history
      * @param \Igniter\Flame\Auth\Models\User|null $user
      */
     public static function log(Status_history_model $history, User $user = null)
@@ -37,12 +37,14 @@ class StatusUpdated implements ActivityInterface
         $type = $history->isForOrder() ? self::ORDER_UPDATED_TYPE : self::RESERVATION_UPDATED_TYPE;
 
         $recipients = [];
-        if ($history->object->assignee AND $history->object->assignee->getKey() !== $user->staff->getKey())
+        if ($history->object->assignee and $history->object->assignee->getKey() !== $user->staff->getKey()) {
             $recipients[] = $history->object->assignee->user;
+        }
 
         $statusHistory = $history->object->getLatestStatusHistory();
-        if ($history->object->customer AND $statusHistory AND $statusHistory->notify)
+        if ($history->object->customer and $statusHistory and $statusHistory->notify) {
             $recipients[] = $history->object->customer;
+        }
 
         activity()->logActivity(new self($type, $history->object, $user), $recipients);
     }
@@ -79,8 +81,8 @@ class StatusUpdated implements ActivityInterface
         $keyName = $this->type == self::ORDER_UPDATED_TYPE ? 'order_id' : 'reservation_id';
 
         return [
-            $keyName => $this->subject->getKey(),
-            'status_id' => $this->subject->status_id,
+            $keyName      => $this->subject->getKey(),
+            'status_id'   => $this->subject->status_id,
             'status_name' => optional($this->subject->status)->status_name,
         ];
     }
@@ -95,8 +97,9 @@ class StatusUpdated implements ActivityInterface
     public static function getUrl(Activity $activity)
     {
         $url = $activity->type == self::ORDER_UPDATED_TYPE ? 'orders' : 'reservations';
-        if ($activity->subject)
+        if ($activity->subject) {
             $url .= '/edit/'.$activity->subject->getKey();
+        }
 
         return admin_url($url);
     }

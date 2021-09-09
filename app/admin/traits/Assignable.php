@@ -15,12 +15,12 @@ trait Assignable
             $model->relation['belongsTo']['assignee'] = ['Admin\Models\Staffs_model'];
             $model->relation['belongsTo']['assignee_group'] = ['Admin\Models\Staff_groups_model'];
             $model->relation['morphMany']['assignable_logs'] = [
-                'Admin\Models\Assignable_logs_model', 'name' => 'assignable', 'delete' => TRUE,
+                'Admin\Models\Assignable_logs_model', 'name' => 'assignable', 'delete' => true,
             ];
 
             $model->addCasts([
-                'assignee_id' => 'integer',
-                'assignee_group_id' => 'integer',
+                'assignee_id'         => 'integer',
+                'assignee_group_id'   => 'integer',
                 'assignee_updated_at' => 'dateTime',
             ]);
         });
@@ -34,8 +34,10 @@ trait Assignable
     {
         if (
             $this->wasChanged('status_id')
-            AND strlen($this->assignee_group_id)
-        ) Assignable_logs_model::createLog($this);
+            and strlen($this->assignee_group_id)
+        ) {
+            Assignable_logs_model::createLog($this);
+        }
     }
 
     //
@@ -44,18 +46,21 @@ trait Assignable
 
     /**
      * @param \Admin\Models\Staffs_model $assignee
+     *
      * @return bool
      */
     public function assignTo($assignee)
     {
-        if (is_null($this->assignee_group))
-            return FALSE;
+        if (is_null($this->assignee_group)) {
+            return false;
+        }
 
         return $this->updateAssignTo($this->assignee_group, $assignee);
     }
 
     /**
      * @param \Admin\Models\Staff_groups_model $group
+     *
      * @return bool
      */
     public function assignToGroup($group)
@@ -65,21 +70,24 @@ trait Assignable
 
     public function updateAssignTo($group = null, $assignee = null)
     {
-        if (is_null($group))
+        if (is_null($group)) {
             $group = $this->assignee_group;
+        }
 
         $this->assignee_group()->associate($group);
 
         $oldAssignee = $this->assignee;
-        if (!is_null($assignee))
+        if (!is_null($assignee)) {
             $this->assignee()->associate($assignee);
+        }
 
         $this->fireSystemEvent('admin.assignable.beforeAssignTo', [$group, $assignee, $oldAssignee]);
 
         $this->save();
 
-        if (!$log = Assignable_logs_model::createLog($this))
-            return FALSE;
+        if (!$log = Assignable_logs_model::createLog($this)) {
+            return false;
+        }
 
         $this->fireSystemEvent('admin.assignable.assigned', [$log]);
 
@@ -106,8 +114,9 @@ trait Assignable
 
     public function listGroupAssignees()
     {
-        if (!$this->assignee_group instanceof Staff_groups_model)
+        if (!$this->assignee_group instanceof Staff_groups_model) {
             return [];
+        }
 
         return $this->assignee_group->listAssignees();
     }
@@ -118,23 +127,27 @@ trait Assignable
 
     /**
      * @param \Igniter\Flame\Database\Query\Builder $query
-     * @param null $assignedTo
+     * @param null                                  $assignedTo
+     *
      * @return mixed
      */
     public function scopeFilterAssignedTo($query, $assignedTo = null)
     {
-        if ($assignedTo == 1)
+        if ($assignedTo == 1) {
             return $query->whereNull('assignee_id');
+        }
 
         $staffId = optional(AdminAuth::staff())->getKey();
-        if ($assignedTo == 2)
+        if ($assignedTo == 2) {
             return $query->where('assignee_id', $staffId);
+        }
 
         return $query->where('assignee_id', '!=', $staffId);
     }
 
     /**
      * @param \Igniter\Flame\Database\Query\Builder $query
+     *
      * @return mixed
      */
     public function scopeWhereUnAssigned($query)
@@ -145,6 +158,7 @@ trait Assignable
     /**
      * @param \Igniter\Flame\Database\Query\Builder $query
      * @param $assigneeId
+     *
      * @return mixed
      */
     public function scopeWhereAssignTo($query, $assigneeId)
@@ -155,6 +169,7 @@ trait Assignable
     /**
      * @param \Igniter\Flame\Database\Query\Builder $query
      * @param $assigneeGroupId
+     *
      * @return mixed
      */
     public function scopeWhereAssignToGroup($query, $assigneeGroupId)
@@ -164,7 +179,8 @@ trait Assignable
 
     /**
      * @param \Igniter\Flame\Database\Query\Builder $query
-     * @param array $assigneeGroupIds
+     * @param array                                 $assigneeGroupIds
+     *
      * @return mixed
      */
     public function scopeWhereInAssignToGroup($query, array $assigneeGroupIds)
@@ -174,6 +190,7 @@ trait Assignable
 
     /**
      * @param \Igniter\Flame\Database\Query\Builder $query
+     *
      * @return mixed
      */
     public function scopeWhereHasAutoAssignGroup($query)

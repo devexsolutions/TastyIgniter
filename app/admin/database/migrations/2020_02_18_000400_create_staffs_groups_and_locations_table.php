@@ -28,14 +28,14 @@ class CreateStaffsGroupsAndLocationsTable extends Migration
         DB::table('staffs')->get()->each(function ($model) {
             if (!empty($model->staff_group_id)) {
                 DB::table('staffs_groups')->insert([
-                    'staff_id' => $model->staff_id,
+                    'staff_id'       => $model->staff_id,
                     'staff_group_id' => $model->staff_group_id,
                 ]);
             }
 
             if (!empty($model->staff_location_id)) {
                 DB::table('staffs_locations')->insert([
-                    'staff_id' => $model->staff_id,
+                    'staff_id'    => $model->staff_id,
                     'location_id' => $model->staff_location_id,
                 ]);
             }

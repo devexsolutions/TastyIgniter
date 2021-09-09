@@ -13,11 +13,11 @@ class User_preferences_model extends Model
      */
     protected $table = 'user_preferences';
 
-    public $timestamps = FALSE;
+    public $timestamps = false;
 
     protected $casts = [
         'user_id' => 'integer',
-        'value' => 'json',
+        'value'   => 'json',
     ];
 
     /**
@@ -29,7 +29,7 @@ class User_preferences_model extends Model
 
     public static function onUser($user = null)
     {
-        $self = new static;
+        $self = new static();
         $self->userContext = $user ?: $self->resolveUser();
 
         return $self;
@@ -73,12 +73,12 @@ class User_preferences_model extends Model
     public function set($item, $value)
     {
         if (!$user = $this->userContext) {
-            return FALSE;
+            return false;
         }
 
         $record = static::findRecord($item, $user);
         if (!$record) {
-            $record = new static;
+            $record = new static();
             $record->item = $item;
             $record->user_id = $user->user_id;
         }
@@ -89,18 +89,18 @@ class User_preferences_model extends Model
         $cacheKey = $this->getCacheKey($item, $user);
         static::$cache[$cacheKey] = $value;
 
-        return TRUE;
+        return true;
     }
 
     public function reset($item)
     {
         if (!$user = $this->userContext) {
-            return FALSE;
+            return false;
         }
 
         $record = static::findRecord($item, $user);
         if (!$record) {
-            return FALSE;
+            return false;
         }
 
         $record->delete();
@@ -108,7 +108,7 @@ class User_preferences_model extends Model
         $cacheKey = $this->getCacheKey($item, $user);
         unset(static::$cache[$cacheKey]);
 
-        return TRUE;
+        return true;
     }
 
     public function scopeApplyItemAndUser($query, $item, $user = null)
@@ -124,6 +124,7 @@ class User_preferences_model extends Model
 
     /**
      * Builds a cache key for the preferences record.
+     *
      * @return string
      */
     protected function getCacheKey($item, $user)

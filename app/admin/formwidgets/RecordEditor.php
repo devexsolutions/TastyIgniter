@@ -11,7 +11,7 @@ use Igniter\Flame\Html\HtmlFacade as Html;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Record Editor
+ * Record Editor.
  */
 class RecordEditor extends BaseFormWidget
 {
@@ -30,11 +30,11 @@ class RecordEditor extends BaseFormWidget
 
     public $formName = 'Record';
 
-    public $hideEditButton = FALSE;
+    public $hideEditButton = false;
 
-    public $hideDeleteButton = FALSE;
+    public $hideDeleteButton = false;
 
-    public $hideCreateButton = FALSE;
+    public $hideCreateButton = false;
 
     public $addLabel = 'New';
 
@@ -106,8 +106,8 @@ class RecordEditor extends BaseFormWidget
 
         return $this->makePartial('recordeditor/form', [
             'formRecordId' => $recordId,
-            'formTitle' => ($model->exists ? $this->editLabel : $this->addLabel).' '.lang($this->formName),
-            'formWidget' => $this->makeRecordFormWidget($model),
+            'formTitle'    => ($model->exists ? $this->editLabel : $this->addLabel).' '.lang($this->formName),
+            'formWidget'   => $this->makeRecordFormWidget($model),
         ]);
     }
 
@@ -129,13 +129,15 @@ class RecordEditor extends BaseFormWidget
             }
         });
 
-        flash()->success(sprintf(lang('admin::lang.alert_success'),
-            lang($this->formName).' '.($form->context == 'create' ? 'created' : 'updated')))->now();
+        flash()->success(sprintf(
+            lang('admin::lang.alert_success'),
+            lang($this->formName).' '.($form->context == 'create' ? 'created' : 'updated')
+        ))->now();
 
         return [
-            '#notification' => $this->makePartial('flash'),
+            '#notification'               => $this->makePartial('flash'),
             '#'.$this->formField->getId() => $form->renderField($this->formField, [
-                'useContainer' => FALSE,
+                'useContainer' => false,
             ]),
         ];
     }
@@ -151,17 +153,18 @@ class RecordEditor extends BaseFormWidget
         flash()->success(sprintf(lang('admin::lang.alert_success'), lang($this->formName).' deleted'))->now();
 
         return [
-            '#notification' => $this->makePartial('flash'),
+            '#notification'               => $this->makePartial('flash'),
             '#'.$this->formField->getId() => $form->renderField($this->formField, [
-                'useContainer' => FALSE,
+                'useContainer' => false,
             ]),
         ];
     }
 
     protected function makeRecordFormWidget($model, $context = null)
     {
-        if (is_null($context))
+        if (is_null($context)) {
             $context = $model->exists ? 'edit' : 'create';
+        }
 
         $widgetConfig = is_string($this->form) ? $this->loadConfig($this->form, ['form'], 'form') : $this->form;
         $widgetConfig['model'] = $model;
@@ -180,15 +183,17 @@ class RecordEditor extends BaseFormWidget
         $name = camel_case('addon_'.$string);
         $config = $this->{$name};
 
-        if (!$config)
+        if (!$config) {
             return null;
+        }
 
-        if (!is_array($config))
+        if (!is_array($config)) {
             $config = [$config];
+        }
 
-        $config = (object)array_merge([
-            'tag' => 'span',
-            'label' => 'Label',
+        $config = (object) array_merge([
+            'tag'        => 'span',
+            'label'      => 'Label',
             'attributes' => [],
         ], $config);
 
@@ -200,14 +205,13 @@ class RecordEditor extends BaseFormWidget
         $model = $this->createFormModel();
         $methodName = 'get'.studly_case($this->fieldName).'RecordEditorOptions';
 
-        if (!$model->methodExists($methodName) AND !$model->methodExists('getRecordEditorOptions')) {
+        if (!$model->methodExists($methodName) and !$model->methodExists('getRecordEditorOptions')) {
             throw new ApplicationException(sprintf(lang('admin::lang.alert_missing_method'), 'getRecordEditorOptions', get_class($model)));
         }
 
         if ($model->methodExists($methodName)) {
             $result = $model->$methodName();
-        }
-        else {
+        } else {
             $result = $model->getRecordEditorOptions($this->fieldName);
         }
 

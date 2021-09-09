@@ -13,7 +13,7 @@ class Toolbar extends BaseWidget
 
     protected $defaultAlias = 'toolbar';
 
-    protected $previewMode = FALSE;
+    protected $previewMode = false;
 
     /**
      * @var array List of CSS classes to apply to the toolbar container element
@@ -51,8 +51,9 @@ class Toolbar extends BaseWidget
     {
         $this->prepareVars();
 
-        if (!is_null($this->container))
+        if (!is_null($this->container)) {
             return $this->makePartial($this->container);
+        }
 
         return $this->makePartial('toolbar/toolbar');
     }
@@ -83,19 +84,21 @@ class Toolbar extends BaseWidget
 
         $this->fireSystemEvent('admin.toolbar.extendButtons', [$this->allButtons]);
 
-        $this->buttonsDefined = TRUE;
+        $this->buttonsDefined = true;
     }
 
     protected function prepareButtons()
     {
-        if ($templateButtons = Template::getButtonList())
+        if ($templateButtons = Template::getButtonList()) {
             $this->allButtons['templateButtons'] = $templateButtons;
+        }
     }
 
     public function renderButtonMarkup($buttonObj)
     {
-        if (is_string($buttonObj))
+        if (is_string($buttonObj)) {
             return $buttonObj;
+        }
 
         $partialName = array_get(
             $buttonObj->config,
@@ -150,13 +153,13 @@ class Toolbar extends BaseWidget
         $result = [];
         foreach ($buttons as $name => $attributes) {
             $permission = array_get($attributes, 'permission');
-            if ($permission AND !AdminAuth::user()->hasPermission($permission)) {
+            if ($permission and !AdminAuth::user()->hasPermission($permission)) {
                 continue;
             }
 
             // Check that the toolbar button matches the active context
             if (isset($attributes['context'])) {
-                $context = (array)$attributes['context'];
+                $context = (array) $attributes['context'];
                 if (!in_array($this->getContext(), $context)) {
                     continue;
                 }
@@ -176,7 +179,8 @@ class Toolbar extends BaseWidget
 
     /**
      * @param string $name
-     * @param array $config
+     * @param array  $config
+     *
      * @return mixed
      */
     protected function makeButton(string $name, array $config)

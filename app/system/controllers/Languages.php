@@ -20,32 +20,32 @@ class Languages extends \Admin\Classes\AdminController
 
     public $listConfig = [
         'list' => [
-            'model' => 'System\Models\Languages_model',
-            'title' => 'lang:system::lang.languages.text_title',
+            'model'        => 'System\Models\Languages_model',
+            'title'        => 'lang:system::lang.languages.text_title',
             'emptyMessage' => 'lang:system::lang.languages.text_empty',
-            'defaultSort' => ['language_id', 'DESC'],
-            'configFile' => 'languages_model',
+            'defaultSort'  => ['language_id', 'DESC'],
+            'configFile'   => 'languages_model',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:system::lang.languages.text_form_name',
-        'model' => 'System\Models\Languages_model',
+        'name'    => 'lang:system::lang.languages.text_form_name',
+        'model'   => 'System\Models\Languages_model',
         'request' => 'System\Requests\Language',
-        'create' => [
-            'title' => 'lang:admin::lang.form.create_title',
-            'redirect' => 'languages/edit/{language_id}',
+        'create'  => [
+            'title'         => 'lang:admin::lang.form.create_title',
+            'redirect'      => 'languages/edit/{language_id}',
             'redirectClose' => 'languages',
-            'redirectNew' => 'languages/create',
+            'redirectNew'   => 'languages/create',
         ],
         'edit' => [
-            'title' => 'lang:admin::lang.form.edit_title',
-            'redirect' => 'languages/edit/{language_id}',
+            'title'         => 'lang:admin::lang.form.edit_title',
+            'redirect'      => 'languages/edit/{language_id}',
             'redirectClose' => 'languages',
-            'redirectNew' => 'languages/create',
+            'redirectNew'   => 'languages/create',
         ],
         'preview' => [
-            'title' => 'lang:admin::lang.form.preview_title',
+            'title'    => 'lang:admin::lang.form.preview_title',
             'redirect' => 'languages',
         ],
         'delete' => [
@@ -90,21 +90,22 @@ class Languages extends \Admin\Classes\AdminController
         $this->asExtension('FormController')->initForm($model, $context);
 
         $file = post('Language._file');
-        $this->setFilterValue('file', (!strlen($file) OR strpos($file, '::') == FALSE) ? null : $file);
+        $this->setFilterValue('file', (!strlen($file) or strpos($file, '::') == false) ? null : $file);
 
         $term = post('Language._search');
-        $this->setFilterValue('search', (!strlen($term) OR !is_string($term)) ? null : $term);
+        $this->setFilterValue('search', (!strlen($term) or !is_string($term)) ? null : $term);
 
         $stringFilter = post('Language._string_filter');
-        $this->setFilterValue('string_filter', (!strlen($stringFilter) OR !is_string($stringFilter)) ? null : $stringFilter);
+        $this->setFilterValue('string_filter', (!strlen($stringFilter) or !is_string($stringFilter)) ? null : $stringFilter);
 
         return $this->asExtension('FormController')->makeRedirect('edit', $model);
     }
 
     public function formExtendFields(Form $form, $fields)
     {
-        if ($form->getContext() !== 'edit')
+        if ($form->getContext() !== 'edit') {
             return;
+        }
 
         $fileField = $form->getField('_file');
         $searchField = $form->getField('_search');
@@ -116,8 +117,9 @@ class Languages extends \Admin\Classes\AdminController
         $stringFilterField->value = $this->getFilterValue('string_filter', 'all');
         $field->value = $this->getFilterValue('search');
 
-        if (is_null($this->localeFiles))
+        if (is_null($this->localeFiles)) {
             $this->localeFiles = LanguageManager::instance()->listLocaleFiles('en');
+        }
 
         $fileField->options = $this->prepareNamespaces();
         $field->options = post($field->getName()) ?: $this->prepareTranslations($form->model);
@@ -146,11 +148,10 @@ class Languages extends \Admin\Classes\AdminController
         foreach ($this->localeFiles as $file) {
             $name = sprintf('%s::%s', $file['namespace'], $file['group']);
 
-            if (!array_get($file, 'system', FALSE)
-                AND ($extension = $extensionManager->findExtension($file['namespace']))) {
+            if (!array_get($file, 'system', false)
+                and ($extension = $extensionManager->findExtension($file['namespace']))) {
                 $result[$name] = array_get($extension->extensionMeta(), 'name').' - '.$name;
-            }
-            else {
+            } else {
                 $result[$name] = ucfirst($file['namespace']).' - '.$name;
             }
         }
@@ -166,7 +167,7 @@ class Languages extends \Admin\Classes\AdminController
         $files = collect($this->localeFiles);
 
         $file = $this->getFilterValue('file');
-        if (strlen($file) AND strpos($file, '::')) {
+        if (strlen($file) and strpos($file, '::')) {
             [$namespace, $group] = explode('::', $file);
             $files = $files->where('group', $group)->where('namespace', $namespace);
         }
@@ -182,7 +183,7 @@ class Languages extends \Admin\Classes\AdminController
             $this->totalTranslated += count($translationLines);
 
             $translations = $manager->listTranslations($sourceLines, $translationLines, [
-                'file' => $file,
+                'file'         => $file,
                 'stringFilter' => $stringFilter,
             ]);
 

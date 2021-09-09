@@ -9,7 +9,7 @@ trait SessionMaker
     /**
      * Retrieves key/value pair from session data.
      *
-     * @param string $key Unique key for the data store.
+     * @param string $key     Unique key for the data store.
      * @param string $default A default value to use when value is not found.
      *
      * @return mixed
@@ -29,8 +29,8 @@ trait SessionMaker
     /**
      * Saves key/value pair in to session data.
      *
-     * @param string $key Unique key for the data store.
-     * @param mixed $value The value to store.
+     * @param string $key   Unique key for the data store.
+     * @param mixed  $value The value to store.
      *
      * @return void
      */
@@ -54,7 +54,7 @@ trait SessionMaker
     /**
      * Retrieves key/value pair from session temporary data.
      *
-     * @param string $key Unique key for the data store.
+     * @param string $key     Unique key for the data store.
      * @param string $default A default value to use when value is not found.
      *
      * @return mixed
@@ -74,8 +74,8 @@ trait SessionMaker
     /**
      * Saves key/value pair in to session temporary data.
      *
-     * @param string $key Unique key for the data store.
-     * @param mixed $value The value to store.
+     * @param string $key   Unique key for the data store.
+     * @param mixed  $value The value to store.
      *
      * @return void
      */
@@ -106,36 +106,42 @@ trait SessionMaker
 
     /**
      * Returns a unique session identifier for this location.
+     *
      * @return string
      */
     protected function makeSessionKey()
     {
-        if (isset($this->sessionKey))
+        if (isset($this->sessionKey)) {
             return $this->sessionKey;
+        }
 
         return get_class_id(get_class($this));
     }
 
     protected function encodeSessionData($data)
     {
-        if (is_null($data))
+        if (is_null($data)) {
             return null;
+        }
 
-        if (!isset($this->encodeSession) OR $this->encodeSession === TRUE)
+        if (!isset($this->encodeSession) or $this->encodeSession === true) {
             $data = base64_encode(serialize($data));
+        }
 
         return $data;
     }
 
     protected function decodeSessionData($data)
     {
-        if (!is_string($data))
+        if (!is_string($data)) {
             return null;
+        }
 
-        $encodeSession = (!isset($this->encodeSession) OR $this->encodeSession === TRUE);
+        $encodeSession = (!isset($this->encodeSession) or $this->encodeSession === true);
 
-        if ($encodeSession OR (!$encodeSession AND is_string($data)))
+        if ($encodeSession or (!$encodeSession and is_string($data))) {
             $data = @unserialize(@base64_decode($data));
+        }
 
         return $data;
     }

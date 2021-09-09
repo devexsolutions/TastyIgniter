@@ -79,8 +79,9 @@ trait HasWorkingHours
 
     public function getWorkingHourByDateAndType($date, $type)
     {
-        if (!$date instanceof Carbon)
+        if (!$date instanceof Carbon) {
             $date = make_carbon($date);
+        }
 
         $weekday = $date->format('N') - 1;
 
@@ -89,13 +90,15 @@ trait HasWorkingHours
 
     public function getWorkingHours()
     {
-        if (!$this->hasRelation('working_hours'))
-            throw new Exception(sprintf(lang('admin::lang.alert_missing_model_definition'),
+        if (!$this->hasRelation('working_hours')) {
+            throw new Exception(sprintf(
+                lang('admin::lang.alert_missing_model_definition'),
                 get_class($this),
                 'working_hours',
             ));
+        }
 
-        if (!$this->working_hours OR $this->working_hours->isEmpty()) {
+        if (!$this->working_hours or $this->working_hours->isEmpty()) {
             $this->createDefaultWorkingHours();
         }
 
@@ -110,16 +113,18 @@ trait HasWorkingHours
     public function newWorkingSchedule($type, $days = null)
     {
         $types = $this->availableWorkingTypes();
-        if (is_null($type) OR !in_array($type, $types))
+        if (is_null($type) or !in_array($type, $types)) {
             throw new InvalidArgumentException(sprintf(lang('admin::lang.locations.alert_invalid_schedule_type'), $type));
+        }
 
         if (is_null($days)) {
             $days = $this->hasFutureOrder($type)
-                ? (int)$this->futureOrderDays($type)
+                ? (int) $this->futureOrderDays($type)
                 : 0;
         }
 
-        $schedule = WorkingSchedule::create($days,
+        $schedule = WorkingSchedule::create(
+            $days,
             $this->getWorkingHoursByType($type) ?? new Collection([])
         );
 
@@ -136,8 +141,9 @@ trait HasWorkingHours
 
     public function createScheduleItem($type)
     {
-        if (is_null($type) OR !in_array($type, $this->availableWorkingTypes()))
+        if (is_null($type) or !in_array($type, $this->availableWorkingTypes())) {
             throw new InvalidArgumentException(sprintf(lang('admin::lang.locations.alert_invalid_schedule_type'), $type));
+        }
 
         $scheduleData = array_get($this->getOption('hours', []), $type, []);
 
@@ -156,7 +162,7 @@ trait HasWorkingHours
     }
 
     /**
-     * Create a new or update existing location working hours
+     * Create a new or update existing location working hours.
      *
      * @param array $data
      *
@@ -171,8 +177,9 @@ trait HasWorkingHours
 
         if (is_null($type)) {
             foreach (['opening', 'delivery', 'collection'] as $hourType) {
-                if (!is_array($scheduleData = array_get($data, $hourType)))
+                if (!is_array($scheduleData = array_get($data, $hourType))) {
                     continue;
+                }
 
                 $this->addOpeningHours($hourType, $scheduleData);
             }
@@ -184,17 +191,17 @@ trait HasWorkingHours
         foreach ($scheduleItem->getHours() as $hours) {
             foreach ($hours as $hour) {
                 $this->working_hours()->create([
-                    'location_id' => $this->getKey(),
-                    'weekday' => $hour['day'],
-                    'type' => $type,
+                    'location_id'  => $this->getKey(),
+                    'weekday'      => $hour['day'],
+                    'type'         => $type,
                     'opening_time' => mdate('%H:%i', strtotime($hour['open'])),
                     'closing_time' => mdate('%H:%i', strtotime($hour['close'])),
-                    'status' => $hour['status'],
+                    'status'       => $hour['status'],
                 ]);
             }
         }
 
-        return TRUE;
+        return true;
     }
 
     protected function parseHoursFromOptions(&$value)
@@ -206,23 +213,23 @@ trait HasWorkingHours
                 foreach (['type', 'days', 'hours'] as $suffix) {
                     if (isset($hours["{$type}_{$suffix}"])) {
                         $valueItem = $hours["{$type}_{$suffix}"];
-                        if ($suffix == 'type')
+                        if ($suffix == 'type') {
                             $valueItem = $valueItem != '24_7' ? $valueItem : '24_7';
+                        }
 
                         $typeIndex = $type == 'daily' ? 'opening' : $type;
 
                         if ($suffix == 'hours') {
                             $value['hours'][$typeIndex]['open'] = $valueItem['open'] ?? '00:00';
                             $value['hours'][$typeIndex]['close'] = $valueItem['close'] ?? '23:59';
-                        }
-                        else {
+                        } else {
                             $value['hours'][$typeIndex][$suffix] = $valueItem;
                         }
                     }
                 }
             }
 
-            if (isset($hours['flexible_hours']) AND is_array($hours['flexible_hours'])) {
+            if (isset($hours['flexible_hours']) and is_array($hours['flexible_hours'])) {
                 foreach (['opening', 'delivery', 'collection'] as $type) {
                     $value['hours'][$type]['flexible'] = $hours['flexible_hours'];
                 }

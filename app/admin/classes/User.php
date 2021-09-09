@@ -5,7 +5,7 @@ namespace Admin\Classes;
 use Igniter\Flame\Auth\Manager;
 
 /**
- * Admin User authentication manager
+ * Admin User authentication manager.
  */
 class User extends Manager
 {
@@ -13,7 +13,7 @@ class User extends Manager
 
     protected $model = 'Admin\Models\Users_model';
 
-    protected $isSuperUser = FALSE;
+    protected $isSuperUser = false;
 
     public function isLogged()
     {
@@ -50,7 +50,7 @@ class User extends Manager
         $query
             ->with(['staff', 'staff.role', 'staff.groups', 'staff.locations'])
             ->whereHas('staff', function ($query) {
-                $query->where('staff_status', TRUE);
+                $query->where('staff_status', true);
             });
     }
 
@@ -83,7 +83,7 @@ class User extends Manager
         return $this->staff()->staff_email;
     }
 
-    public function register(array $attributes, $activate = FALSE)
+    public function register(array $attributes, $activate = false)
     {
         $model = $this->createModel();
 
@@ -92,18 +92,19 @@ class User extends Manager
         $staff->staff_name = $attributes['staff_name'];
         $staff->language_id = $attributes['language_id'] ?? null;
         $staff->staff_role_id = $attributes['staff_role_id'] ?? null;
-        $staff->staff_status = $attributes['staff_status'] ?? TRUE;
+        $staff->staff_status = $attributes['staff_status'] ?? true;
         $staff->user = [
-            'username' => $attributes['username'],
-            'password' => $attributes['password'],
-            'super_user' => FALSE,
-            'activate' => $activate,
+            'username'   => $attributes['username'],
+            'password'   => $attributes['password'],
+            'super_user' => false,
+            'activate'   => $activate,
         ];
 
         $staff->save();
 
-        if ($staff->groups->isEmpty())
+        if ($staff->groups->isEmpty()) {
             $staff->groups()->attach($attributes['groups']);
+        }
 
         return $model;
     }

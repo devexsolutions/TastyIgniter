@@ -13,32 +13,32 @@ class Statuses extends \Admin\Classes\AdminController
 
     public $listConfig = [
         'list' => [
-            'model' => 'Admin\Models\Statuses_model',
-            'title' => 'lang:admin::lang.statuses.text_title',
+            'model'        => 'Admin\Models\Statuses_model',
+            'title'        => 'lang:admin::lang.statuses.text_title',
             'emptyMessage' => 'lang:admin::lang.statuses.text_empty',
-            'defaultSort' => ['status_id', 'DESC'],
-            'configFile' => 'statuses_model',
+            'defaultSort'  => ['status_id', 'DESC'],
+            'configFile'   => 'statuses_model',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:admin::lang.statuses.text_form_name',
-        'model' => 'Admin\Models\Statuses_model',
+        'name'    => 'lang:admin::lang.statuses.text_form_name',
+        'model'   => 'Admin\Models\Statuses_model',
         'request' => 'Admin\Requests\Status',
-        'create' => [
-            'title' => 'lang:admin::lang.form.create_title',
-            'redirect' => 'statuses/edit/{status_id}',
+        'create'  => [
+            'title'         => 'lang:admin::lang.form.create_title',
+            'redirect'      => 'statuses/edit/{status_id}',
             'redirectClose' => 'statuses',
-            'redirectNew' => 'statuses/create',
+            'redirectNew'   => 'statuses/create',
         ],
         'edit' => [
-            'title' => 'lang:admin::lang.form.edit_title',
-            'redirect' => 'statuses/edit/{status_id}',
+            'title'         => 'lang:admin::lang.form.edit_title',
+            'redirect'      => 'statuses/edit/{status_id}',
             'redirectClose' => 'statuses',
-            'redirectNew' => 'statuses/create',
+            'redirectNew'   => 'statuses/create',
         ],
         'preview' => [
-            'title' => 'lang:admin::lang.form.preview_title',
+            'title'    => 'lang:admin::lang.form.preview_title',
             'redirect' => 'statuses',
         ],
         'delete' => [

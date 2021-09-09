@@ -40,6 +40,7 @@ class FormRequest extends BaseFormRequest
 
     /**
      * @param mixed $controller
+     *
      * @return self;
      */
     public function setController($controller)
@@ -59,6 +60,7 @@ class FormRequest extends BaseFormRequest
 
     /**
      * @param bool|string $inputKey
+     *
      * @return \System\Classes\FormRequest
      */
     public function setInputKey($inputKey)
@@ -70,16 +72,18 @@ class FormRequest extends BaseFormRequest
 
     public function getWith($key, $default = null)
     {
-        if (!is_null($inputKey = $this->getInputKey()))
+        if (!is_null($inputKey = $this->getInputKey())) {
             $key = $inputKey.'.'.$key;
+        }
 
         return $this->get($key, $default);
     }
 
     public function inputWith($key, $default = null)
     {
-        if (!is_null($inputKey = $this->getInputKey()))
+        if (!is_null($inputKey = $this->getInputKey())) {
             $key = $inputKey.'.'.$key;
+        }
 
         return $this->input($key, $default);
     }
@@ -90,8 +94,9 @@ class FormRequest extends BaseFormRequest
     }
 
     /**
-     * @return \Admin\Widgets\Form
      * @throws \Igniter\Flame\Exception\SystemException
+     *
+     * @return \Admin\Widgets\Form
      */
     protected function getForm()
     {
@@ -103,20 +108,24 @@ class FormRequest extends BaseFormRequest
      */
     protected function getModel()
     {
-        if (!$this->getController())
+        if (!$this->getController()) {
             return null;
+        }
 
-        if ($this->getController()->methodExists('getFormModel'))
+        if ($this->getController()->methodExists('getFormModel')) {
             return $this->getController()->getFormModel();
+        }
 
-        if ($this->getController()->methodExists('getRestModel'))
+        if ($this->getController()->methodExists('getRestModel')) {
             return $this->getController()->getRestModel();
+        }
     }
 
     /**
      * Create the default validator instance.
      *
      * @param \Illuminate\Contracts\Validation\Factory $factory
+     *
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function createDefaultValidator(Factory $factory)
@@ -169,9 +178,10 @@ class FormRequest extends BaseFormRequest
      * Handle a failed validation attempt.
      *
      * @param \Illuminate\Contracts\Validation\Validator $validator
-     * @return void
      *
      * @throws \Illuminate\Validation\ValidationException
+     *
+     * @return void
      */
     protected function failedValidation(Validator $validator)
     {

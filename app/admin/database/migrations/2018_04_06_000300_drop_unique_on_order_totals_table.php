@@ -7,7 +7,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Drop primary key order_id and add unique keys
+ * Drop primary key order_id and add unique keys.
  */
 class DropUniqueOnOrderTotalsTable extends Migration
 {

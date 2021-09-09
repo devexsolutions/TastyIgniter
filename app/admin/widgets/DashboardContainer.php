@@ -15,25 +15,25 @@ class DashboardContainer extends BaseWidget
 
     /**
      * @var string The unique dashboard context name
-     * Defines the context where the container is used.
-     * Widget settings are saved in a specific context.
+     *             Defines the context where the container is used.
+     *             Widget settings are saved in a specific context.
      */
     public $context = 'dashboard';
 
     /**
      * @var string Determines whether widgets could be added and deleted.
      */
-    public $canManage = TRUE;
+    public $canManage = true;
 
     /**
      * @var string Determines whether widgets could be set as default.
      */
-    public $canSetDefault = FALSE;
+    public $canSetDefault = false;
 
     /**
      * @var array A list of default widgets to load.
-     * This structure could be defined in the controller containerConfig property
-     * Example structure:
+     *            This structure could be defined in the controller containerConfig property
+     *            Example structure:
      *
      * public $containerConfig = [
      *     'trafficOverview' => [
@@ -65,10 +65,11 @@ class DashboardContainer extends BaseWidget
     /**
      * @var bool Determines if dashboard widgets have been created.
      */
-    protected $widgetsDefined = FALSE;
+    protected $widgetsDefined = false;
 
     /**
      * Constructor.
+     *
      * @param $controller
      * @param array $config
      */
@@ -83,6 +84,7 @@ class DashboardContainer extends BaseWidget
     /**
      * Ensure dashboard widgets are registered so they can also be bound to
      * the controller this allows their AJAX features to operate.
+     *
      * @return void
      */
     public function bindToController()
@@ -132,8 +134,9 @@ class DashboardContainer extends BaseWidget
     {
         $widgetAlias = trim(post('widgetAlias'));
 
-        if (!$widgetAlias)
+        if (!$widgetAlias) {
             throw new ApplicationException(lang('admin::lang.dashboard.alert_select_widget_to_update'));
+        }
 
         $this->vars['widgetAlias'] = $widgetAlias;
         $this->vars['widget'] = $widget = $this->findWidgetByAlias($widgetAlias);
@@ -147,23 +150,26 @@ class DashboardContainer extends BaseWidget
         $className = trim(post('className'));
         $size = trim(post('size'));
 
-        if (!$className)
+        if (!$className) {
             throw new ApplicationException(lang('admin::lang.dashboard.alert_select_widget_to_add'));
+        }
 
-        if (!class_exists($className))
+        if (!class_exists($className)) {
             throw new ApplicationException(lang('admin::lang.dashboard.alert_widget_class_not_found'));
+        }
 
         $widget = new $className($this->controller);
-        if (!($widget instanceof \Admin\Classes\BaseDashboardWidget))
+        if (!($widget instanceof \Admin\Classes\BaseDashboardWidget)) {
             throw new ApplicationException(lang('admin::lang.dashboard.alert_invalid_widget'));
+        }
 
         $widgetInfo = $this->addWidget($widget, $size);
 
         return [
             '@#'.$this->getId('container-list') => $this->makePartial('widget_item', [
-                'widget' => $widget,
+                'widget'      => $widget,
                 'widgetAlias' => $widgetInfo['alias'],
-                'priority' => $widgetInfo['priority'],
+                'priority'    => $widgetInfo['priority'],
             ]),
         ];
     }
@@ -212,7 +218,7 @@ class DashboardContainer extends BaseWidget
 
         $widget->initialize();
 
-        $this->widgetsDefined = FALSE;
+        $this->widgetsDefined = false;
 
         return $this->onRenderWidgets();
     }
@@ -228,8 +234,9 @@ class DashboardContainer extends BaseWidget
      * @param \Admin\Classes\BaseDashboardWidget $widget
      * @param $size
      *
-     * @return array
      * @throws \Igniter\Flame\Exception\ApplicationException
+     *
+     * @return array
      */
     public function addWidget($widget, $size)
     {
@@ -251,15 +258,15 @@ class DashboardContainer extends BaseWidget
         $alias = $this->getUniqueAlias($widgets);
 
         $widgets[$alias] = [
-            'class' => get_class($widget),
-            'config' => $widget->getProperties(),
+            'class'    => get_class($widget),
+            'config'   => $widget->getProperties(),
             'priority' => $priority,
         ];
 
         $this->setWidgetsToUserPreferences($widgets);
 
         return [
-            'alias' => $alias,
+            'alias'    => $alias,
             'priority' => $widgets[$alias]['priority'],
         ];
     }
@@ -287,7 +294,7 @@ class DashboardContainer extends BaseWidget
         $widgets = $this->getWidgetsFromUserPreferences();
         foreach ($aliases as $index => $alias) {
             if (isset($widgets[$alias])) {
-                $widgets[$alias]['priority'] = (int)$index;
+                $widgets[$alias]['priority'] = (int) $index;
             }
         }
 
@@ -324,7 +331,7 @@ class DashboardContainer extends BaseWidget
 
         $this->dashboardWidgets = $result;
 
-        $this->widgetsDefined = TRUE;
+        $this->widgetsDefined = true;
     }
 
     protected function makeDashboardWidget($alias, $widgetInfo)
@@ -347,7 +354,7 @@ class DashboardContainer extends BaseWidget
     {
         $this->resetWidgetsUserPreferences();
 
-        $this->widgetsDefined = FALSE;
+        $this->widgetsDefined = false;
 
         $this->defineDashboardWidgets();
     }
@@ -419,22 +426,24 @@ class DashboardContainer extends BaseWidget
         $result = [
             'width' => [
                 'property' => 'width',
-                'label' => lang('admin::lang.dashboard.label_widget_columns'),
-                'comment' => lang('admin::lang.dashboard.help_widget_columns'),
-                'type' => 'select',
-                'options' => $this->getWidgetPropertyWidthOptions(),
+                'label'    => lang('admin::lang.dashboard.label_widget_columns'),
+                'comment'  => lang('admin::lang.dashboard.help_widget_columns'),
+                'type'     => 'select',
+                'options'  => $this->getWidgetPropertyWidthOptions(),
             ],
         ];
 
         foreach ($properties as $name => $params) {
             $propertyType = array_get($params, 'type', 'text');
 
-            if (!$this->checkWidgetPropertyType($propertyType)) continue;
+            if (!$this->checkWidgetPropertyType($propertyType)) {
+                continue;
+            }
 
             $property = [
                 'property' => $name,
-                'label' => isset($params['label']) ? lang($params['label']) : $name,
-                'type' => $propertyType,
+                'label'    => isset($params['label']) ? lang($params['label']) : $name,
+                'type'     => $propertyType,
             ];
 
             foreach ($params as $key => $value) {

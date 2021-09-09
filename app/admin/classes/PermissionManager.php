@@ -22,14 +22,15 @@ class PermissionManager
     protected $callbacks = [];
 
     protected static $permissionDefaults = [
-        'code' => null,
-        'label' => null,
+        'code'        => null,
+        'label'       => null,
         'description' => null,
-        'priority' => 999,
+        'priority'    => 999,
     ];
 
     /**
      * Returns a list of the registered permissions.
+     *
      * @return array
      */
     public function listPermissions()
@@ -44,8 +45,9 @@ class PermissionManager
 
         $permissionBundles = ExtensionManager::instance()->getRegistrationMethodValues('registerPermissions');
         foreach ($permissionBundles as $owner => $permissionBundle) {
-            if (!is_array($permissionBundle))
+            if (!is_array($permissionBundle)) {
                 continue;
+            }
 
             $this->registerPermissions($owner, $permissionBundle);
         }
@@ -82,49 +84,57 @@ class PermissionManager
 
     public function checkPermission($permissions, $checkPermissions, $checkAll)
     {
-        $matched = FALSE;
+        $matched = false;
         foreach ($checkPermissions as $permission) {
             if ($this->checkPermissionStartsWith($permission, $permissions)
-                OR $this->checkPermissionEndsWith($permission, $permissions)
-                OR $this->checkPermissionMatches($permission, $permissions)
-            ) $matched = TRUE;
+                or $this->checkPermissionEndsWith($permission, $permissions)
+                or $this->checkPermissionMatches($permission, $permissions)
+            ) {
+                $matched = true;
+            }
 
-            if ($checkAll === FALSE AND $matched === TRUE)
-                return TRUE;
+            if ($checkAll === false and $matched === true) {
+                return true;
+            }
 
-            if ($checkAll === TRUE AND $matched === FALSE)
-                return FALSE;
+            if ($checkAll === true and $matched === false) {
+                return false;
+            }
         }
 
-        return !($checkAll === FALSE);
+        return !($checkAll === false);
     }
 
     protected function checkPermissionStartsWith($permission, $permissions)
     {
-        if (strlen($permission) > 1 AND ends_with($permission, '*')) {
+        if (strlen($permission) > 1 and ends_with($permission, '*')) {
             $checkPermission = substr($permission, 0, -1);
 
             foreach ($permissions as $groupPermission => $permitted) {
                 // Let's make sure the available permission starts with our permission
                 if ($checkPermission != $groupPermission
-                    AND starts_with($groupPermission, $checkPermission)
-                    AND $permitted == 1
-                ) return TRUE;
+                    and starts_with($groupPermission, $checkPermission)
+                    and $permitted == 1
+                ) {
+                    return true;
+                }
             }
         }
     }
 
     protected function checkPermissionEndsWith($permission, $permissions)
     {
-        if (strlen($permission) > 1 AND starts_with($permission, '*')) {
+        if (strlen($permission) > 1 and starts_with($permission, '*')) {
             $checkPermission = substr($permission, 1);
 
             foreach ($permissions as $groupPermission => $permitted) {
                 // Let's make sure the available permission ends with our permission
                 if ($checkPermission != $groupPermission
-                    AND ends_with($groupPermission, $checkPermission)
-                    AND $permitted == 1
-                ) return TRUE;
+                    and ends_with($groupPermission, $checkPermission)
+                    and $permitted == 1
+                ) {
+                    return true;
+                }
             }
         }
     }
@@ -132,18 +142,20 @@ class PermissionManager
     protected function checkPermissionMatches($permission, $permissions)
     {
         foreach ($permissions as $groupPermission => $permitted) {
-            if ((strlen($groupPermission) > 1) AND ends_with($groupPermission, '*')) {
+            if ((strlen($groupPermission) > 1) and ends_with($groupPermission, '*')) {
                 $checkMergedPermission = substr($groupPermission, 0, -1);
 
                 // Let's make sure the our permission starts with available permission
                 if ($checkMergedPermission != $permission
-                    AND starts_with($permission, $checkMergedPermission)
-                    AND $permitted == 1
-                ) return TRUE;
+                    and starts_with($permission, $checkMergedPermission)
+                    and $permitted == 1
+                ) {
+                    return true;
+                }
             }
             // Match permissions explicitly.
-            elseif ($permission == $groupPermission AND $permitted == 1) {
-                return TRUE;
+            elseif ($permission == $groupPermission and $permitted == 1) {
+                return true;
             }
         }
     }
@@ -159,13 +171,13 @@ class PermissionManager
         }
 
         foreach ($definitions as $code => $definition) {
-            if (!isset($definition['label']) AND isset($definition['description'])) {
+            if (!isset($definition['label']) and isset($definition['description'])) {
                 $definition['label'] = $definition['description'];
                 unset($definition['description']);
             }
 
-            $permission = (object)array_merge(self::$permissionDefaults, array_merge([
-                'code' => $code,
+            $permission = (object) array_merge(self::$permissionDefaults, array_merge([
+                'code'  => $code,
                 'owner' => $owner,
             ], $definition));
 
@@ -182,7 +194,7 @@ class PermissionManager
      *   AdminAuth::registerCallback(function($manager){
      *       $manager->registerPermissions([...]);
      *   });
-     * </pre>
+     * </pre>.
      *
      * @param callable $callback A callable function.
      */

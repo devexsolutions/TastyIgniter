@@ -7,7 +7,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * customer_id can be NULL on addresses table
+ * customer_id can be NULL on addresses table.
  */
 class NullifyCustomerIdOnAddressesTable extends Migration
 {

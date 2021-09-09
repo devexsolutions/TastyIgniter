@@ -76,8 +76,8 @@ class ScheduleEditor extends BaseFormWidget
 
         return $this->makePartial('recordeditor/form', [
             'formRecordId' => $scheduleCode,
-            'formTitle' => $formTitle,
-            'formWidget' => $this->makeScheduleFormWidget($scheduleItem),
+            'formTitle'    => $formTitle,
+            'formWidget'   => $this->makeScheduleFormWidget($scheduleItem),
         ]);
     }
 
@@ -107,23 +107,25 @@ class ScheduleEditor extends BaseFormWidget
         $this->prepareVars();
 
         return [
-            '#notification' => $this->makePartial('flash'),
+            '#notification'               => $this->makePartial('flash'),
             '#'.$this->getId('schedules') => $this->makePartial('scheduleeditor/schedules'),
         ];
     }
 
     protected function getSchedule($scheduleCode)
     {
-        if (!$schedule = array_get($this->listSchedules(), $scheduleCode))
+        if (!$schedule = array_get($this->listSchedules(), $scheduleCode)) {
             throw new ApplicationException(lang('admin::lang.locations.alert_schedule_not_loaded'));
+        }
 
         return $schedule;
     }
 
     protected function listSchedules()
     {
-        if ($this->schedulesCache)
+        if ($this->schedulesCache) {
             return $this->schedulesCache;
+        }
 
         $schedules = [];
         foreach ($this->availableSchedules as $scheduleCode) {

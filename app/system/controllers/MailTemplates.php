@@ -16,32 +16,32 @@ class MailTemplates extends \Admin\Classes\AdminController
 
     public $listConfig = [
         'list' => [
-            'model' => 'System\Models\Mail_templates_model',
-            'title' => 'lang:system::lang.mail_templates.text_template_title',
+            'model'        => 'System\Models\Mail_templates_model',
+            'title'        => 'lang:system::lang.mail_templates.text_template_title',
             'emptyMessage' => 'lang:system::lang.mail_templates.text_empty',
-            'defaultSort' => ['template_id', 'DESC'],
-            'configFile' => 'mail_templates_model',
+            'defaultSort'  => ['template_id', 'DESC'],
+            'configFile'   => 'mail_templates_model',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:system::lang.mail_templates.text_form_name',
-        'model' => 'System\Models\Mail_templates_model',
+        'name'    => 'lang:system::lang.mail_templates.text_form_name',
+        'model'   => 'System\Models\Mail_templates_model',
         'request' => 'System\Requests\MailTemplate',
-        'create' => [
-            'title' => 'lang:system::lang.mail_templates.text_new_template_title',
-            'redirect' => 'mail_templates/edit/{template_id}',
+        'create'  => [
+            'title'         => 'lang:system::lang.mail_templates.text_new_template_title',
+            'redirect'      => 'mail_templates/edit/{template_id}',
             'redirectClose' => 'mail_templates',
-            'redirectNew' => 'mail_templates/create',
+            'redirectNew'   => 'mail_templates/create',
         ],
         'edit' => [
-            'title' => 'lang:system::lang.mail_templates.text_edit_template_title',
-            'redirect' => 'mail_templates/edit/{template_id}',
+            'title'         => 'lang:system::lang.mail_templates.text_edit_template_title',
+            'redirect'      => 'mail_templates/edit/{template_id}',
             'redirectClose' => 'mail_templates',
-            'redirectNew' => 'mail_templates/create',
+            'redirectNew'   => 'mail_templates/create',
         ],
         'preview' => [
-            'title' => 'lang:system::lang.mail_templates.text_preview_template_title',
+            'title'    => 'lang:system::lang.mail_templates.text_preview_template_title',
             'redirect' => 'mail_templates/preview/{template_id}',
         ],
         'delete' => [
@@ -70,22 +70,24 @@ class MailTemplates extends \Admin\Classes\AdminController
     {
         if ($form->context != 'create') {
             $field = $form->getField('code');
-            $field->disabled = TRUE;
+            $field->disabled = true;
         }
     }
 
     public function formBeforeSave($model)
     {
-        $model->is_custom = TRUE;
+        $model->is_custom = true;
     }
 
     public function onTestTemplate($context, $recordId)
     {
-        if (!strlen($recordId))
+        if (!strlen($recordId)) {
             throw new ApplicationException(lang('system::lang.mail_templates.alert_template_id_not_found'));
+        }
 
-        if (!$model = $this->formFindModelObject($recordId))
+        if (!$model = $this->formFindModelObject($recordId)) {
             throw new ApplicationException(lang('system::lang.mail_templates.alert_template_not_found'));
+        }
 
         $adminUser = $this->getUser()->staff;
 

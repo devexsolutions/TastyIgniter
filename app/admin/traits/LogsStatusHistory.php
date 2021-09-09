@@ -14,13 +14,13 @@ trait LogsStatusHistory
         self::extend(function (self $model) {
             $model->relation['belongsTo']['status'] = ['Admin\Models\Statuses_model'];
             $model->relation['morphMany']['status_history'] = [
-                'Admin\Models\Status_history_model', 'name' => 'object', 'delete' => TRUE,
+                'Admin\Models\Status_history_model', 'name' => 'object', 'delete' => true,
             ];
 
             $model->appends[] = 'status_name';
 
             $model->addCasts([
-                'status_id' => 'integer',
+                'status_id'         => 'integer',
                 'status_updated_at' => 'dateTime',
             ]);
         });
@@ -43,13 +43,15 @@ trait LogsStatusHistory
 
     public function addStatusHistory($status, array $statusData = [])
     {
-        if (!$this->exists OR !$status)
-            return FALSE;
+        if (!$this->exists or !$status) {
+            return false;
+        }
 
         $this->status()->associate($status);
 
-        if (!$history = Status_history_model::createHistory($status, $this, $statusData))
-            return FALSE;
+        if (!$history = Status_history_model::createHistory($status, $this, $statusData)) {
+            return false;
+        }
 
         $this->save();
 
@@ -69,8 +71,9 @@ trait LogsStatusHistory
 
     public function hasStatus($statusId = null)
     {
-        if (is_null($statusId))
+        if (is_null($statusId)) {
             return $this->status_history->isNotEmpty();
+        }
 
         return $this->status_history()->where('status_id', $statusId)->exists();
     }

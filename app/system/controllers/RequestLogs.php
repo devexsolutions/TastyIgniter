@@ -14,19 +14,19 @@ class RequestLogs extends \Admin\Classes\AdminController
 
     public $listConfig = [
         'list' => [
-            'model' => 'System\Models\Request_logs_model',
-            'title' => 'lang:system::lang.request_logs.text_title',
+            'model'        => 'System\Models\Request_logs_model',
+            'title'        => 'lang:system::lang.request_logs.text_title',
             'emptyMessage' => 'lang:system::lang.request_logs.text_empty',
-            'defaultSort' => ['count', 'DESC'],
-            'configFile' => 'request_logs_model',
+            'defaultSort'  => ['count', 'DESC'],
+            'configFile'   => 'request_logs_model',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:system::lang.request_logs.text_form_name',
-        'model' => 'System\Models\Request_logs_model',
+        'name'    => 'lang:system::lang.request_logs.text_form_name',
+        'model'   => 'System\Models\Request_logs_model',
         'preview' => [
-            'title' => 'lang:admin::lang.form.preview_title',
+            'title'    => 'lang:admin::lang.form.preview_title',
             'redirect' => 'request_logs',
         ],
         'delete' => [

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
 /**
  * Modify columns on orders and reservations table
  * add processed column
- * rename status column to status_id on reservations
+ * rename status column to status_id on reservations.
  */
 class ModifyColumnsOnOrdersReservationsTable extends Migration
 {

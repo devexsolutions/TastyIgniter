@@ -19,7 +19,8 @@ class CalendarController extends ControllerAction
      *          'title'         => 'lang:text_title',
      *          'configFile'   => null,
      *      ],
-     *  ];
+     *  ];.
+     *
      * @var array
      */
     public $calendarConfig;
@@ -97,7 +98,7 @@ class CalendarController extends ControllerAction
     }
 
     /**
-     * Prepare the widgets used by this action
+     * Prepare the widgets used by this action.
      *
      * @param $alias
      *
@@ -105,8 +106,9 @@ class CalendarController extends ControllerAction
      */
     protected function makeCalendar($alias)
     {
-        if (!isset($this->calendarConfig[$alias]))
+        if (!isset($this->calendarConfig[$alias])) {
             $alias = $this->primaryAlias;
+        }
 
         $calendarConfig = $this->makeConfig($this->calendarConfig[$alias], $this->requiredConfig);
         $calendarConfig['alias'] = $alias;
@@ -128,10 +130,11 @@ class CalendarController extends ControllerAction
         $widget->bindToController();
 
         // Prep the optional toolbar widget
-        if (isset($modelConfig['toolbar']) AND isset($this->controller->widgets['toolbar'])) {
+        if (isset($modelConfig['toolbar']) and isset($this->controller->widgets['toolbar'])) {
             $this->toolbarWidget = $this->controller->widgets['toolbar'];
-            if ($this->toolbarWidget instanceof \Admin\Widgets\Toolbar)
+            if ($this->toolbarWidget instanceof \Admin\Widgets\Toolbar) {
                 $this->toolbarWidget->reInitialize($modelConfig['toolbar']);
+            }
         }
 
         return $widget;
@@ -139,8 +142,9 @@ class CalendarController extends ControllerAction
 
     public function renderCalendar($alias = null)
     {
-        if (is_null($alias) OR !isset($this->listConfig[$alias]))
+        if (is_null($alias) or !isset($this->listConfig[$alias])) {
             $alias = $this->primaryAlias;
+        }
 
         $list = [];
 

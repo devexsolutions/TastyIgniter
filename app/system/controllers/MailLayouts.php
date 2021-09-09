@@ -13,32 +13,32 @@ class MailLayouts extends \Admin\Classes\AdminController
 
     public $listConfig = [
         'list' => [
-            'model' => 'System\Models\Mail_layouts_model',
-            'title' => 'lang:system::lang.mail_templates.text_title',
+            'model'        => 'System\Models\Mail_layouts_model',
+            'title'        => 'lang:system::lang.mail_templates.text_title',
             'emptyMessage' => 'lang:system::lang.mail_templates.text_empty',
-            'defaultSort' => ['layout_id', 'DESC'],
-            'configFile' => 'mail_layouts_model',
+            'defaultSort'  => ['layout_id', 'DESC'],
+            'configFile'   => 'mail_layouts_model',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:system::lang.mail_templates.text_form_name',
-        'model' => 'System\Models\Mail_layouts_model',
+        'name'    => 'lang:system::lang.mail_templates.text_form_name',
+        'model'   => 'System\Models\Mail_layouts_model',
         'request' => 'System\Requests\MailLayout',
-        'create' => [
-            'title' => 'lang:admin::lang.form.create_title',
-            'redirect' => 'mail_layouts/edit/{layout_id}',
+        'create'  => [
+            'title'         => 'lang:admin::lang.form.create_title',
+            'redirect'      => 'mail_layouts/edit/{layout_id}',
             'redirectClose' => 'mail_layouts',
-            'redirectNew' => 'mail_layouts/create',
+            'redirectNew'   => 'mail_layouts/create',
         ],
         'edit' => [
-            'title' => 'lang:admin::lang.form.edit_title',
-            'redirect' => 'mail_layouts/edit/{layout_id}',
+            'title'         => 'lang:admin::lang.form.edit_title',
+            'redirect'      => 'mail_layouts/edit/{layout_id}',
             'redirectClose' => 'mail_layouts',
-            'redirectNew' => 'mail_layouts/create',
+            'redirectNew'   => 'mail_layouts/create',
         ],
         'preview' => [
-            'title' => 'lang:admin::lang.form.preview_title',
+            'title'    => 'lang:admin::lang.form.preview_title',
             'redirect' => 'mail_layouts',
         ],
         'delete' => [
@@ -60,7 +60,7 @@ class MailLayouts extends \Admin\Classes\AdminController
     {
         if ($form->context != 'create') {
             $field = $form->getField('code');
-            $field->disabled = TRUE;
+            $field->disabled = true;
         }
     }
 }

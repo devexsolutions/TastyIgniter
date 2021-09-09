@@ -32,8 +32,8 @@ class MarkdownEditor extends BaseFormWidget
             'mode',
         ]);
 
-        if ($this->formField->disabled OR $this->formField->readOnly) {
-            $this->previewMode = TRUE;
+        if ($this->formField->disabled or $this->formField->readOnly) {
+            $this->previewMode = true;
         }
     }
 
@@ -45,7 +45,7 @@ class MarkdownEditor extends BaseFormWidget
     }
 
     /**
-     * Prepares the widget data
+     * Prepares the widget data.
      */
     public function prepareVars()
     {

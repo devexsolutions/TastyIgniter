@@ -6,7 +6,7 @@ use Igniter\Flame\Traits\Singleton;
 use System\Classes\ExtensionManager;
 
 /**
- * Widget manager
+ * Widget manager.
  *
  * Adapted from october\backend\classes\WidgetManager
  */
@@ -58,6 +58,7 @@ class Widgets
 
     /**
      * Returns a list of registered form widgets.
+     *
      * @return array Array keys are class names.
      */
     public function listFormWidgets()
@@ -90,8 +91,8 @@ class Widgets
     /**
      * Registers a single form form widget.
      *
-     * @param string $className Widget class name.
-     * @param array $widgetInfo Registration information, can contain an 'code' key.
+     * @param string $className  Widget class name.
+     * @param array  $widgetInfo Registration information, can contain an 'code' key.
      *
      * @return void
      */
@@ -117,7 +118,7 @@ class Widgets
      *           'code'  => 'codeeditor'
      *       ]);
      *   });
-     * </pre>
+     * </pre>.
      *
      * @param callable $definitions
      */
@@ -160,6 +161,7 @@ class Widgets
 
     /**
      * Returns a list of registered dashboard widgets.
+     *
      * @return array Array keys are class names.
      */
     public function listDashboardWidgets()
@@ -207,7 +209,7 @@ class Widgets
      *           'context'=>'dashboard'
      *       ]);
      *   });
-     * </pre>
+     * </pre>.
      *
      * @param callable $definitions
      */

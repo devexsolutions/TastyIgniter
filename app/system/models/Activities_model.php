@@ -7,7 +7,7 @@ use Igniter\Flame\Database\Model;
 use System\Classes\ExtensionManager;
 
 /**
- * Activities Model Class
+ * Activities Model Class.
  */
 class Activities_model extends Activity
 {
@@ -44,10 +44,10 @@ class Activities_model extends Activity
     public function scopeListRecent($query, $options)
     {
         extract(array_merge([
-            'page' => 1,
-            'pageLimit' => 20,
-            'sort' => 'date_added desc',
-            'onlyUser' => null,
+            'page'       => 1,
+            'pageLimit'  => 20,
+            'sort'       => 'date_added desc',
+            'onlyUser'   => null,
             'exceptUser' => null,
         ], $options));
 
@@ -83,8 +83,9 @@ class Activities_model extends Activity
             }
         }
 
-        if ($pageLimit)
+        if ($pageLimit) {
             return $query->take($pageLimit);
+        }
 
         return $query;
     }

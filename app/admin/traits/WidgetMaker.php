@@ -6,7 +6,7 @@ use Admin\Classes\FormField;
 use Exception;
 
 /**
- * Widget Maker Trait Class
+ * Widget Maker Trait Class.
  *
  * Adapted from october\backend\traits\WidgetMaker.php
  */
@@ -14,10 +14,10 @@ trait WidgetMaker
 {
     /**
      * Makes a widget object with the supplied configuration
-     * ex. model config
+     * ex. model config.
      *
-     * @param string $class Widget class name
-     * @param array $widgetConfig An array of config.
+     * @param string $class        Widget class name
+     * @param array  $widgetConfig An array of config.
      *
      * @return \Admin\Classes\BaseWidget The widget object
      */
@@ -37,16 +37,17 @@ trait WidgetMaker
     /**
      * Makes a form widget object with the supplied form field and widget configuration.
      *
-     * @param string $class Widget class name
-     * @param mixed $fieldConfig A field name, an array of config or a FormField object.
-     * @param array $widgetConfig An array of config.
+     * @param string $class        Widget class name
+     * @param mixed  $fieldConfig  A field name, an array of config or a FormField object.
+     * @param array  $widgetConfig An array of config.
+     *
+     * @throws \Exception
      *
      * @return \Admin\Classes\BaseFormWidget The widget object
-     * @throws \Exception
      */
     public function makeFormWidget($class, $fieldConfig = [], $widgetConfig = [])
     {
-        $controller = (property_exists($this, 'controller') AND $this->controller)
+        $controller = (property_exists($this, 'controller') and $this->controller)
             ? $this->controller
             : $this;
 
@@ -64,8 +65,7 @@ trait WidgetMaker
                 array_get($fieldConfig, 'label')
             );
             $formField->displayAs('widget', $fieldConfig);
-        }
-        else {
+        } else {
             $formField = $fieldConfig;
         }
 

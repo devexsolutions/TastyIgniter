@@ -19,25 +19,25 @@ class Orders extends \Admin\Classes\AdminController
 
     public $listConfig = [
         'list' => [
-            'model' => 'Admin\Models\Orders_model',
-            'title' => 'lang:admin::lang.orders.text_title',
+            'model'        => 'Admin\Models\Orders_model',
+            'title'        => 'lang:admin::lang.orders.text_title',
             'emptyMessage' => 'lang:admin::lang.orders.text_empty',
-            'defaultSort' => ['order_id', 'DESC'],
-            'configFile' => 'orders_model',
+            'defaultSort'  => ['order_id', 'DESC'],
+            'configFile'   => 'orders_model',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:admin::lang.orders.text_form_name',
-        'model' => 'Admin\Models\Orders_model',
+        'name'    => 'lang:admin::lang.orders.text_form_name',
+        'model'   => 'Admin\Models\Orders_model',
         'request' => 'Admin\Requests\Order',
-        'edit' => [
-            'title' => 'lang:admin::lang.form.edit_title',
-            'redirect' => 'orders/edit/{order_id}',
+        'edit'    => [
+            'title'         => 'lang:admin::lang.form.edit_title',
+            'redirect'      => 'orders/edit/{order_id}',
             'redirectClose' => 'orders',
         ],
         'preview' => [
-            'title' => 'lang:admin::lang.form.preview_title',
+            'title'    => 'lang:admin::lang.form.preview_title',
             'redirect' => 'orders',
         ],
         'delete' => [
@@ -68,21 +68,24 @@ class Orders extends \Admin\Classes\AdminController
 
     public function index_onDelete()
     {
-        if (!$this->getUser()->hasPermission('Admin.DeleteOrders'))
+        if (!$this->getUser()->hasPermission('Admin.DeleteOrders')) {
             throw new ApplicationException(lang('admin::lang.alert_user_restricted'));
+        }
 
         return $this->asExtension('Admin\Actions\ListController')->index_onDelete();
     }
 
     public function index_onUpdateStatus()
     {
-        $model = Orders_model::find((int)post('recordId'));
-        $status = Statuses_model::find((int)post('statusId'));
-        if (!$model OR !$status)
+        $model = Orders_model::find((int) post('recordId'));
+        $status = Statuses_model::find((int) post('statusId'));
+        if (!$model or !$status) {
             return;
+        }
 
-        if ($record = $model->addStatusHistory($status))
+        if ($record = $model->addStatusHistory($status)) {
             StatusUpdated::log($record, $this->getUser());
+        }
 
         flash()->success(sprintf(lang('admin::lang.alert_success'), lang('admin::lang.statuses.text_form_name').' updated'))->now();
 
@@ -91,8 +94,9 @@ class Orders extends \Admin\Classes\AdminController
 
     public function edit_onDelete($context, $recordId)
     {
-        if (!$this->getUser()->hasPermission('Admin.DeleteOrders'))
+        if (!$this->getUser()->hasPermission('Admin.DeleteOrders')) {
             throw new ApplicationException(lang('admin::lang.alert_user_restricted'));
+        }
 
         return $this->asExtension('Admin\Actions\FormController')->edit_onDelete($context, $recordId);
     }
@@ -101,23 +105,24 @@ class Orders extends \Admin\Classes\AdminController
     {
         $model = $this->formFindModelObject($recordId);
 
-        if (!$model->hasInvoice())
+        if (!$model->hasInvoice()) {
             throw new ApplicationException(lang('admin::lang.orders.alert_invoice_not_generated'));
+        }
 
         $this->vars['model'] = $model;
 
-        $this->suppressLayout = TRUE;
+        $this->suppressLayout = true;
     }
 
     public function formExtendFieldsBefore($form)
     {
-        if (!array_key_exists('invoice_number', $form->tabs['fields']))
+        if (!array_key_exists('invoice_number', $form->tabs['fields'])) {
             return;
+        }
 
         if (!$form->model->hasInvoice()) {
             array_pull($form->tabs['fields']['invoice_number'], 'addonRight');
-        }
-        else {
+        } else {
             $form->tabs['fields']['invoice_number']['addonRight']['attributes']['href'] = admin_url('orders/invoice/'.$form->model->getKey());
         }
     }

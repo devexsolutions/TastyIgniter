@@ -5,7 +5,7 @@ namespace Admin\Models;
 use Igniter\Flame\Database\Model;
 
 /**
- * Statuses Model Class
+ * Statuses Model Class.
  */
 class Statuses_model extends Model
 {
@@ -30,7 +30,7 @@ class Statuses_model extends Model
     ];
 
     /**
-     * Return status_for attribute as lang text, used by
+     * Return status_for attribute as lang text, used by.
      *
      * @param $value
      * @param $row
@@ -45,7 +45,7 @@ class Statuses_model extends Model
     public function getStatusForDropdownOptions()
     {
         return [
-            'order' => lang('admin::lang.statuses.text_order'),
+            'order'   => lang('admin::lang.statuses.text_order'),
             'reserve' => lang('admin::lang.statuses.text_reservation'),
         ];
     }
@@ -65,7 +65,7 @@ class Statuses_model extends Model
     //
 
     /**
-     * Scope a query to only include order statuses
+     * Scope a query to only include order statuses.
      *
      * @param $query
      *
@@ -77,7 +77,7 @@ class Statuses_model extends Model
     }
 
     /**
-     * Scope a query to only include reservation statuses
+     * Scope a query to only include reservation statuses.
      *
      * @param $query
      *

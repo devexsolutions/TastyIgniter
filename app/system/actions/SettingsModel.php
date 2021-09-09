@@ -13,7 +13,7 @@ use Igniter\Flame\Support\Facades\File;
  * In the model class definition:
  *   public $implement = ['System\Actions\SettingsModel'];
  *   public $settingsCode = 'owner_extension_settings';
- *   public $settingsFieldsConfig = 'settings_model';
+ *   public $settingsFieldsConfig = 'settings_model';.
  */
 class SettingsModel extends ModelAction
 {
@@ -31,7 +31,7 @@ class SettingsModel extends ModelAction
     protected $requiredProperties = ['settingsFieldsConfig', 'settingsCode'];
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param \Igniter\Flame\Database\Model $model
      */
@@ -43,7 +43,7 @@ class SettingsModel extends ModelAction
         $this->model->setKeyName('id');
         $this->model->addCasts(['data' => Serialize::class]);
         $this->model->guard([]);
-        $this->model->timestamps = FALSE;
+        $this->model->timestamps = false;
 
         $relativePath = dirname(dirname(File::fromClass($model)));
         $this->configPath = $relativePath.'/models/config';
@@ -62,7 +62,7 @@ class SettingsModel extends ModelAction
     }
 
     /**
-     * Create an instance of the settings model, intended as a static method
+     * Create an instance of the settings model, intended as a static method.
      */
     public function instance()
     {
@@ -79,7 +79,7 @@ class SettingsModel extends ModelAction
     }
 
     /**
-     * Reset the settings to their defaults, this will delete the record model
+     * Reset the settings to their defaults, this will delete the record model.
      */
     public function resetDefault()
     {
@@ -91,6 +91,7 @@ class SettingsModel extends ModelAction
 
     /**
      * Returns the raw Model record that stores the settings.
+     *
      * @return Model
      */
     public function getSettingsRecord()
@@ -101,7 +102,7 @@ class SettingsModel extends ModelAction
     }
 
     /**
-     * Set a single or array key pair of values, intended as a static method
+     * Set a single or array key pair of values, intended as a static method.
      */
     public function set($key, $value = null)
     {
@@ -113,7 +114,7 @@ class SettingsModel extends ModelAction
     }
 
     /**
-     * Helper for getSettingsValue, intended as a static method
+     * Helper for getSettingsValue, intended as a static method.
      */
     public function get($key, $default = null)
     {
@@ -121,12 +122,13 @@ class SettingsModel extends ModelAction
     }
 
     /**
-     * Get a single setting value, or return a default value
+     * Get a single setting value, or return a default value.
      */
     public function getSettingsValue($key, $default = null)
     {
-        if ($this->model->hasGetMutator($key))
+        if ($this->model->hasGetMutator($key)) {
             return $this->model->getAttribute($key);
+        }
 
         if (array_key_exists($key, $this->fieldValues)) {
             return $this->fieldValues[$key];
@@ -148,7 +150,7 @@ class SettingsModel extends ModelAction
     }
 
     /**
-     * Default values to set for this model, override
+     * Default values to set for this model, override.
      */
     public function initSettingsData()
     {
@@ -164,7 +166,8 @@ class SettingsModel extends ModelAction
     }
 
     /**
-     * Internal save method for the model
+     * Internal save method for the model.
+     *
      * @return void
      */
     public function saveModelInternal()
@@ -175,7 +178,7 @@ class SettingsModel extends ModelAction
 
     /**
      * Before the model is saved, ensure the record code is set
-     * and the jsonable field values
+     * and the jsonable field values.
      */
     public function beforeModelSave()
     {
@@ -187,6 +190,7 @@ class SettingsModel extends ModelAction
 
     /**
      * After the model is saved, clear the cached query entry.
+     *
      * @return void
      */
     public function afterModelSave()
@@ -195,21 +199,21 @@ class SettingsModel extends ModelAction
 
     /**
      * Checks if a key is legitimate or should be added to
-     * the field value collection
+     * the field value collection.
      */
     protected function isKeyAllowed($key)
     {
         // core columns
-        if ($key == 'id' OR $key == 'item' OR $key == 'data') {
-            return TRUE;
+        if ($key == 'id' or $key == 'item' or $key == 'data') {
+            return true;
         }
 
         // relations
         if ($this->model->hasRelation($key)) {
-            return TRUE;
+            return true;
         }
 
-        return FALSE;
+        return false;
     }
 
     /**
@@ -234,6 +238,7 @@ class SettingsModel extends ModelAction
 
     /**
      * Clears the internal memory cache of model instances.
+     *
      * @return void
      */
     public static function clearInternalCache()

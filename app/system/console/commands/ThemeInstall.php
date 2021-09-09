@@ -33,8 +33,9 @@ class ThemeInstall extends Command
         ]]);
 
         $themeDetails = array_first(array_get($response, 'data'));
-        if (!$themeDetails)
+        if (!$themeDetails) {
             return $this->output->writeln(sprintf('<info>Theme %s not found</info>', $themeName));
+        }
 
         $code = array_get($themeDetails, 'code');
         $hash = array_get($themeDetails, 'hash');
@@ -44,7 +45,7 @@ class ThemeInstall extends Command
         $manager->downloadFile($code, $hash, [
             'name' => $code,
             'type' => 'theme',
-            'ver' => $version,
+            'ver'  => $version,
         ]);
 
         $this->output->writeln(sprintf('<info>Extracting theme %s files</info>', $code));
@@ -57,6 +58,7 @@ class ThemeInstall extends Command
 
     /**
      * Get the console command arguments.
+     *
      * @return array
      */
     protected function getArguments()

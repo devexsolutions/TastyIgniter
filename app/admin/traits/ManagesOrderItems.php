@@ -23,7 +23,7 @@ trait ManagesOrderItems
     }
 
     /**
-     * Subtract cart item quantity from menu stock quantity
+     * Subtract cart item quantity from menu stock quantity.
      *
      * @return void
      */
@@ -31,18 +31,22 @@ trait ManagesOrderItems
     {
         $orderMenuOptions = $this->getOrderMenuOptions();
         $this->getOrderMenus()->each(function ($orderMenu) use ($orderMenuOptions) {
-            if (!$menu = Menus_model::find($orderMenu->menu_id))
-                return TRUE;
+            if (!$menu = Menus_model::find($orderMenu->menu_id)) {
+                return true;
+            }
 
-            if ($menu->subtract_stock)
+            if ($menu->subtract_stock) {
                 $menu->updateStock($orderMenu->quantity);
+            }
 
             $orderMenuOptions
                 ->where('order_menu_id', $orderMenu->order_menu_id)
                 ->each(function ($orderMenuOption) {
                     if (!$menuOptionValue = Menu_item_option_values_model::find(
                         $orderMenuOption->menu_option_value_id
-                    )) return TRUE;
+                    )) {
+                        return true;
+                    }
 
                     $menuOptionValue->updateStock($orderMenuOption->quantity);
                 });
@@ -50,7 +54,7 @@ trait ManagesOrderItems
     }
 
     /**
-     * Return all order menu by order_id
+     * Return all order menu by order_id.
      *
      * @return \Illuminate\Support\Collection
      */
@@ -60,7 +64,7 @@ trait ManagesOrderItems
     }
 
     /**
-     * Return all order menu options by order_id
+     * Return all order menu options by order_id.
      *
      * @return \Illuminate\Support\Collection
      */
@@ -70,7 +74,7 @@ trait ManagesOrderItems
     }
 
     /**
-     * Return all order menus merged with order menu options
+     * Return all order menus merged with order menu options.
      *
      * @return \Illuminate\Support\Collection
      */
@@ -102,7 +106,7 @@ trait ManagesOrderItems
     }
 
     /**
-     * Return all order totals by order_id
+     * Return all order totals by order_id.
      *
      * @return \Illuminate\Support\Collection
      */
@@ -112,7 +116,7 @@ trait ManagesOrderItems
     }
 
     /**
-     * Add cart menu items to order by order_id
+     * Add cart menu items to order by order_id.
      *
      * @param array $content
      *
@@ -121,27 +125,30 @@ trait ManagesOrderItems
     public function addOrderMenus(array $content)
     {
         $orderId = $this->getKey();
-        if (!is_numeric($orderId))
-            return FALSE;
+        if (!is_numeric($orderId)) {
+            return false;
+        }
 
         $this->orderMenusQuery()->where('order_id', $orderId)->delete();
         $this->orderMenuOptionsQuery()->where('order_id', $orderId)->delete();
 
         foreach ($content as $rowId => $cartItem) {
-            if ($rowId != $cartItem->rowId) continue;
+            if ($rowId != $cartItem->rowId) {
+                continue;
+            }
 
             $orderMenuId = $this->orderMenusQuery()->insertGetId([
-                'order_id' => $orderId,
-                'menu_id' => $cartItem->id,
-                'name' => $cartItem->name,
-                'quantity' => $cartItem->qty,
-                'price' => $cartItem->price,
-                'subtotal' => $cartItem->subtotal,
-                'comment' => $cartItem->comment,
+                'order_id'      => $orderId,
+                'menu_id'       => $cartItem->id,
+                'name'          => $cartItem->name,
+                'quantity'      => $cartItem->qty,
+                'price'         => $cartItem->price,
+                'subtotal'      => $cartItem->subtotal,
+                'comment'       => $cartItem->comment,
                 'option_values' => serialize($cartItem->options),
             ]);
 
-            if ($orderMenuId AND count($cartItem->options)) {
+            if ($orderMenuId and count($cartItem->options)) {
                 $this->addOrderMenuOptions($orderMenuId, $cartItem->id, $cartItem->options);
             }
         }
@@ -149,7 +156,7 @@ trait ManagesOrderItems
 
     /**
      * Add cart menu item options to menu and order by,
-     * order_id and menu_id
+     * order_id and menu_id.
      *
      * @param $orderMenuId
      * @param $menuId
@@ -160,27 +167,28 @@ trait ManagesOrderItems
     protected function addOrderMenuOptions($orderMenuId, $menuId, $options)
     {
         $orderId = $this->getKey();
-        if (!is_numeric($orderId))
-            return FALSE;
+        if (!is_numeric($orderId)) {
+            return false;
+        }
 
         foreach ($options as $option) {
             foreach ($option->values as $value) {
                 $this->orderMenuOptionsQuery()->insert([
-                    'order_menu_id' => $orderMenuId,
-                    'order_id' => $orderId,
-                    'menu_id' => $menuId,
+                    'order_menu_id'        => $orderMenuId,
+                    'order_id'             => $orderId,
+                    'menu_id'              => $menuId,
                     'order_menu_option_id' => $option->id,
                     'menu_option_value_id' => $value->id,
-                    'order_option_name' => $value->name,
-                    'order_option_price' => $value->price,
-                    'quantity' => $value->qty,
+                    'order_option_name'    => $value->name,
+                    'order_option_price'   => $value->price,
+                    'quantity'             => $value->qty,
                 ]);
             }
         }
     }
 
     /**
-     * Add cart totals to order by order_id
+     * Add cart totals to order by order_id.
      *
      * @param array $totals
      *
@@ -189,8 +197,9 @@ trait ManagesOrderItems
     public function addOrderTotals(array $totals = [])
     {
         $orderId = $this->getKey();
-        if (!is_numeric($orderId))
-            return FALSE;
+        if (!is_numeric($orderId)) {
+            return false;
+        }
 
         $this->orderTotalsQuery()->where('order_id', $orderId)->delete();
 
@@ -205,7 +214,7 @@ trait ManagesOrderItems
     {
         return $this->orderTotalsQuery()->updateOrInsert([
             'order_id' => $this->getKey(),
-            'code' => $total['code'],
+            'code'     => $total['code'],
         ], array_except($total, ['order_id', 'code']));
     }
 
@@ -217,7 +226,7 @@ trait ManagesOrderItems
 
         $total = $this->orderTotalsQuery()
             ->where('order_id', $this->getKey())
-            ->where('is_summable', TRUE)
+            ->where('is_summable', true)
             ->sum('value');
 
         $orderTotal = $subtotal + $total;

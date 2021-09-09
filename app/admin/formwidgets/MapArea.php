@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Map Area
+ * Map Area.
  */
 class MapArea extends BaseFormWidget
 {
@@ -42,7 +42,7 @@ class MapArea extends BaseFormWidget
 
     public $sortColumnName = 'priority';
 
-    public $sortable = TRUE;
+    public $sortable = true;
 
     //
     // Object properties
@@ -53,14 +53,14 @@ class MapArea extends BaseFormWidget
     protected $areaColors;
 
     protected $shapeDefaultProperties = [
-        'id' => null,
-        'default' => 'address',
-        'options' => [],
-        'circle' => [],
-        'polygon' => [],
-        'vertices' => [],
-        'serialized' => FALSE,
-        'editable' => FALSE,
+        'id'         => null,
+        'default'    => 'address',
+        'options'    => [],
+        'circle'     => [],
+        'polygon'    => [],
+        'vertices'   => [],
+        'serialized' => false,
+        'editable'   => false,
     ];
 
     protected $sortableInputName;
@@ -84,7 +84,7 @@ class MapArea extends BaseFormWidget
 
         $this->areaColors = Location_areas_model::$areaColors;
 
-        $fieldName = $this->formField->getName(FALSE);
+        $fieldName = $this->formField->getName(false);
         $this->sortableInputName = self::SORT_PREFIX.$fieldName;
     }
 
@@ -101,7 +101,8 @@ class MapArea extends BaseFormWidget
         // Make the mapview assets available
         if (strlen($key = setting('maps_api_key'))) {
             $url = 'https://maps.googleapis.com/maps/api/js?key=%s&libraries=geometry';
-            $this->addJs(sprintf($url, $key),
+            $this->addJs(
+                sprintf($url, $key),
                 ['name' => 'google-maps-js', 'async' => null, 'defer' => null]
             );
         }
@@ -129,20 +130,22 @@ class MapArea extends BaseFormWidget
 
     public function getSaveValue($value)
     {
-        if (!$this->sortable)
+        if (!$this->sortable) {
             return FormField::NO_SAVE_DATA;
+        }
 
         $items = $this->formField->value;
-        if (!$items instanceof Collection)
+        if (!$items instanceof Collection) {
             return $items;
+        }
 
-        $sortedIndexes = (array)post($this->sortableInputName);
+        $sortedIndexes = (array) post($this->sortableInputName);
         $sortedIndexes = array_flip($sortedIndexes);
 
         $value = [];
         foreach ($items as $index => $item) {
             $value[$index] = [
-                $item->getKeyName() => $item->getKey(),
+                $item->getKeyName()   => $item->getKey(),
                 $this->sortColumnName => $sortedIndexes[$item->getKey()],
             ];
         }
@@ -158,7 +161,7 @@ class MapArea extends BaseFormWidget
 
         return $this->makePartial('maparea/area_form', [
             'formAreaId' => $areaId,
-            'formTitle' => ($model->exists ? $this->editLabel : $this->addLabel).' '.lang($this->formName),
+            'formTitle'  => ($model->exists ? $this->editLabel : $this->addLabel).' '.lang($this->formName),
             'formWidget' => $this->makeAreaFormWidget($model, 'edit'),
         ]);
     }
@@ -181,7 +184,8 @@ class MapArea extends BaseFormWidget
             }
         });
 
-        flash()->success(sprintf(lang('admin::lang.alert_success'),
+        flash()->success(sprintf(
+            lang('admin::lang.alert_success'),
             'Area '.($form->context == 'create' ? 'created' : 'updated')
         ))->now();
 
@@ -191,19 +195,21 @@ class MapArea extends BaseFormWidget
         $this->prepareVars();
 
         return [
-            '#notification' => $this->makePartial('flash'),
+            '#notification'       => $this->makePartial('flash'),
             '.map-area-container' => $this->makePartial('maparea/areas'),
         ];
     }
 
     public function onDeleteArea()
     {
-        if (!strlen($areaId = post('areaId')))
+        if (!strlen($areaId = post('areaId'))) {
             throw new ApplicationException(lang('admin::lang.locations.alert_invalid_area'));
+        }
 
         $model = $this->getRelationModel()->find($areaId);
-        if (!$model)
+        if (!$model) {
             throw new ApplicationException(sprintf(lang('admin::lang.form.not_found'), $areaId));
+        }
 
         $model->delete();
 
@@ -221,17 +227,17 @@ class MapArea extends BaseFormWidget
         $areaColor = $area->color;
 
         $attributes = [
-            'data-id' => $area->area_id ?? 1,
-            'data-name' => $area->name ?? '',
-            'data-default' => $area->type ?? 'address',
-            'data-color' => $areaColor,
-            'data-polygon' => $area->boundaries['polygon'] ?? null,
-            'data-circle' => $area->boundaries['circle'] ?? null,
+            'data-id'       => $area->area_id ?? 1,
+            'data-name'     => $area->name ?? '',
+            'data-default'  => $area->type ?? 'address',
+            'data-color'    => $areaColor,
+            'data-polygon'  => $area->boundaries['polygon'] ?? null,
+            'data-circle'   => $area->boundaries['circle'] ?? null,
             'data-vertices' => $area->boundaries['vertices'] ?? null,
             'data-editable' => $this->previewMode ? 'false' : 'true',
-            'data-options' => json_encode([
-                'fillColor' => $areaColor,
-                'strokeColor' => $areaColor,
+            'data-options'  => json_encode([
+                'fillColor'    => $areaColor,
+                'strokeColor'  => $areaColor,
                 'distanceUnit' => setting('distance_unit'),
             ]),
         ];
@@ -254,12 +260,12 @@ class MapArea extends BaseFormWidget
         $result = [];
 
         foreach ($loadValue as $key => $area) {
-            if (!isset($area['color']) OR !strlen($area['color'])) {
+            if (!isset($area['color']) or !strlen($area['color'])) {
                 $index = min($key, count($this->areaColors));
                 $area['color'] = $this->areaColors[$index] ?? $this->areaColors[0];
             }
 
-            $result[$key] = (object)$area;
+            $result[$key] = (object) $area;
         }
 
         return $this->mapAreas = $result;
@@ -267,11 +273,13 @@ class MapArea extends BaseFormWidget
 
     protected function makeAreaFormWidget($model, $context = null)
     {
-        if (is_null($context))
+        if (is_null($context)) {
             $context = $model->exists ? 'edit' : 'create';
+        }
 
-        if (is_null($model->location_id))
+        if (is_null($model->location_id)) {
             $model->location_id = $this->model->getKey();
+        }
 
         $config = is_string($this->form) ? $this->loadConfig($this->form, ['form'], 'form') : $this->form;
         $config['context'] = $context;

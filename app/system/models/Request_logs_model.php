@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Request;
 
 /**
- * RequestLogs Model Class
+ * RequestLogs Model Class.
  */
 class Request_logs_model extends Model
 {
@@ -21,7 +21,7 @@ class Request_logs_model extends Model
     /**
      * @var array The model table column to convert to dates on insert/update
      */
-    public $timestamps = TRUE;
+    public $timestamps = true;
 
     protected $casts = [
         'referrer' => 'json',
@@ -29,22 +29,24 @@ class Request_logs_model extends Model
 
     public static function createLog($statusCode = 404)
     {
-        if (!App::hasDatabase())
+        if (!App::hasDatabase()) {
             return;
+        }
 
-        if (!setting('enable_request_log', TRUE))
+        if (!setting('enable_request_log', true)) {
             return;
+        }
 
         $url = Request::fullUrl();
         $referrer = Request::header('referer');
 
         $record = self::firstOrNew([
-            'url' => substr($url, 0, 191),
+            'url'         => substr($url, 0, 191),
             'status_code' => $statusCode,
         ]);
 
         if (strlen($referrer)) {
-            $referrers = (array)$record->referrer ?: [];
+            $referrers = (array) $record->referrer ?: [];
             $referrers[] = $referrer;
             $record->referrer = $referrers;
         }
@@ -59,8 +61,7 @@ class Request_logs_model extends Model
         if (!$this->exists) {
             $this->count = 1;
             $this->save();
-        }
-        else {
+        } else {
             $this->increment('count');
         }
 

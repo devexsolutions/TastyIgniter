@@ -7,7 +7,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Create extension_settings table
+ * Create extension_settings table.
  */
 class CreateExtensionSettingsTable extends Migration
 {

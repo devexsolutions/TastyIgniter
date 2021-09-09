@@ -6,14 +6,14 @@ use Igniter\Flame\Support\Extendable;
 use Igniter\Flame\Traits\EventEmitter;
 
 /**
- * Base Controller Class
+ * Base Controller Class.
  */
 class BaseController extends Extendable
 {
     use EventEmitter;
 
     /**
-     * A list of controller behavours/traits to be implemented
+     * A list of controller behavours/traits to be implemented.
      */
     public $implement = [];
 
@@ -57,7 +57,7 @@ class BaseController extends Extendable
     protected $statusCode = 200;
 
     /**
-     * Class constructor
+     * Class constructor.
      */
     public function __construct()
     {
@@ -82,11 +82,13 @@ class BaseController extends Extendable
 
     public function checkAction($action)
     {
-        if (!$methodExists = $this->methodExists($action))
-            return FALSE;
+        if (!$methodExists = $this->methodExists($action)) {
+            return false;
+        }
 
-        if (in_array(strtolower($action), array_map('strtolower', $this->hiddenActions)))
-            return FALSE;
+        if (in_array(strtolower($action), array_map('strtolower', $this->hiddenActions))) {
+            return false;
+        }
 
         if ($ownMethod = method_exists($this, $action)) {
             $methodInfo = new \ReflectionMethod($this, $action);

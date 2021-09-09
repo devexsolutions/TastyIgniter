@@ -1,13 +1,14 @@
 <?php
+
 $config['list']['filter'] = [
     'search' => [
         'prompt' => 'lang:system::lang.languages.text_filter_search',
-        'mode' => 'all', // or any, exact
+        'mode'   => 'all', // or any, exact
     ],
     'scopes' => [
         'status' => [
-            'label' => 'lang:admin::lang.text_filter_status',
-            'type' => 'switch',
+            'label'      => 'lang:admin::lang.text_filter_status',
+            'type'       => 'switch',
             'conditions' => 'status = :filtered',
         ],
     ],
@@ -18,15 +19,15 @@ $config['list']['toolbar'] = [
         'create' => [
             'label' => 'lang:admin::lang.button_new',
             'class' => 'btn btn-primary',
-            'href' => 'languages/create',
+            'href'  => 'languages/create',
         ],
         'delete' => [
-            'label' => 'lang:admin::lang.button_delete',
-            'class' => 'btn btn-danger',
-            'data-attach-loading' => '',
-            'data-request' => 'onDelete',
-            'data-request-form' => '#list-form',
-            'data-request-data' => "_method:'DELETE'",
+            'label'                => 'lang:admin::lang.button_delete',
+            'class'                => 'btn btn-danger',
+            'data-attach-loading'  => '',
+            'data-request'         => 'onDelete',
+            'data-request-form'    => '#list-form',
+            'data-request-data'    => "_method:'DELETE'",
             'data-request-confirm' => 'lang:admin::lang.alert_warning_confirm',
         ],
     ],
@@ -34,31 +35,31 @@ $config['list']['toolbar'] = [
 
 $config['list']['columns'] = [
     'edit' => [
-        'type' => 'button',
+        'type'         => 'button',
         'iconCssClass' => 'fa fa-pencil',
-        'attributes' => [
+        'attributes'   => [
             'class' => 'btn btn-edit',
-            'href' => 'languages/edit/{language_id}',
+            'href'  => 'languages/edit/{language_id}',
         ],
     ],
     'name' => [
-        'label' => 'lang:admin::lang.label_name',
-        'type' => 'text',
-        'searchable' => TRUE,
+        'label'      => 'lang:admin::lang.label_name',
+        'type'       => 'text',
+        'searchable' => true,
     ],
     'code' => [
-        'label' => 'lang:system::lang.languages.column_code',
-        'type' => 'text',
-        'searchable' => TRUE,
+        'label'      => 'lang:system::lang.languages.column_code',
+        'type'       => 'text',
+        'searchable' => true,
     ],
     'status' => [
-        'label' => 'lang:system::lang.languages.column_status',
-        'type' => 'switch',
-        'searchable' => TRUE,
+        'label'      => 'lang:system::lang.languages.column_status',
+        'type'       => 'switch',
+        'searchable' => true,
     ],
     'language_id' => [
-        'label' => 'lang:admin::lang.column_id',
-        'invisible' => TRUE,
+        'label'     => 'lang:admin::lang.column_id',
+        'invisible' => true,
     ],
 
 ];
@@ -68,91 +69,91 @@ $config['form']['toolbar'] = [
         'back' => [
             'label' => 'lang:admin::lang.button_icon_back',
             'class' => 'btn btn-default',
-            'href' => 'languages',
+            'href'  => 'languages',
         ],
         'save' => [
-            'label' => 'lang:admin::lang.button_save',
-            'context' => ['create', 'edit'],
-            'partial' => 'form/toolbar_save_button',
-            'class' => 'btn btn-primary',
-            'data-request' => 'onSave',
+            'label'                   => 'lang:admin::lang.button_save',
+            'context'                 => ['create', 'edit'],
+            'partial'                 => 'form/toolbar_save_button',
+            'class'                   => 'btn btn-primary',
+            'data-request'            => 'onSave',
             'data-progress-indicator' => 'admin::lang.text_saving',
         ],
         'delete' => [
-            'label' => 'lang:admin::lang.button_icon_delete',
-            'class' => 'btn btn-danger',
-            'data-request' => 'onDelete',
-            'data-request-data' => "_method:'DELETE'",
-            'data-request-confirm' => 'lang:admin::lang.alert_warning_confirm',
+            'label'                   => 'lang:admin::lang.button_icon_delete',
+            'class'                   => 'btn btn-danger',
+            'data-request'            => 'onDelete',
+            'data-request-data'       => "_method:'DELETE'",
+            'data-request-confirm'    => 'lang:admin::lang.alert_warning_confirm',
             'data-progress-indicator' => 'admin::lang.text_deleting',
-            'context' => ['edit'],
+            'context'                 => ['edit'],
         ],
     ],
 ];
 
 $config['form']['fields'] = [
     'name' => [
-        'label' => 'lang:admin::lang.label_name',
-        'type' => 'text',
-        'span' => 'none',
+        'label'    => 'lang:admin::lang.label_name',
+        'type'     => 'text',
+        'span'     => 'none',
         'cssClass' => 'pull-left flex-fill mr-3',
     ],
     'code' => [
-        'label' => 'lang:system::lang.languages.label_code',
-        'type' => 'text',
-        'span' => 'none',
+        'label'    => 'lang:system::lang.languages.label_code',
+        'type'     => 'text',
+        'span'     => 'none',
         'cssClass' => 'pull-left flex-fill mr-3',
     ],
     'status' => [
-        'label' => 'lang:admin::lang.label_status',
-        'type' => 'switch',
-        'span' => 'none',
+        'label'    => 'lang:admin::lang.label_status',
+        'type'     => 'switch',
+        'span'     => 'none',
         'cssClass' => 'pull-left flex-fill',
-        'default' => TRUE,
+        'default'  => true,
     ],
     'section' => [
-        'type' => 'section',
+        'type'    => 'section',
         'comment' => 'lang:system::lang.languages.help_language',
     ],
 ];
 $config['form']['tabs'] = [
     'defaultTab' => 'lang:system::lang.languages.text_tab_general',
-    'fields' => [
+    'fields'     => [
         '_file' => [
-            'tab' => 'lang:system::lang.languages.text_tab_files',
-            'type' => 'select',
-            'context' => 'edit',
-            'options' => [],
-            'span' => 'none',
+            'tab'         => 'lang:system::lang.languages.text_tab_files',
+            'type'        => 'select',
+            'context'     => 'edit',
+            'options'     => [],
+            'span'        => 'none',
             'placeholder' => 'system::lang.languages.text_filter_file',
-            'cssClass' => 'pull-left flex-fill mr-3',
-            'attributes' => [
+            'cssClass'    => 'pull-left flex-fill mr-3',
+            'attributes'  => [
                 'data-request' => 'onSubmitFilter',
             ],
         ],
         '_search' => [
-            'tab' => 'lang:system::lang.languages.text_tab_files',
-            'type' => 'text',
-            'context' => 'edit',
-            'span' => 'none',
-            'cssClass' => 'pull-left flex-fill mr-3',
+            'tab'         => 'lang:system::lang.languages.text_tab_files',
+            'type'        => 'text',
+            'context'     => 'edit',
+            'span'        => 'none',
+            'cssClass'    => 'pull-left flex-fill mr-3',
             'placeholder' => lang('system::lang.languages.text_filter_translations'),
-            'attributes' => [
+            'attributes'  => [
                 'data-control' => 'search-translations',
                 'data-request' => 'onSubmitFilter',
             ],
         ],
         '_string_filter' => [
-            'tab' => 'lang:system::lang.languages.text_tab_files',
-            'type' => 'radiotoggle',
-            'context' => 'edit',
-            'span' => 'none',
+            'tab'      => 'lang:system::lang.languages.text_tab_files',
+            'type'     => 'radiotoggle',
+            'context'  => 'edit',
+            'span'     => 'none',
             'cssClass' => 'pull-left mr-3',
-            'default' => 'all',
-            'options' => [
-                'all' => 'All',
+            'default'  => 'all',
+            'options'  => [
+                'all'       => 'All',
                 'unchanged' => 'Unchanged',
-                'changed' => 'Changed',
+                'changed'   => 'Changed',
             ],
             'attributes' => [
                 'data-control' => 'string-filter',
@@ -160,9 +161,9 @@ $config['form']['tabs'] = [
             ],
         ],
         'translations' => [
-            'tab' => 'lang:system::lang.languages.text_tab_files',
-            'type' => 'partial',
-            'path' => 'translationseditor',
+            'tab'     => 'lang:system::lang.languages.text_tab_files',
+            'type'    => 'partial',
+            'path'    => 'translationseditor',
             'context' => 'edit',
         ],
     ],

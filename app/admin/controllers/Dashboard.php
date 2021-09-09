@@ -21,8 +21,9 @@ class Dashboard extends \Admin\Classes\AdminController
 
     public function index()
     {
-        if (is_null(Request::segment(2)))
+        if (is_null(Request::segment(2))) {
             return $this->redirect('dashboard');
+        }
 
         Template::setTitle(lang('admin::lang.dashboard.text_title'));
         Template::setHeading(lang('admin::lang.dashboard.text_heading'));
@@ -45,49 +46,49 @@ class Dashboard extends \Admin\Classes\AdminController
     {
         return [
             'onboarding' => [
-                'class' => \Admin\DashboardWidgets\Onboarding::class,
+                'class'    => \Admin\DashboardWidgets\Onboarding::class,
                 'priority' => 1,
-                'config' => [
+                'config'   => [
                     'title' => 'admin::lang.dashboard.onboarding.title',
                     'width' => '6',
                 ],
             ],
             'news' => [
-                'class' => \System\DashboardWidgets\News::class,
+                'class'    => \System\DashboardWidgets\News::class,
                 'priority' => 2,
-                'config' => [
+                'config'   => [
                     'title' => 'admin::lang.dashboard.text_news',
                     'width' => '6',
                 ],
             ],
             'order_stats' => [
-                'class' => \Admin\DashboardWidgets\Statistics::class,
+                'class'    => \Admin\DashboardWidgets\Statistics::class,
                 'priority' => 3,
-                'config' => [
+                'config'   => [
                     'context' => 'sale',
-                    'width' => '4',
+                    'width'   => '4',
                 ],
             ],
             'reservation_stats' => [
-                'class' => \Admin\DashboardWidgets\Statistics::class,
+                'class'    => \Admin\DashboardWidgets\Statistics::class,
                 'priority' => 4,
-                'config' => [
+                'config'   => [
                     'context' => 'lost_sale',
-                    'width' => '4',
+                    'width'   => '4',
                 ],
             ],
             'customer_stats' => [
-                'class' => \Admin\DashboardWidgets\Statistics::class,
+                'class'    => \Admin\DashboardWidgets\Statistics::class,
                 'priority' => 5,
-                'config' => [
+                'config'   => [
                     'context' => 'cash_payment',
-                    'width' => '4',
+                    'width'   => '4',
                 ],
             ],
             'charts' => [
-                'class' => \Admin\DashboardWidgets\Charts::class,
+                'class'    => \Admin\DashboardWidgets\Charts::class,
                 'priority' => 6,
-                'config' => [
+                'config'   => [
                     'title' => 'admin::lang.dashboard.text_reports_chart',
                     'width' => '12',
                 ],

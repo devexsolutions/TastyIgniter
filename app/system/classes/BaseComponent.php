@@ -12,7 +12,7 @@ use System\Traits\AssetMaker;
 use System\Traits\PropertyContainer;
 
 /**
- * Base Component Class
+ * Base Component Class.
  */
 abstract class BaseComponent extends Extendable
 {
@@ -35,11 +35,11 @@ abstract class BaseComponent extends Extendable
     /**
      * @var bool Determines whether the component is hidden from the admin UI.
      */
-    public $isHidden = FALSE;
+    public $isHidden = false;
 
     /**
      * @var string Icon of the extension that defines the component.
-     * This field is used internally.
+     *             This field is used internally.
      */
     public $extensionIcon;
 
@@ -64,10 +64,10 @@ abstract class BaseComponent extends Extendable
     protected $page;
 
     /**
-     * Class constructor
+     * Class constructor.
      *
      * @param \Igniter\Flame\Pagic\TemplateCode $page
-     * @param array $properties
+     * @param array                             $properties
      */
     public function __construct($page = null, $properties = [])
     {
@@ -114,8 +114,10 @@ abstract class BaseComponent extends Extendable
     }
 
     /**
-     * Renders a requested partial in context of this component,
+     * Renders a requested partial in context of this component,.
+     *
      * @see \Main\Classes\MainController::renderPartial for usage.
+     *
      * @return mixed
      */
     public function renderPartial()
@@ -150,8 +152,9 @@ abstract class BaseComponent extends Extendable
 
     public function param($name, $default = null)
     {
-        if (is_null($segment = $this->controller->param($name, $default)))
+        if (is_null($segment = $this->controller->param($name, $default))) {
             $segment = input($name);
+        }
 
         return is_null($segment) ? $default : $segment;
     }
@@ -164,7 +167,7 @@ abstract class BaseComponent extends Extendable
      * Dynamically handle calls into the controller instance.
      *
      * @param string $method
-     * @param array $parameters
+     * @param array  $parameters
      *
      * @return mixed
      */
@@ -172,8 +175,7 @@ abstract class BaseComponent extends Extendable
     {
         try {
             return parent::__call($method, $parameters);
-        }
-        catch (BadMethodCallException $ex) {
+        } catch (BadMethodCallException $ex) {
         }
 
         if (method_exists($this->controller, $method)) {
@@ -181,7 +183,7 @@ abstract class BaseComponent extends Extendable
         }
 
         throw new BadMethodCallException(Lang::get('main::lang.not_found.method', [
-            'name' => get_class($this),
+            'name'   => get_class($this),
             'method' => $method,
         ]));
     }

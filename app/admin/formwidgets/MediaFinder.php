@@ -43,21 +43,21 @@ class MediaFinder extends BaseFormWidget
      */
     public $mode = 'grid';
 
-    public $isMulti = FALSE;
+    public $isMulti = false;
 
     /**
      * @var array Options used for generating thumbnails.
      */
     public $thumbOptions = [
-        'fit' => 'contain',
-        'width' => 122,
+        'fit'    => 'contain',
+        'width'  => 122,
         'height' => 122,
     ];
 
     /**
      * @var bool Automatically attaches the chosen file if the parent record exists. Defaults to false.
      */
-    public $useAttachment = FALSE;
+    public $useAttachment = false;
 
     //
     // Object properties
@@ -84,7 +84,7 @@ class MediaFinder extends BaseFormWidget
     }
 
     /**
-     * Prepares the list data
+     * Prepares the list data.
      */
     public function prepareVars()
     {
@@ -110,67 +110,75 @@ class MediaFinder extends BaseFormWidget
 
     public function getMediaIdentifier($media)
     {
-        if ($media instanceof Media)
+        if ($media instanceof Media) {
             return $media->getKey();
+        }
     }
 
     public function getMediaName($media)
     {
-        if ($media instanceof Media)
+        if ($media instanceof Media) {
             return $media->getFilename();
+        }
 
         return trim($media, '/');
     }
 
     public function getMediaPath($media)
     {
-        if ($media instanceof Media)
+        if ($media instanceof Media) {
             return $media->getDiskPath();
+        }
 
         try {
             return MediaLibrary::instance()->getMediaRelativePath(trim($media, '/'));
-        }
-        catch (SystemException $ex) {
+        } catch (SystemException $ex) {
             return $media;
         }
     }
 
     public function getMediaThumb($media)
     {
-        if ($media instanceof Media)
+        if ($media instanceof Media) {
             return $media->getThumb($this->thumbOptions);
+        }
 
-        if (!strlen($path = trim($media, '/')))
+        if (!strlen($path = trim($media, '/'))) {
             return $path;
+        }
 
         return MediaLibrary::instance()->getMediaThumb($path, $this->thumbOptions);
     }
 
     public function onLoadAttachmentConfig()
     {
-        if (!$this->useAttachment OR !$mediaId = post('media_id'))
+        if (!$this->useAttachment or !$mediaId = post('media_id')) {
             return;
+        }
 
-        if (!in_array(HasMedia::class, class_uses_recursive(get_class($this->model))))
+        if (!in_array(HasMedia::class, class_uses_recursive(get_class($this->model)))) {
             return;
+        }
 
         $media = $this->model->findMedia($mediaId);
 
         return [
             '#'.$this->getId('config-modal-content') => $this->makePartial('mediafinder/config_form', [
                 'formMediaId' => $mediaId,
-                'formWidget' => $this->makeAttachmentConfigFormWidget($media),
+                'formWidget'  => $this->makeAttachmentConfigFormWidget($media),
             ]),
         ];
     }
 
     public function onSaveAttachmentConfig()
     {
-        if (!$this->useAttachment OR !$mediaId = post('media_id'))
+        if (!$this->useAttachment or !$mediaId = post('media_id')) {
             return;
+        }
 
-        if (!in_array(HasMedia::class, class_uses_recursive(get_class($this->model))))
+        if (!in_array(HasMedia::class, class_uses_recursive(get_class($this->model)))) {
             return;
+        }
 
         $media = $this->model->findMedia($mediaId);
 
@@ -191,36 +199,42 @@ class MediaFinder extends BaseFormWidget
 
     public function onRemoveAttachment()
     {
-        if (!$this->useAttachment OR !$mediaId = post('media_id'))
+        if (!$this->useAttachment or !$mediaId = post('media_id')) {
             return;
+        }
 
-        if (!in_array(HasMedia::class, class_uses_recursive(get_class($this->model))))
+        if (!in_array(HasMedia::class, class_uses_recursive(get_class($this->model)))) {
             return;
+        }
 
         $this->model->deleteMedia($mediaId);
     }
 
     public function onAddAttachment()
     {
-        if (!$this->useAttachment)
+        if (!$this->useAttachment) {
             return;
+        }
 
-        if (!in_array(HasMedia::class, class_uses_recursive(get_class($this->model))))
+        if (!in_array(HasMedia::class, class_uses_recursive(get_class($this->model)))) {
             return;
+        }
 
         $items = post('items');
-        if (!is_array($items))
+        if (!is_array($items)) {
             throw new ApplicationException(lang('main::lang.media_manager.alert_select_item_to_attach'));
+        }
 
         $model = $this->model;
-        if (!$model->exists)
+        if (!$model->exists) {
             throw new ApplicationException(lang('main::lang.media_manager.alert_only_attach_to_saved'));
+        }
 
         $manager = MediaLibrary::instance();
         foreach ($items as &$item) {
             $media = $model->newMediaInstance();
             $media->addFromRaw(
-                $manager->get(array_get($item, 'path'), TRUE),
+                $manager->get(array_get($item, 'path'), true),
                 array_get($item, 'name'),
                 $this->fieldName
             );
@@ -235,11 +249,13 @@ class MediaFinder extends BaseFormWidget
     public function getLoadValue()
     {
         $value = parent::getLoadValue();
-        if (!is_array($value) AND !$value instanceof Collection)
+        if (!is_array($value) and !$value instanceof Collection) {
             $value = [$value];
+        }
 
-        if (is_array($value))
+        if (is_array($value)) {
             $value = array_filter($value);
+        }
 
         if ($this->isMulti) {
             $value[] = null;
@@ -250,7 +266,7 @@ class MediaFinder extends BaseFormWidget
 
     public function getSaveValue($value)
     {
-        if ($this->useAttachment OR $this->formField->disabled OR $this->formField->hidden) {
+        if ($this->useAttachment or $this->formField->disabled or $this->formField->hidden) {
             return FormField::NO_SAVE_DATA;
         }
 
@@ -276,25 +292,25 @@ class MediaFinder extends BaseFormWidget
             'fields' => [
                 'custom_properties[title]' => [
                     'label' => 'lang:main::lang.media_manager.label_attachment_title',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 'custom_properties[description]' => [
                     'label' => 'lang:main::lang.media_manager.label_attachment_description',
-                    'type' => 'textarea',
+                    'type'  => 'textarea',
                 ],
                 'custom_properties[extras]' => [
-                    'label' => 'lang:main::lang.media_manager.label_attachment_properties',
-                    'type' => 'repeater',
-                    'sortable' => FALSE,
-                    'form' => [
+                    'label'    => 'lang:main::lang.media_manager.label_attachment_properties',
+                    'type'     => 'repeater',
+                    'sortable' => false,
+                    'form'     => [
                         'fields' => [
                             'key' => [
                                 'label' => 'lang:main::lang.media_manager.label_attachment_property_key',
-                                'type' => 'text',
+                                'type'  => 'text',
                             ],
                             'value' => [
                                 'label' => 'lang:main::lang.media_manager.label_attachment_property_value',
-                                'type' => 'text',
+                                'type'  => 'text',
                             ],
                         ],
                     ],

@@ -44,6 +44,7 @@ class ComponentManager
 
     /**
      * Scans each extension and loads it components.
+     *
      * @return void
      */
     protected function loadComponents()
@@ -78,7 +79,7 @@ class ComponentManager
      *            'description' => '..',
      *        );
      *   });
-     * </pre>
+     * </pre>.
      *
      * @param callable $definitions
      *
@@ -93,8 +94,8 @@ class ComponentManager
      * Registers a single component.
      *
      * @param string $class_path
-     * @param array $component
-     * @param object $extension Extension
+     * @param array  $component
+     * @param object $extension  Extension
      */
     public function registerComponent($class_path, $component = null, $extension = null)
     {
@@ -106,12 +107,13 @@ class ComponentManager
             $this->codeMap = [];
         }
 
-        if (is_string($component))
+        if (is_string($component)) {
             $component = ['code' => $component];
+        }
 
         $component = array_merge([
-            'code' => null,
-            'name' => 'Component',
+            'code'        => null,
+            'name'        => 'Component',
             'description' => null,
         ], $component);
 
@@ -131,6 +133,7 @@ class ComponentManager
 
     /**
      * Returns a list of registered components.
+     *
      * @return array Array keys are codes, values are component meta array.
      */
     public function listComponents()
@@ -177,7 +180,7 @@ class ComponentManager
     {
         $class_path = $this->resolve($name);
         if (!$class_path) {
-            return FALSE;
+            return false;
         }
 
         return isset($this->classMap[$class_path]);
@@ -222,25 +225,30 @@ class ComponentManager
     /**
      * Makes a component/gateway object with properties set.
      *
-     * @param string $name A component/gateway class name or code.
-     * @param \Main\Template\Code\PageCode $page The page that spawned this component.
-     * @param array $params The properties set by the Page or Layout.
+     * @param string                       $name   A component/gateway class name or code.
+     * @param \Main\Template\Code\PageCode $page   The page that spawned this component.
+     * @param array                        $params The properties set by the Page or Layout.
+     *
+     * @throws \Igniter\Flame\Exception\SystemException
      *
      * @return \System\Classes\BaseComponent The component object.
-     * @throws \Igniter\Flame\Exception\SystemException
      */
     public function makeComponent($name, $page = null, $params = [])
     {
         $className = $this->resolve($name);
-        if (!$className)
+        if (!$className) {
             throw new SystemException(sprintf(
-                'Component "%s" is not registered.', $name
+                'Component "%s" is not registered.',
+                $name
             ));
+        }
 
-        if (!class_exists($className))
+        if (!class_exists($className)) {
             throw new SystemException(sprintf(
-                'Component class "%s" not found.', $className
+                'Component class "%s" not found.',
+                $className
             ));
+        }
 
         // Create and register the new controller.
         $component = new $className($page, $params);
@@ -267,7 +275,7 @@ class ComponentManager
     }
 
     /**
-     * Convert class alias to class path
+     * Convert class alias to class path.
      *
      * @param string $alias
      *
@@ -275,7 +283,7 @@ class ComponentManager
      */
     public function convertCodeToPath($alias)
     {
-        if (strpos($alias, '/') === FALSE) {
+        if (strpos($alias, '/') === false) {
             return $alias;
         }
 
@@ -289,25 +297,25 @@ class ComponentManager
     /**
      * Returns a component property configuration as a JSON string or array.
      *
-     * @param mixed $component The component object
-     * @param bool $addAliasProperty Determines if the Alias property should be added to the result.
+     * @param mixed $component        The component object
+     * @param bool  $addAliasProperty Determines if the Alias property should be added to the result.
      *
      * @return array
      */
-    public function getComponentPropertyConfig($component, $addAliasProperty = TRUE)
+    public function getComponentPropertyConfig($component, $addAliasProperty = true)
     {
         $result = [];
 
         if ($addAliasProperty) {
             $property = [
-                'property' => 'alias',
-                'label' => '',
-                'type' => 'text',
-                'comment' => '',
-                'validationRule' => 'required|regex:^[a-zA-Z]+$',
+                'property'          => 'alias',
+                'label'             => '',
+                'type'              => 'text',
+                'comment'           => '',
+                'validationRule'    => 'required|regex:^[a-zA-Z]+$',
                 'validationMessage' => '',
-                'required' => TRUE,
-                'showExternalParam' => FALSE,
+                'required'          => true,
+                'showExternalParam' => false,
             ];
             $result['alias'] = $property;
         }
@@ -316,22 +324,26 @@ class ComponentManager
         foreach ($properties as $name => $params) {
             $propertyType = array_get($params, 'type', 'text');
 
-            if (!$this->checkComponentPropertyType($propertyType)) continue;
+            if (!$this->checkComponentPropertyType($propertyType)) {
+                continue;
+            }
 
             $property = [
-                'property' => $name,
-                'label' => array_get($params, 'label', $name),
-                'type' => $propertyType,
-                'showExternalParam' => array_get($params, 'showExternalParam', FALSE),
+                'property'          => $name,
+                'label'             => array_get($params, 'label', $name),
+                'type'              => $propertyType,
+                'showExternalParam' => array_get($params, 'showExternalParam', false),
             ];
 
-            if (!in_array($propertyType, ['text', 'number']) AND !array_key_exists('options', $params)) {
+            if (!in_array($propertyType, ['text', 'number']) and !array_key_exists('options', $params)) {
                 $methodName = 'get'.studly_case($name).'Options';
                 $property['options'] = [get_class($component), $methodName];
             }
 
             foreach ($params as $paramName => $paramValue) {
-                if (isset($property[$paramName])) continue;
+                if (isset($property[$paramName])) {
+                    continue;
+                }
 
                 $property[$paramName] = $paramValue;
             }
@@ -339,14 +351,15 @@ class ComponentManager
             // Translate human values
             $translate = ['label', 'description', 'options', 'group', 'validationMessage'];
             foreach ($property as $propertyName => $propertyValue) {
-                if (!in_array($propertyName, $translate)) continue;
+                if (!in_array($propertyName, $translate)) {
+                    continue;
+                }
 
                 if (is_array($propertyValue)) {
                     array_walk($property[$propertyName], function (&$_propertyValue) {
                         $_propertyValue = lang($_propertyValue);
                     });
-                }
-                else {
+                } else {
                     $property[$propertyName] = lang($propertyValue);
                 }
             }
@@ -384,14 +397,16 @@ class ComponentManager
 
         $rules = [];
         foreach ($properties as $name => $params) {
-            if (strlen($rule = array_get($params, 'validationRule', '')))
+            if (strlen($rule = array_get($params, 'validationRule', ''))) {
                 $rules[] = [$name, array_get($params, 'label', $name), $rule];
+            }
         }
 
         $messages = [];
         foreach ($properties as $name => $params) {
-            if (strlen($message = array_get($params, 'validationMessage', '')))
+            if (strlen($message = array_get($params, 'validationMessage', ''))) {
                 $messages[$name] = $message;
+            }
         }
 
         return [$rules, $messages];

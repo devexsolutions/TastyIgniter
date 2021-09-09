@@ -8,15 +8,16 @@ use Illuminate\Support\Facades\Schema;
 
 /**
  * Fix nullable and other constraints on columns
- * VARCHAR(32/128) => VARCHAR(255)
+ * VARCHAR(32/128) => VARCHAR(255).
  */
 class OptimizeTablesColumns extends Migration
 {
     public function up()
     {
         foreach (get_class_methods(__CLASS__) as $method) {
-            if (!starts_with($method, ['_optimize_']))
+            if (!starts_with($method, ['_optimize_'])) {
                 continue;
+            }
 
             $table = substr($method, 10);
             Schema::table($table, $this->$method());

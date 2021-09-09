@@ -16,19 +16,21 @@ use Illuminate\Support\Facades\Schema;
  *  orders, order_menus, order_options, order_totals, pages, permalinks,
  *  pp_payments, permissions, reservations, security_questions, settings,
  *  staffs, staff_groups, statuses, status_history, tables, uri_routes,
- *  users, working_hours
+ *  users, working_hours.
  */
 class CreateTables extends Migration
 {
     public function up()
     {
         foreach (get_class_methods(__CLASS__) as $method) {
-            if (!starts_with($method, ['_create_']))
+            if (!starts_with($method, ['_create_'])) {
                 continue;
+            }
 
             $table = substr($method, 8);
-            if (Schema::hasTable($table))
+            if (Schema::hasTable($table)) {
                 continue;
+            }
 
             Schema::create($table, $this->$method());
         }
@@ -37,8 +39,9 @@ class CreateTables extends Migration
     public function down()
     {
         foreach (get_class_methods(__CLASS__) as $method) {
-            if (!starts_with($method, ['_create_']))
+            if (!starts_with($method, ['_create_'])) {
                 continue;
+            }
 
             $table = substr($method, 8);
             Schema::dropIfExists($table);
@@ -49,7 +52,7 @@ class CreateTables extends Migration
     {
         return function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->integer('activity_id', TRUE);
+            $table->integer('activity_id', true);
             $table->string('domain', 10);
             $table->string('context', 128);
             $table->string('user', 10);
@@ -181,7 +184,7 @@ class CreateTables extends Migration
     {
         return function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->integer('activity_id', TRUE);
+            $table->integer('activity_id', true);
             $table->integer('customer_id');
             $table->string('access_type', 128);
             $table->string('browser', 128);
@@ -215,7 +218,7 @@ class CreateTables extends Migration
     {
         return function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->integer('language_id', TRUE);
+            $table->integer('language_id', true);
             $table->string('code', 7);
             $table->string('name', 32);
             $table->string('image', 32);
@@ -239,7 +242,7 @@ class CreateTables extends Migration
     {
         return function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->integer('layout_module_id', TRUE);
+            $table->integer('layout_module_id', true);
             $table->integer('layout_id');
             $table->string('module_code', 128);
             $table->string('partial', 32);
@@ -303,7 +306,7 @@ class CreateTables extends Migration
     {
         return function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->integer('template_id', TRUE);
+            $table->integer('template_id', true);
             $table->string('name', 32);
             $table->integer('language_id');
             $table->dateTime('date_added');
@@ -316,7 +319,7 @@ class CreateTables extends Migration
     {
         return function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->integer('template_data_id', TRUE);
+            $table->integer('template_data_id', true);
             $table->integer('template_id');
             $table->string('code', 32);
             $table->string('subject', 128);
@@ -331,7 +334,7 @@ class CreateTables extends Migration
     {
         return function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->integer('mealtime_id', TRUE);
+            $table->integer('mealtime_id', true);
             $table->string('mealtime_name', 128);
             $table->time('start_time')->default('00:00:00');
             $table->time('end_time')->default('23:59:59');
@@ -342,7 +345,7 @@ class CreateTables extends Migration
     protected function _create_menus()
     {
         return function (Blueprint $table) {
-            $table->integer('menu_id', TRUE);
+            $table->integer('menu_id', true);
             $table->string('menu_name');
             $table->text('menu_description');
             $table->decimal('menu_price', 15, 4);
@@ -361,7 +364,7 @@ class CreateTables extends Migration
     {
         return function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->integer('option_id', TRUE);
+            $table->integer('option_id', true);
             $table->string('option_name', 32);
             $table->string('display_type', 15);
             $table->integer('priority');
@@ -372,7 +375,7 @@ class CreateTables extends Migration
     {
         return function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->integer('option_value_id', TRUE);
+            $table->integer('option_value_id', true);
             $table->integer('option_id');
             $table->string('value', 128);
             $table->decimal('price', 15, 4)->nullable();
@@ -384,7 +387,7 @@ class CreateTables extends Migration
     {
         return function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->integer('menu_option_id', TRUE);
+            $table->integer('menu_option_id', true);
             $table->integer('option_id');
             $table->integer('menu_id');
             $table->boolean('required');
@@ -397,7 +400,7 @@ class CreateTables extends Migration
     {
         return function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->integer('menu_option_value_id', TRUE);
+            $table->integer('menu_option_value_id', true);
             $table->integer('menu_option_id');
             $table->integer('menu_id');
             $table->integer('option_id');
@@ -412,7 +415,7 @@ class CreateTables extends Migration
     {
         return function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->integer('special_id', TRUE);
+            $table->integer('special_id', true);
             $table->integer('menu_id')->default(0);
             $table->date('start_date');
             $table->date('end_date');
@@ -426,7 +429,7 @@ class CreateTables extends Migration
     {
         return function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->integer('order_id', TRUE);
+            $table->integer('order_id', true);
             $table->integer('customer_id');
             $table->string('first_name', 32);
             $table->string('last_name', 32);
@@ -459,7 +462,7 @@ class CreateTables extends Migration
     {
         return function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->integer('order_menu_id', TRUE);
+            $table->integer('order_menu_id', true);
             $table->integer('order_id');
             $table->integer('menu_id');
             $table->string('name');
@@ -475,7 +478,7 @@ class CreateTables extends Migration
     {
         return function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->integer('order_option_id', TRUE);
+            $table->integer('order_option_id', true);
             $table->integer('order_id');
             $table->integer('menu_id');
             $table->string('order_option_name', 128);
@@ -490,7 +493,7 @@ class CreateTables extends Migration
     {
         return function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->integer('order_total_id', TRUE);
+            $table->integer('order_total_id', true);
             $table->integer('order_id');
             $table->string('code', 30);
             $table->string('title');
@@ -504,7 +507,7 @@ class CreateTables extends Migration
     {
         return function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->integer('page_id', TRUE);
+            $table->integer('page_id', true);
             $table->integer('language_id');
             $table->string('name', 32);
             $table->string('title');
@@ -524,7 +527,7 @@ class CreateTables extends Migration
     {
         return function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->integer('permalink_id', TRUE);
+            $table->integer('permalink_id', true);
             $table->string('slug');
             $table->string('controller');
             $table->string('query');
@@ -547,7 +550,7 @@ class CreateTables extends Migration
     {
         return function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->integer('permission_id', TRUE);
+            $table->integer('permission_id', true);
             $table->string('name', 128);
             $table->string('description');
             $table->text('action');
@@ -559,7 +562,7 @@ class CreateTables extends Migration
     {
         return function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->integer('reservation_id', TRUE);
+            $table->integer('reservation_id', true);
             $table->integer('location_id');
             $table->integer('table_id');
             $table->integer('guest_num');
@@ -587,7 +590,7 @@ class CreateTables extends Migration
     {
         return function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->integer('question_id', TRUE);
+            $table->integer('question_id', true);
             $table->text('text');
             $table->boolean('priority');
         };
@@ -597,7 +600,7 @@ class CreateTables extends Migration
     {
         return function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->integer('setting_id', TRUE);
+            $table->integer('setting_id', true);
             $table->string('sort', 45);
             $table->string('item', 128);
             $table->text('value');
@@ -610,7 +613,7 @@ class CreateTables extends Migration
     {
         return function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->integer('staff_group_id', TRUE);
+            $table->integer('staff_group_id', true);
             $table->string('staff_group_name', 32);
             $table->boolean('customer_account_access');
             $table->boolean('location_access');
@@ -622,7 +625,7 @@ class CreateTables extends Migration
     {
         return function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->integer('staff_id', TRUE);
+            $table->integer('staff_id', true);
             $table->string('staff_name', 32);
             $table->string('staff_email', 96)->unique('staff_email');
             $table->integer('staff_group_id');
@@ -638,7 +641,7 @@ class CreateTables extends Migration
     {
         return function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->integer('status_history_id', TRUE);
+            $table->integer('status_history_id', true);
             $table->integer('object_id');
             $table->integer('staff_id');
             $table->integer('assignee_id');
@@ -654,7 +657,7 @@ class CreateTables extends Migration
     {
         return function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->integer('status_id', TRUE);
+            $table->integer('status_id', true);
             $table->string('status_name', 45);
             $table->text('status_comment');
             $table->boolean('notify_customer');
@@ -667,7 +670,7 @@ class CreateTables extends Migration
     {
         return function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->integer('table_id', TRUE);
+            $table->integer('table_id', true);
             $table->string('table_name', 32);
             $table->integer('min_capacity');
             $table->integer('max_capacity');
@@ -679,7 +682,7 @@ class CreateTables extends Migration
     {
         return function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->integer('uri_route_id', TRUE);
+            $table->integer('uri_route_id', true);
             $table->string('uri_route');
             $table->string('controller', 128);
             $table->boolean('priority');
@@ -691,7 +694,7 @@ class CreateTables extends Migration
     {
         return function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->integer('user_id', TRUE);
+            $table->integer('user_id', true);
             $table->integer('staff_id')->unique();
             $table->string('username', 32)->unique();
             $table->string('password', 40);

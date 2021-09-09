@@ -19,7 +19,7 @@ class Menu extends BaseWidget
 
     /**
      * @var string The context of this menu, items that do not belong
-     * to this context will not be shown.
+     *             to this context will not be shown.
      */
     public $context = null;
 
@@ -28,7 +28,7 @@ class Menu extends BaseWidget
     /**
      * @var bool Determines if item definitions have been created.
      */
-    protected $itemsDefined = FALSE;
+    protected $itemsDefined = false;
 
     /**
      * @var array Collection of all items used in this menu.
@@ -68,7 +68,7 @@ class Menu extends BaseWidget
     }
 
     /**
-     * Renders the HTML element for a item
+     * Renders the HTML element for a item.
      *
      * @param $item
      *
@@ -86,16 +86,17 @@ class Menu extends BaseWidget
      */
     protected function defineMenuItems()
     {
-        if ($this->itemsDefined)
+        if ($this->itemsDefined) {
             return;
+        }
 
-        if (!isset($this->items) OR !is_array($this->items)) {
+        if (!isset($this->items) or !is_array($this->items)) {
             $this->items = [];
         }
 
         $this->addItems($this->items);
 
-        $this->itemsDefined = TRUE;
+        $this->itemsDefined = true;
     }
 
     /**
@@ -106,7 +107,6 @@ class Menu extends BaseWidget
     public function addItems(array $items)
     {
         foreach ($items as $name => $config) {
-
             $itemObj = $this->makeMenuItem($name, $config);
 
             // Check that the menu item matches the active context
@@ -146,7 +146,7 @@ class Menu extends BaseWidget
 
         // Get menu item options from model
         $optionModelTypes = ['dropdown', 'partial'];
-        if (in_array($item->type, $optionModelTypes, FALSE)) {
+        if (in_array($item->type, $optionModelTypes, false)) {
 
             // Defer the execution of option data collection
             $item->options(function () use ($item, $config) {
@@ -162,6 +162,7 @@ class Menu extends BaseWidget
 
     /**
      * Get all the registered items for the instance.
+     *
      * @return array
      */
     public function getItems()
@@ -170,12 +171,13 @@ class Menu extends BaseWidget
     }
 
     /**
-     * Get a specified item object
+     * Get a specified item object.
      *
      * @param string $item
      *
-     * @return mixed
      * @throws \Exception
+     *
+     * @return mixed
      */
     public function getItem($item)
     {
@@ -188,8 +190,9 @@ class Menu extends BaseWidget
 
     public function getLoggedUser()
     {
-        if (!$this->getController()->checkUser())
-            return FALSE;
+        if (!$this->getController()->checkUser()) {
+            return false;
+        }
 
         return $this->getController()->getUser();
     }
@@ -200,18 +203,22 @@ class Menu extends BaseWidget
 
     /**
      * Update a menu item value.
-     * @return array
+     *
      * @throws \Exception
+     *
+     * @return array
      */
     public function onGetDropdownOptions()
     {
-        if (!strlen($itemName = input('item')))
+        if (!strlen($itemName = input('item'))) {
             throw new ApplicationException(lang('admin::lang.side_menu.alert_invalid_menu'));
+        }
 
         $this->defineMenuItems();
 
-        if (!$item = $this->getItem($itemName))
+        if (!$item = $this->getItem($itemName)) {
             throw new ApplicationException(sprintf(lang('admin::lang.side_menu.alert_menu_not_found'), $itemName));
+        }
 
         $itemOptions = $item->options();
 
@@ -219,7 +226,8 @@ class Menu extends BaseWidget
         if (strlen($item->partial)) {
             return [
                 '#'.$item->getId($item->itemName.'-options') => $this->makePartial(
-                    $item->partial, ['item' => $item, 'itemOptions' => $itemOptions]
+                    $item->partial,
+                    ['item' => $item, 'itemOptions' => $itemOptions]
                 ),
             ];
         }
@@ -231,18 +239,22 @@ class Menu extends BaseWidget
 
     /**
      * Mark menu items as read.
-     * @return array
+     *
      * @throws \Exception
+     *
+     * @return array
      */
     public function onMarkOptionsAsRead()
     {
-        if (!strlen($itemName = post('item')))
+        if (!strlen($itemName = post('item'))) {
             throw new ApplicationException(lang('admin::lang.side_menu.alert_invalid_menu'));
+        }
 
         $this->defineMenuItems();
 
-        if (!$item = $this->getItem($itemName))
+        if (!$item = $this->getItem($itemName)) {
             throw new ApplicationException(sprintf(lang('admin::lang.side_menu.alert_menu_not_found'), $itemName));
+        }
 
         $this->resolveMarkAsReadFromModel($item);
     }
@@ -250,13 +262,13 @@ class Menu extends BaseWidget
     public function onChooseLocation()
     {
         $location = null;
-        if (is_numeric($locationId = post('location')))
+        if (is_numeric($locationId = post('location'))) {
             $location = Locations_model::find($locationId);
-
-        if ($location AND AdminLocation::hasAccess($location)) {
-            AdminLocation::setCurrent($location);
         }
-        else {
+
+        if ($location and AdminLocation::hasAccess($location)) {
+            AdminLocation::setCurrent($location);
+        } else {
             AdminLocation::clearCurrent();
         }
 
@@ -265,12 +277,13 @@ class Menu extends BaseWidget
 
     public function onSetUserStatus()
     {
-        $status = (int)post('status');
-        $message = (string)post('message');
-        $clearAfterMinutes = (int)post('clear_after');
+        $status = (int) post('status');
+        $message = (string) post('message');
+        $clearAfterMinutes = (int) post('clear_after');
 
-        if ($status < 1 AND !strlen($message))
+        if ($status < 1 and !strlen($message)) {
             throw new ApplicationException(lang('admin::lang.side_menu.alert_invalid_status'));
+        }
 
         $stateData['status'] = $status;
         $stateData['isAway'] = $status !== 1;
@@ -283,6 +296,7 @@ class Menu extends BaseWidget
 
     /**
      * Returns the active context for displaying the menu.
+     *
      * @return string
      */
     public function getContext()
@@ -292,7 +306,7 @@ class Menu extends BaseWidget
 
     protected function getOptionsFromModel($item, $itemOptions)
     {
-        if (is_array($itemOptions) AND is_callable($itemOptions)) {
+        if (is_array($itemOptions) and is_callable($itemOptions)) {
             $user = $this->getLoggedUser();
             $itemOptions = call_user_func($itemOptions, $this, $item, $user);
         }
@@ -302,7 +316,7 @@ class Menu extends BaseWidget
 
     protected function getUnreadCountFromModel($item, $itemBadgeCount)
     {
-        if (is_array($itemBadgeCount) AND is_callable($itemBadgeCount)) {
+        if (is_array($itemBadgeCount) and is_callable($itemBadgeCount)) {
             $user = $this->getLoggedUser();
             $itemBadgeCount = $itemBadgeCount($this, $item, $user);
         }
@@ -313,7 +327,7 @@ class Menu extends BaseWidget
     protected function resolveMarkAsReadFromModel($item)
     {
         $callback = array_get($item->config, 'markAsRead');
-        if (is_array($callback) AND is_callable($callback)) {
+        if (is_array($callback) and is_callable($callback)) {
             $user = $this->getLoggedUser();
             $callback($this, $item, $user);
         }

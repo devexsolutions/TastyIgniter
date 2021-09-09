@@ -7,7 +7,7 @@ use Igniter\Flame\Database\Traits\Purgeable;
 use Igniter\Flame\Database\Traits\Validation;
 
 /**
- * MenuOptions Model Class
+ * MenuOptions Model Class.
  */
 class Menu_item_options_model extends Model
 {
@@ -28,25 +28,25 @@ class Menu_item_options_model extends Model
 
     protected $casts = [
         'menu_option_id' => 'integer',
-        'option_id' => 'integer',
-        'menu_id' => 'integer',
-        'required' => 'boolean',
-        'priority' => 'integer',
-        'min_selected' => 'integer',
-        'max_selected' => 'integer',
+        'option_id'      => 'integer',
+        'menu_id'        => 'integer',
+        'required'       => 'boolean',
+        'priority'       => 'integer',
+        'min_selected'   => 'integer',
+        'max_selected'   => 'integer',
     ];
 
     public $relation = [
         'hasMany' => [
-            'option_values' => ['Admin\Models\Menu_option_values_model', 'foreignKey' => 'option_id', 'otherKey' => 'option_id'],
+            'option_values'      => ['Admin\Models\Menu_option_values_model', 'foreignKey' => 'option_id', 'otherKey' => 'option_id'],
             'menu_option_values' => [
                 'Admin\Models\Menu_item_option_values_model',
                 'foreignKey' => 'menu_option_id',
-                'delete' => TRUE,
+                'delete'     => true,
             ],
         ],
         'belongsTo' => [
-            'menu' => ['Admin\Models\Menus_model'],
+            'menu'   => ['Admin\Models\Menus_model'],
             'option' => ['Admin\Models\Menu_options_model'],
         ],
     ];
@@ -84,8 +84,9 @@ class Menu_item_options_model extends Model
     {
         $this->restorePurgedValues();
 
-        if (array_key_exists('menu_option_values', $this->attributes))
+        if (array_key_exists('menu_option_values', $this->attributes)) {
             $this->addMenuOptionValues($this->attributes['menu_option_values']);
+        }
     }
 
     //
@@ -103,10 +104,10 @@ class Menu_item_options_model extends Model
     }
 
     /**
-     * Create new or update existing menu option values
+     * Create new or update existing menu option values.
      *
-     * @param int $menuOptionId
-     * @param int $optionId
+     * @param int   $menuOptionId
+     * @param int   $optionId
      * @param array $optionValues if empty all existing records will be deleted
      *
      * @return bool
@@ -114,14 +115,15 @@ class Menu_item_options_model extends Model
     public function addMenuOptionValues(array $optionValues = [])
     {
         $menuOptionId = $this->getKey();
-        if (!is_numeric($menuOptionId))
-            return FALSE;
+        if (!is_numeric($menuOptionId)) {
+            return false;
+        }
 
         $idsToKeep = [];
         foreach ($optionValues as $value) {
             $menuOptionValue = $this->menu_option_values()->firstOrNew([
                 'menu_option_value_id' => array_get($value, 'menu_option_value_id'),
-                'menu_option_id' => $menuOptionId,
+                'menu_option_id'       => $menuOptionId,
             ])->fill(array_except($value, ['menu_option_value_id', 'menu_option_id']));
 
             $menuOptionValue->saveOrFail();

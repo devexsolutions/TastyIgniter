@@ -7,7 +7,7 @@ use Igniter\Flame\Database\Model;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Allergens Model Class
+ * Allergens Model Class.
  */
 class Allergens_model extends Model
 {
@@ -31,7 +31,7 @@ class Allergens_model extends Model
 
     public $relation = [
         'morphedByMany' => [
-            'menus' => ['Admin\Models\Menus_model', 'name' => 'allergenable'],
+            'menus'              => ['Admin\Models\Menus_model', 'name' => 'allergenable'],
             'menu_option_values' => ['Admin\Models\Menu_option_values_model', 'name' => 'allergenable'],
         ],
     ];

@@ -15,7 +15,7 @@ class ChangeSortValueRatingsToConfigOnSettingsTable extends Migration
 
         DB::table('menus_specials')
             ->update([
-                'type' => 'F',
+                'type'     => 'F',
                 'validity' => 'period',
             ]);
     }

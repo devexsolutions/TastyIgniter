@@ -21,11 +21,11 @@ class Charts extends BaseDashboardWidget
     protected $defaultAlias = 'charts';
 
     protected $datasetOptions = [
-        'label' => null,
-        'data' => [],
-        'fill' => TRUE,
+        'label'           => null,
+        'data'            => [],
+        'fill'            => true,
         'backgroundColor' => null,
-        'borderColor' => null,
+        'borderColor'     => null,
     ];
 
     public $contextDefinitions;
@@ -39,7 +39,7 @@ class Charts extends BaseDashboardWidget
     {
         return [
             'title' => [
-                'label' => 'admin::lang.dashboard.label_widget_title',
+                'label'   => 'admin::lang.dashboard.label_widget_title',
                 'default' => 'admin::lang.dashboard.text_reports_chart',
             ],
         ];
@@ -57,21 +57,21 @@ class Charts extends BaseDashboardWidget
     {
         $this->contextDefinitions = [
             'customer' => [
-                'label' => 'lang:admin::lang.dashboard.charts.text_customers',
-                'color' => '#4DB6AC',
-                'model' => Customers_model::class,
+                'label'  => 'lang:admin::lang.dashboard.charts.text_customers',
+                'color'  => '#4DB6AC',
+                'model'  => Customers_model::class,
                 'column' => 'date_added',
             ],
             'order' => [
-                'label' => 'lang:admin::lang.dashboard.charts.text_orders',
-                'color' => '#64B5F6',
-                'model' => Orders_model::class,
+                'label'  => 'lang:admin::lang.dashboard.charts.text_orders',
+                'color'  => '#64B5F6',
+                'model'  => Orders_model::class,
                 'column' => 'order_date',
             ],
             'reservation' => [
-                'label' => 'lang:admin::lang.dashboard.charts.text_reservations',
-                'color' => '#BA68C8',
-                'model' => Reservations_model::class,
+                'label'  => 'lang:admin::lang.dashboard.charts.text_reservations',
+                'color'  => '#BA68C8',
+                'model'  => Reservations_model::class,
                 'column' => 'reserve_date',
             ],
         ];

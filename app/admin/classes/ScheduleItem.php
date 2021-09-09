@@ -45,19 +45,16 @@ class ScheduleItem
         for ($day = 0; $day <= 6; $day++) {
             if ($this->type == '24_7') {
                 $result[] = [['day' => $day, 'open' => '00:00', 'close' => '23:59', 'status' => 1]];
-            }
-            elseif ($this->type == 'daily') {
+            } elseif ($this->type == 'daily') {
                 $result[] = [[
-                    'day' => $day,
-                    'open' => $this->open,
-                    'close' => $this->close,
-                    'status' => (int)in_array($day, $this->days),
+                    'day'    => $day,
+                    'open'   => $this->open,
+                    'close'  => $this->close,
+                    'status' => (int) in_array($day, $this->days),
                 ]];
-            }
-            elseif ($this->type == 'timesheet') {
+            } elseif ($this->type == 'timesheet') {
                 $result[] = $this->createHours($day, $this->timesheet[$day]);
-            }
-            elseif ($this->type == 'flexible') {
+            } elseif ($this->type == 'flexible') {
                 $result[] = $this->createHours($day, $this->flexible[$day]);
             }
         }
@@ -73,14 +70,15 @@ class ScheduleItem
         foreach (Working_hours_model::make()->getWeekDaysOptions() as $index => $day) {
             $formattedHours = [];
             foreach (array_get($hours, $index, []) as $hour) {
-                if (!$hour['status'])
+                if (!$hour['status']) {
                     continue;
+                }
 
                 $formattedHours[] = sprintf('%s-%s', $hour['open'], $hour['close']);
             }
 
-            $result[] = (object)[
-                'day' => $day,
+            $result[] = (object) [
+                'day'   => $day,
                 'hours' => $formattedHours ? implode(', ', $formattedHours) : '--',
             ];
         }
@@ -90,15 +88,16 @@ class ScheduleItem
 
     protected function timesheet($timesheet)
     {
-        if (is_string($timesheet))
-            $timesheet = @json_decode($timesheet, TRUE) ?: [];
+        if (is_string($timesheet)) {
+            $timesheet = @json_decode($timesheet, true) ?: [];
+        }
 
         $result = [];
         foreach (Working_hours_model::$weekDays as $key => $weekDay) {
             $result[$key] = array_get($timesheet, $key, [
-                'day' => $key,
-                'hours' => [['open' => '00:00', 'close' => '23:59']],
-                'status' => TRUE,
+                'day'    => $key,
+                'hours'  => [['open' => '00:00', 'close' => '23:59']],
+                'status' => true,
             ]);
         }
 
@@ -110,14 +109,14 @@ class ScheduleItem
         $result = [];
         foreach (Working_hours_model::$weekDays as $key => $weekDay) {
             $hour = array_get($data, $key, []);
-            if (isset($hour['open']) AND isset($hour['close'])) {
+            if (isset($hour['open']) and isset($hour['close'])) {
                 $hour['hours'] = sprintf('%s-%s', $hour['open'], $hour['close']);
                 unset($hour['open'], $hour['close']);
             }
 
             $result[$key] = [
-                'day' => $hour['day'] ?? $key,
-                'hours' => $hour['hours'] ?? '00:00-23:59',
+                'day'    => $hour['day'] ?? $key,
+                'hours'  => $hour['hours'] ?? '00:00-23:59',
                 'status' => $hour['status'] ?? 1,
             ];
         }
@@ -136,9 +135,9 @@ class ScheduleItem
         foreach ($hours as $hour) {
             $hour = is_string($hour) ? explode('-', $hour) : $hour;
             $result[] = [
-                'day' => $day,
-                'open' => array_get($hour, 0, array_get($hour, 'open')),
-                'close' => array_get($hour, 1, array_get($hour, 'close')),
+                'day'    => $day,
+                'open'   => array_get($hour, 0, array_get($hour, 'open')),
+                'close'  => array_get($hour, 1, array_get($hour, 'close')),
                 'status' => $data['status'],
             ];
         }

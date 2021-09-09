@@ -35,20 +35,20 @@ class Statistics extends BaseDashboardWidget
     {
         return [
             'context' => [
-                'label' => 'admin::lang.dashboard.text_context',
+                'label'   => 'admin::lang.dashboard.text_context',
                 'default' => 'sale',
-                'type' => 'select',
+                'type'    => 'select',
                 'options' => $this->getContextOptions(),
             ],
             'range' => [
-                'label' => 'admin::lang.dashboard.text_range',
+                'label'   => 'admin::lang.dashboard.text_range',
                 'default' => 'week',
-                'type' => 'select',
+                'type'    => 'select',
                 'options' => [
-                    'day' => 'lang:admin::lang.dashboard.text_today',
-                    'week' => 'lang:admin::lang.dashboard.text_week',
+                    'day'   => 'lang:admin::lang.dashboard.text_today',
+                    'week'  => 'lang:admin::lang.dashboard.text_week',
                     'month' => 'lang:admin::lang.dashboard.text_month',
-                    'year' => 'lang:admin::lang.dashboard.text_year',
+                    'year'  => 'lang:admin::lang.dashboard.text_year',
                 ],
             ],
         ];
@@ -59,51 +59,51 @@ class Statistics extends BaseDashboardWidget
         return [
             'sale' => [
                 'label' => 'lang:admin::lang.dashboard.text_total_sale',
-                'icon' => ' bg-success text-white fa fa-line-chart',
+                'icon'  => ' bg-success text-white fa fa-line-chart',
             ],
             'lost_sale' => [
                 'label' => 'lang:admin::lang.dashboard.text_total_lost_sale',
-                'icon' => ' bg-danger text-white fa fa-line-chart fa-rotate-180',
+                'icon'  => ' bg-danger text-white fa fa-line-chart fa-rotate-180',
             ],
             'cash_payment' => [
                 'label' => 'lang:admin::lang.dashboard.text_total_cash_payment',
-                'icon' => ' bg-warning text-white fa fa-money-bill',
+                'icon'  => ' bg-warning text-white fa fa-money-bill',
             ],
             'customer' => [
                 'label' => 'lang:admin::lang.dashboard.text_total_customer',
-                'icon' => ' bg-info text-white fa fa-users',
+                'icon'  => ' bg-info text-white fa fa-users',
             ],
             'order' => [
                 'label' => 'lang:admin::lang.dashboard.text_total_order',
-                'icon' => ' bg-success text-white fa fa-shopping-cart',
+                'icon'  => ' bg-success text-white fa fa-shopping-cart',
             ],
             'delivery_order' => [
                 'label' => 'lang:admin::lang.dashboard.text_total_delivery_order',
-                'icon' => ' bg-primary text-white fa fa-truck',
+                'icon'  => ' bg-primary text-white fa fa-truck',
             ],
             'collection_order' => [
                 'label' => 'lang:admin::lang.dashboard.text_total_collection_order',
-                'icon' => ' bg-info text-white fa fa-shopping-bag',
+                'icon'  => ' bg-info text-white fa fa-shopping-bag',
             ],
             'completed_order' => [
                 'label' => 'lang:admin::lang.dashboard.text_total_completed_order',
-                'icon' => ' bg-success text-white fa fa-receipt',
+                'icon'  => ' bg-success text-white fa fa-receipt',
             ],
             'reserved_table' => [
                 'label' => 'lang:admin::lang.dashboard.text_total_reserved_table',
-                'icon' => ' bg-primary text-white fa fa-table',
+                'icon'  => ' bg-primary text-white fa fa-table',
             ],
             'reserved_guest' => [
                 'label' => 'lang:admin::lang.dashboard.text_total_reserved_guest',
-                'icon' => ' bg-primary text-white fa fa-table',
+                'icon'  => ' bg-primary text-white fa fa-table',
             ],
             'reservation' => [
                 'label' => 'lang:admin::lang.dashboard.text_total_reservation',
-                'icon' => ' bg-success text-white fa fa-table',
+                'icon'  => ' bg-success text-white fa fa-table',
             ],
             'completed_reservation' => [
                 'label' => 'lang:admin::lang.dashboard.text_total_completed_reservation',
-                'icon' => ' bg-success text-white fa fa-table',
+                'icon'  => ' bg-success text-white fa fa-table',
             ],
         ];
     }
@@ -147,8 +147,9 @@ class Statistics extends BaseDashboardWidget
     {
         $count = 0;
         $contextMethod = 'getTotal'.studly_case($context).'Sum';
-        if (method_exists($this, $contextMethod))
+        if (method_exists($this, $contextMethod)) {
             $count = $this->$contextMethod($this->property('range'));
+        }
 
         return empty($count) ? 0 : $count;
     }
@@ -157,14 +158,11 @@ class Statistics extends BaseDashboardWidget
     {
         if ($range === 'week') {
             $start = Carbon::now()->subWeek();
-        }
-        elseif ($range === 'month') {
+        } elseif ($range === 'month') {
             $start = Carbon::now()->subMonth();
-        }
-        elseif ($range === 'year') {
+        } elseif ($range === 'year') {
             $start = Carbon::now()->startOfYear();
-        }
-        else {
+        } else {
             $start = Carbon::now()->today();
         }
 
@@ -175,7 +173,7 @@ class Statistics extends BaseDashboardWidget
     }
 
     /**
-     * Return the total amount of order sales
+     * Return the total amount of order sales.
      *
      * @param $range
      *
@@ -194,9 +192,10 @@ class Statistics extends BaseDashboardWidget
     }
 
     /**
-     * Return the total amount of lost order sales
+     * Return the total amount of lost order sales.
      *
      * @param $range
+     *
      * @return string
      */
     protected function getTotalLostSaleSum($range)
@@ -214,9 +213,10 @@ class Statistics extends BaseDashboardWidget
     }
 
     /**
-     * Return the total amount of cash payment order sales
+     * Return the total amount of cash payment order sales.
      *
      * @param $range
+     *
      * @return string
      */
     protected function getTotalCashPaymentSum($range)
@@ -234,9 +234,10 @@ class Statistics extends BaseDashboardWidget
     }
 
     /**
-     * Return the total number of customers
+     * Return the total number of customers.
      *
      * @param $range
+     *
      * @return int
      */
     protected function getTotalCustomerSum($range)
@@ -248,9 +249,10 @@ class Statistics extends BaseDashboardWidget
     }
 
     /**
-     * Return the total number of orders placed
+     * Return the total number of orders placed.
      *
      * @param $range
+     *
      * @return int
      */
     protected function getTotalOrderSum($range)
@@ -263,9 +265,10 @@ class Statistics extends BaseDashboardWidget
     }
 
     /**
-     * Return the total number of completed orders
+     * Return the total number of completed orders.
      *
      * @param $range
+     *
      * @return int
      */
     protected function getTotalCompletedOrderSum($range)
@@ -280,7 +283,7 @@ class Statistics extends BaseDashboardWidget
     }
 
     /**
-     * Return the total number of delivery orders
+     * Return the total number of delivery orders.
      *
      * @param string $range
      *
@@ -301,9 +304,10 @@ class Statistics extends BaseDashboardWidget
     }
 
     /**
-     * Return the total number of collection orders
+     * Return the total number of collection orders.
      *
      * @param $range
+     *
      * @return int
      */
     protected function getTotalCollectionOrderSum($range)
@@ -321,9 +325,10 @@ class Statistics extends BaseDashboardWidget
     }
 
     /**
-     * Return the total number of reserved tables
+     * Return the total number of reserved tables.
      *
      * @param $range
+     *
      * @return int
      */
     protected function getTotalReservedTableSum($range)
@@ -340,9 +345,10 @@ class Statistics extends BaseDashboardWidget
     }
 
     /**
-     * Return the total number of reserved table guests
+     * Return the total number of reserved table guests.
      *
      * @param $range
+     *
      * @return int
      */
     protected function getTotalReservedGuestSum($range)
@@ -357,9 +363,10 @@ class Statistics extends BaseDashboardWidget
     }
 
     /**
-     * Return the total number of reservations
+     * Return the total number of reservations.
      *
      * @param $range
+     *
      * @return int
      */
     protected function getTotalReservationSum($range)
@@ -374,9 +381,10 @@ class Statistics extends BaseDashboardWidget
     }
 
     /**
-     * Return the total number of completed reservations
+     * Return the total number of completed reservations.
      *
      * @param $range
+     *
      * @return int
      */
     protected function getTotalCompletedReservationSum($range)

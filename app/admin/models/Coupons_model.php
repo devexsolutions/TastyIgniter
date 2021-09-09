@@ -8,7 +8,8 @@ use Igniter\Flame\Database\Model;
 use Igniter\Flame\Location\Models\AbstractLocation;
 
 /**
- * Coupons Model Class
+ * Coupons Model Class.
+ *
  * @deprecated remove before v4. Added for backward compatibility, see Igniter\Coupons\Models\Coupons_model
  */
 class Coupons_model extends Model
@@ -33,22 +34,22 @@ class Coupons_model extends Model
 
     protected $timeFormat = 'H:i';
 
-    public $timestamps = TRUE;
+    public $timestamps = true;
 
     protected $casts = [
-        'discount' => 'float',
-        'min_total' => 'float',
-        'redemptions' => 'integer',
+        'discount'             => 'float',
+        'min_total'            => 'float',
+        'redemptions'          => 'integer',
         'customer_redemptions' => 'integer',
-        'status' => 'boolean',
-        'period_start_date' => 'date',
-        'period_end_date' => 'date',
-        'fixed_date' => 'date',
-        'fixed_from_time' => 'time',
-        'fixed_to_time' => 'time',
-        'recurring_from_time' => 'time',
-        'recurring_to_time' => 'time',
-        'order_restriction' => 'integer',
+        'status'               => 'boolean',
+        'period_start_date'    => 'date',
+        'period_end_date'      => 'date',
+        'fixed_date'           => 'date',
+        'fixed_from_time'      => 'time',
+        'fixed_to_time'        => 'time',
+        'recurring_from_time'  => 'time',
+        'recurring_to_time'    => 'time',
+        'order_restriction'    => 'integer',
     ];
 
     public $relation = [
@@ -124,7 +125,7 @@ class Coupons_model extends Model
 
         switch ($this->validity) {
             case 'forever':
-                return FALSE;
+                return false;
             case 'fixed':
                 $start = $this->fixed_date->copy()->setTimeFromTimeString($this->fixed_from_time);
                 $end = $this->fixed_date->copy()->setTimeFromTimeString($this->fixed_to_time);
@@ -133,8 +134,9 @@ class Coupons_model extends Model
             case 'period':
                 return !$now->between($this->period_start_date, $this->period_end_date);
             case 'recurring':
-                if (!in_array($now->format('w'), $this->recurring_every))
-                    return TRUE;
+                if (!in_array($now->format('w'), $this->recurring_every)) {
+                    return true;
+                }
 
                 $start = $now->copy()->setTimeFromTimeString($this->recurring_from_time);
                 $end = $now->copy()->setTimeFromTimeString($this->recurring_to_time);
@@ -142,13 +144,14 @@ class Coupons_model extends Model
                 return !$now->between($start, $end);
         }
 
-        return FALSE;
+        return false;
     }
 
     public function hasRestriction($orderType)
     {
-        if (empty($this->order_restriction))
-            return FALSE;
+        if (empty($this->order_restriction)) {
+            return false;
+        }
 
         $orderTypes = [AbstractLocation::DELIVERY => 1, AbstractLocation::COLLECTION => 2];
 
@@ -157,8 +160,9 @@ class Coupons_model extends Model
 
     public function hasLocationRestriction($locationId)
     {
-        if (!$this->locations OR $this->locations->isEmpty())
-            return FALSE;
+        if (!$this->locations or $this->locations->isEmpty()) {
+            return false;
+        }
 
         $locationKeyColumn = $this->locations()->getModel()->qualifyColumn('location_id');
 
@@ -167,12 +171,12 @@ class Coupons_model extends Model
 
     public function hasReachedMaxRedemption()
     {
-        return $this->redemptions AND $this->redemptions <= $this->countRedemptions();
+        return $this->redemptions and $this->redemptions <= $this->countRedemptions();
     }
 
     public function customerHasMaxRedemption(User $user)
     {
-        return $this->customer_redemptions AND $this->customer_redemptions <= $this->countCustomerRedemptions($user->getKey());
+        return $this->customer_redemptions and $this->customer_redemptions <= $this->countCustomerRedemptions($user->getKey());
     }
 
     public function countRedemptions()

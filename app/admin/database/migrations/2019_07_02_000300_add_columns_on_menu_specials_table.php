@@ -7,7 +7,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Add validity columns on menus_specials table
+ * Add validity columns on menus_specials table.
  */
 class AddColumnsOnMenuSpecialsTable extends Migration
 {

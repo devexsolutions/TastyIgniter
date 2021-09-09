@@ -43,7 +43,7 @@ trait ViewMaker
     /**
      * @var bool Prevents the use of a layout.
      */
-    public $suppressLayout = FALSE;
+    public $suppressLayout = false;
 
     protected $viewFileExtension = ['.blade.php', '.php'];
 
@@ -51,7 +51,7 @@ trait ViewMaker
     {
         $view = File::symbolizePath($view);
 
-        if (File::isLocalPath($view, FALSE)) {
+        if (File::isLocalPath($view, false)) {
             return $this->guessViewFileExtension($view) ?? $view;
         }
 
@@ -63,8 +63,9 @@ trait ViewMaker
             $viewPath = $this->viewPath;
         }
 
-        if (!is_array($viewPath))
+        if (!is_array($viewPath)) {
             $viewPath = [$viewPath];
+        }
 
         foreach ($viewPath as $path) {
             if ($vPath = $this->guessViewFileExtension(File::symbolizePath($path).'/'.$view)) {
@@ -77,8 +78,9 @@ trait ViewMaker
 
     public function guessViewFileExtension($path)
     {
-        if (strlen(File::extension($path)))
+        if (strlen(File::extension($path))) {
             return $path;
+        }
 
         $path = preg_replace('#/+#', '/', $path);
 
@@ -92,12 +94,12 @@ trait ViewMaker
     /**
      * Guess the package path from a specified class.
      *
-     * @param string $suffix An extra path to attach to the end
-     * @param bool $isPublic
+     * @param string $suffix   An extra path to attach to the end
+     * @param bool   $isPublic
      *
      * @return string
      */
-    public function guessViewPath($suffix = '', $isPublic = FALSE)
+    public function guessViewPath($suffix = '', $isPublic = false)
     {
         $classFolder = strtolower(class_basename($class = get_called_class()));
         $classFile = realpath(dirname(File::fromClass(strtolower($class))));
@@ -110,15 +112,16 @@ trait ViewMaker
     /**
      * Render a layout.
      *
-     * @param string $name Specifies the layout name.
-     * If this parameter is omitted, the $layout property will be used.
-     * @param array $vars Parameter variables to pass to the view.
-     * @param bool $throwException Throw an exception if the layout is not found
+     * @param string $name           Specifies the layout name.
+     *                               If this parameter is omitted, the $layout property will be used.
+     * @param array  $vars           Parameter variables to pass to the view.
+     * @param bool   $throwException Throw an exception if the layout is not found
+     *
+     * @throws \Igniter\Flame\Exception\SystemException
      *
      * @return mixed The layout contents, or false.
-     * @throws \Igniter\Flame\Exception\SystemException
      */
-    public function makeLayout($name = null, $vars = [], $throwException = TRUE)
+    public function makeLayout($name = null, $vars = [], $throwException = true)
     {
         $layout = $name === null ? $this->layout : $name;
         if ($layout == '') {
@@ -128,10 +131,11 @@ trait ViewMaker
         $layoutPath = $this->getViewPath($layout, $this->layoutPath);
 
         if (!File::exists($layoutPath)) {
-            if ($throwException)
+            if ($throwException) {
                 throw new SystemException(Lang::get('system::lang.not_found.layout', ['name' => $layoutPath]));
+            }
 
-            return FALSE;
+            return false;
         }
 
         return $this->makeFileContent($layoutPath, $vars);
@@ -151,8 +155,9 @@ trait ViewMaker
         $viewPath = $this->getViewPath(strtolower($view));
         $contents = $this->makeFileContent($viewPath);
 
-        if ($this->suppressLayout OR $this->layout === '')
+        if ($this->suppressLayout or $this->layout === '') {
             return $contents;
+        }
 
         // Append content to the body template
         Template::setBlock('body', $contents);
@@ -163,28 +168,31 @@ trait ViewMaker
     /**
      * Render a partial file contents located in the views or partial folder.
      *
-     * @param string $partial The view to load.
-     * @param array $vars Parameter variables to pass to the view.
-     * @param bool $throwException Throw an exception if the partial is not found.
+     * @param string $partial        The view to load.
+     * @param array  $vars           Parameter variables to pass to the view.
+     * @param bool   $throwException Throw an exception if the partial is not found.
+     *
+     * @throws \Igniter\Flame\Exception\SystemException
      *
      * @return mixed Partial contents or false if not throwing an exception.
-     * @throws \Igniter\Flame\Exception\SystemException
      */
-    public function makePartial($partial, $vars = [], $throwException = TRUE)
+    public function makePartial($partial, $vars = [], $throwException = true)
     {
         $partial = strtolower($partial);
 
         $partialPath = $this->getViewPath($partial, $this->partialPath);
 
         if (!File::exists($partialPath)) {
-            if ($throwException)
+            if ($throwException) {
                 throw new SystemException(Lang::get('system::lang.not_found.partial', ['name' => $partialPath]));
+            }
 
-            return FALSE;
+            return false;
         }
 
-        if (isset($this->controller))
+        if (isset($this->controller)) {
             $vars = array_merge($this->controller->vars, $vars);
+        }
 
         return $this->makeFileContent($partialPath, $vars);
     }
@@ -193,14 +201,14 @@ trait ViewMaker
      * Includes a file path using output buffering.
      * Ensures that vars are available.
      *
-     * @param string $filePath Absolute path to the view file.
-     * @param array $extraParams Parameters that should be available to the view.
+     * @param string $filePath    Absolute path to the view file.
+     * @param array  $extraParams Parameters that should be available to the view.
      *
      * @return string
      */
     public function makeFileContent($filePath, $extraParams = [])
     {
-        if (!strlen($filePath) OR $filePath == 'index.php' OR !File::isFile($filePath)) {
+        if (!strlen($filePath) or $filePath == 'index.php' or !File::isFile($filePath)) {
             return '';
         }
 
@@ -225,11 +233,9 @@ trait ViewMaker
         // an exception is thrown. This prevents any partial views from leaking.
         try {
             include $filePath;
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             $this->handleViewException($e, $obLevel);
-        }
-        catch (Throwable $e) {
+        } catch (Throwable $e) {
             $this->handleViewException(new FatalThrowableError($e), $obLevel);
         }
 
@@ -253,7 +259,7 @@ trait ViewMaker
      * Handle a view exception.
      *
      * @param \Exception $e
-     * @param int $obLevel
+     * @param int        $obLevel
      *
      * @return void
      */
@@ -270,6 +276,7 @@ trait ViewMaker
      * Get the data bound to the view instance.
      *
      * @param $data
+     *
      * @return array
      */
     protected function gatherViewData($data)
@@ -277,8 +284,9 @@ trait ViewMaker
         $data = array_merge(View::getShared(), $data);
 
         return array_map(function ($value) {
-            if ($value instanceof Renderable)
+            if ($value instanceof Renderable) {
                 return $value->render();
+            }
 
             return $value;
         }, $data);

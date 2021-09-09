@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Create reservation_tables table
+ * Create reservation_tables table.
  */
 class CreateReservationTablesTable extends Migration
 {
@@ -23,7 +23,7 @@ class CreateReservationTablesTable extends Migration
         DB::table('reservations')->get()->each(function ($model) {
             DB::table('reservation_tables')->insert([
                 'reservation_id' => $model->reservation_id,
-                'table_id' => $model->table_id,
+                'table_id'       => $model->table_id,
             ]);
         });
     }

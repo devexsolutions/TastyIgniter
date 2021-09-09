@@ -17,7 +17,7 @@ class Navigation
 
     protected $mainItems;
 
-    protected $navItemsLoaded = FALSE;
+    protected $navItemsLoaded = false;
 
     protected $navContextItemCode;
 
@@ -38,8 +38,9 @@ class Navigation
 
     public function getNavItems()
     {
-        if (!$this->navItems)
+        if (!$this->navItems) {
             $this->loadItems();
+        }
 
         return $this->navItems;
     }
@@ -60,7 +61,7 @@ class Navigation
         $navItems = $this->filterPermittedNavItems($navItems);
 
         foreach ($navItems as $code => &$navItem) {
-            if (!isset($navItem['child']) OR !count($navItem['child'])) {
+            if (!isset($navItem['child']) or !count($navItem['child'])) {
                 continue;
             }
 
@@ -76,19 +77,22 @@ class Navigation
 
     public function isActiveNavItem($code)
     {
-        if ($code == $this->navContextParentCode)
-            return TRUE;
+        if ($code == $this->navContextParentCode) {
+            return true;
+        }
 
-        if ($code == $this->navContextItemCode)
-            return TRUE;
+        if ($code == $this->navContextItemCode) {
+            return true;
+        }
 
-        return FALSE;
+        return false;
     }
 
     public function getMainItems()
     {
-        if (!$this->mainItems)
+        if (!$this->mainItems) {
             $this->loadItems();
+        }
 
         return $this->filterPermittedNavItems($this->mainItems);
     }
@@ -105,28 +109,28 @@ class Navigation
     public function addNavItem($itemCode, array $options = [], $parentCode = null)
     {
         $navItemDefaults = [
-            'code' => $itemCode,
-            'class' => null,
-            'href' => null,
-            'icon' => null,
-            'title' => null,
-            'child' => null,
-            'priority' => 500,
+            'code'       => $itemCode,
+            'class'      => null,
+            'href'       => null,
+            'icon'       => null,
+            'title'      => null,
+            'child'      => null,
+            'priority'   => 500,
             'permission' => null,
         ];
 
         $navItem = array_merge($navItemDefaults, $options);
 
         if ($parentCode) {
-            if (!isset($this->navItems[$parentCode]))
+            if (!isset($this->navItems[$parentCode])) {
                 $this->navItems[$parentCode] = array_merge($navItemDefaults, [
-                    'code' => $parentCode,
+                    'code'  => $parentCode,
                     'class' => $parentCode,
                 ]);
+            }
 
             $this->navItems[$parentCode]['child'][$itemCode] = $navItem;
-        }
-        else {
+        } else {
             $this->navItems[$itemCode] = $navItem;
         }
     }
@@ -134,12 +138,13 @@ class Navigation
     public function mergeNavItem($itemCode, array $options = [], $parentCode = null)
     {
         if ($parentCode) {
-            if ($oldItem = array_get($this->navItems, $parentCode.'.child.'.$itemCode, []))
+            if ($oldItem = array_get($this->navItems, $parentCode.'.child.'.$itemCode, [])) {
                 $this->navItems[$parentCode]['child'][$itemCode] = array_merge($oldItem, $options);
-        }
-        else {
-            if ($oldItem = array_get($this->navItems, $itemCode, []))
+            }
+        } else {
+            if ($oldItem = array_get($this->navItems, $itemCode, [])) {
                 $this->navItems[$itemCode] = array_merge($oldItem, $options);
+            }
         }
     }
 
@@ -147,19 +152,20 @@ class Navigation
     {
         if (!is_null($parentCode)) {
             unset($this->navItems[$parentCode]['child'][$itemCode]);
-        }
-        else {
+        } else {
             unset($this->navItems[$itemCode]);
         }
     }
 
     public function loadItems()
     {
-        if ($this->navItemsLoaded)
+        if ($this->navItemsLoaded) {
             return;
+        }
 
-        if (!AdminAuth::check())
+        if (!AdminAuth::check()) {
             return;
+        }
 
         // Load app items
         foreach ($this->callbacks as $callback) {
@@ -169,26 +175,29 @@ class Navigation
         // Load extension items
         $extensions = ExtensionManager::instance()->getExtensions();
         foreach ($extensions as $code => $extension) {
-            if (!$extension instanceof BaseExtension)
+            if (!$extension instanceof BaseExtension) {
                 continue;
+            }
 
             $items = $extension->registerNavigation();
-            if (!is_array($items))
+            if (!is_array($items)) {
                 continue;
+            }
 
             $this->registerNavItems($items);
         }
 
         $this->fireSystemEvent('admin.navigation.extendItems');
 
-        $this->navItemsLoaded = TRUE;
+        $this->navItemsLoaded = true;
     }
 
     public function filterPermittedNavItems($items)
     {
         return collect($items)->filter(function ($item) {
-            if (!$permission = array_get($item, 'permission'))
-                return TRUE;
+            if (!$permission = array_get($item, 'permission')) {
+                return true;
+            }
 
             return AdminAuth::user()->hasPermission($permission);
         })->toArray();
@@ -216,7 +225,7 @@ class Navigation
         }
 
         foreach ($definitions as $name => $definition) {
-            if (isset($definition['child']) AND count($definition['child'])) {
+            if (isset($definition['child']) and count($definition['child'])) {
                 $this->registerNavItems($definition['child'], $name);
             }
 
@@ -230,8 +239,7 @@ class Navigation
     {
         if (!is_null($parent)) {
             $this->navItems[$parent]['child'][$code] = $item;
-        }
-        else {
+        } else {
             $this->navItems[$code] = $item;
         }
     }
@@ -245,7 +253,7 @@ class Navigation
      *   Template::registerCallback(function($manager){
      *       $manager->registerNavItems([...]);
      *   });
-     * </pre>
+     * </pre>.
      *
      * @param callable $callback A callable function.
      */

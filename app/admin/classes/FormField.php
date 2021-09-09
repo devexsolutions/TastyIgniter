@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Form Field definition
- * A translation of the form field configuration
+ * A translation of the form field configuration.
  *
  * Adapted from october\backend\classes\FormField
  */
@@ -25,7 +25,7 @@ class FormField
 
     /**
      * @var string If the field element names should be contained in an array.
-     * Eg: <input name="nameArray[fieldName]" />
+     *             Eg: <input name="nameArray[fieldName]" />
      */
     public $arrayName;
 
@@ -92,27 +92,27 @@ class FormField
     /**
      * @var bool Specifies if this field is mandatory.
      */
-    public $required = FALSE;
+    public $required = false;
 
     /**
      * @var bool Specify if the field is read-only or not.
      */
-    public $readOnly = FALSE;
+    public $readOnly = false;
 
     /**
      * @var bool Specify if the field is disabled or not.
      */
-    public $disabled = FALSE;
+    public $disabled = false;
 
     /**
      * @var bool Specify if the field is hidden. Hiddens fields are not included in postbacks.
      */
-    public $hidden = FALSE;
+    public $hidden = false;
 
     /**
      * @var bool Specifies if this field stretch to fit the page height.
      */
-    public $stretch = FALSE;
+    public $stretch = false;
 
     /**
      * @var string Specifies a comment to accompany the field
@@ -127,7 +127,7 @@ class FormField
     /**
      * @var string Specifies if the comment is in HTML format.
      */
-    public $commentHtml = FALSE;
+    public $commentHtml = false;
 
     /**
      * @var string Specifies a message to display when there is no value supplied (placeholder).
@@ -235,16 +235,14 @@ class FormField
         if ($value === null) {
             if (is_array($this->options)) {
                 return $this->options;
-            }
-            elseif (is_callable($this->options)) {
+            } elseif (is_callable($this->options)) {
                 $callable = $this->options;
 
                 return $callable();
             }
 
             return [];
-        }
-        else {
+        } else {
             $this->options = $value;
         }
 
@@ -261,8 +259,8 @@ class FormField
      * - checkboxlist - creates a checkbox list.
      * - radiolist - creates a radio list.
      *
-     * @param string $type Specifies a render mode as described above
-     * @param array $config A list of render mode specific config.
+     * @param string $type   Specifies a render mode as described above
+     * @param array  $config A list of render mode specific config.
      *
      * @return $this
      */
@@ -347,8 +345,7 @@ class FormField
 
         if (isset($config['valueFrom'])) {
             $this->valueFrom = $config['valueFrom'];
-        }
-        else {
+        } else {
             $this->valueFrom = $this->fieldName;
         }
 
@@ -358,10 +355,10 @@ class FormField
     /**
      * Adds a text comment above or below the field.
      *
-     * @param string $text Specifies a comment text.
+     * @param string $text     Specifies a comment text.
      * @param string $position Specifies a comment position.
-     * @param bool $isHtml Set to true if you use HTML formatting in the comment
-     * Supported values are 'below' and 'above'
+     * @param bool   $isHtml   Set to true if you use HTML formatting in the comment
+     *                         Supported values are 'below' and 'above'
      *
      * @return $this
      */
@@ -380,9 +377,9 @@ class FormField
     /**
      * Sets the attributes for this field in a given position.
      * - field: Attributes are added to the form field element (input, select, textarea, etc)
-     * - container: Attributes are added to the form field container (div.form-group)
+     * - container: Attributes are added to the form field container (div.form-group).
      *
-     * @param array $items
+     * @param array  $items
      * @param string $position
      *
      * @return self
@@ -418,7 +415,7 @@ class FormField
     public function hasAttribute($name, $position = 'field')
     {
         if (!isset($this->attributes[$position])) {
-            return FALSE;
+            return false;
         }
 
         return array_key_exists($name, $this->attributes[$position]);
@@ -428,12 +425,11 @@ class FormField
      * Returns the attributes for this field at a given position.
      *
      * @param string $position
-     *
-     * @param bool $htmlBuild
+     * @param bool   $htmlBuild
      *
      * @return string
      */
-    public function getAttributes($position = 'field', $htmlBuild = TRUE)
+    public function getAttributes($position = 'field', $htmlBuild = true)
     {
         $result = array_get($this->attributes, $position, []);
         $result = $this->filterAttributes($result, $position);
@@ -445,7 +441,7 @@ class FormField
      * Adds any circumstantial attributes to the field based on other
      * settings, such as the 'disabled' option.
      *
-     * @param array $attributes
+     * @param array  $attributes
      * @param string $position
      *
      * @return array
@@ -457,14 +453,14 @@ class FormField
         $attributes = $this->filterTriggerAttributes($attributes, $position);
         $attributes = $this->filterPresetAttributes($attributes, $position);
 
-        if ($position == 'field' AND $this->disabled) {
+        if ($position == 'field' and $this->disabled) {
             $attributes += ['disabled' => 'disabled'];
         }
 
         if ($position == 'field' && $this->readOnly) {
             $attributes += ['readonly' => 'readonly'];
 
-            if ($this->type == 'checkbox' OR $this->type == 'switch') {
+            if ($this->type == 'checkbox' or $this->type == 'switch') {
                 $attributes += ['onclick' => 'return false;'];
             }
         }
@@ -473,16 +469,16 @@ class FormField
     }
 
     /**
-     * Adds attributes used specifically by the Trigger API
+     * Adds attributes used specifically by the Trigger API.
      *
-     * @param array $attributes
+     * @param array  $attributes
      * @param string $position
      *
      * @return array
      */
     protected function filterTriggerAttributes($attributes, $position = 'field')
     {
-        if (!$this->trigger OR !is_array($this->trigger)) {
+        if (!$this->trigger or !is_array($this->trigger)) {
             return $attributes;
         }
 
@@ -491,26 +487,25 @@ class FormField
         $triggerCondition = array_get($this->trigger, 'condition');
 
         // Apply these to container
-        if (in_array($triggerAction, ['hide', 'show']) AND $position != 'container') {
+        if (in_array($triggerAction, ['hide', 'show']) and $position != 'container') {
             return $attributes;
         }
 
         // Apply these to field/input
-        if (in_array($triggerAction, ['enable', 'disable', 'empty']) AND $position != 'field') {
+        if (in_array($triggerAction, ['enable', 'disable', 'empty']) and $position != 'field') {
             return $attributes;
         }
 
         if ($this->arrayName) {
             $fullTriggerField = $this->arrayName.'['.implode('][', name_to_array($triggerField)).']';
-        }
-        else {
+        } else {
             $fullTriggerField = $triggerField;
         }
 
         $newAttributes = [
-            'data-trigger' => '[name=\''.trim($fullTriggerField).'\']',
-            'data-trigger-action' => $triggerAction,
-            'data-trigger-condition' => $triggerCondition,
+            'data-trigger'                => '[name=\''.trim($fullTriggerField).'\']',
+            'data-trigger-action'         => $triggerAction,
+            'data-trigger-condition'      => $triggerCondition,
             'data-trigger-closest-parent' => 'form',
         ];
 
@@ -520,16 +515,16 @@ class FormField
     }
 
     /**
-     * Adds attributes used specifically by the Input Preset API
+     * Adds attributes used specifically by the Input Preset API.
      *
-     * @param array $attributes
+     * @param array  $attributes
      * @param string $position
      *
      * @return array
      */
     protected function filterPresetAttributes($attributes, $position = 'field')
     {
-        if (!$this->preset OR $position != 'field') {
+        if (!$this->preset or $position != 'field') {
             return $attributes;
         }
 
@@ -542,14 +537,13 @@ class FormField
 
         if ($this->arrayName) {
             $fullPresetField = $this->arrayName.'['.implode('][', name_to_array($presetField)).']';
-        }
-        else {
+        } else {
             $fullPresetField = $presetField;
         }
 
         $newAttributes = [
-            'data-input-preset' => '[name="'.$fullPresetField.'"]',
-            'data-input-preset-type' => $presetType,
+            'data-input-preset'                => '[name="'.$fullPresetField.'"]',
+            'data-input-preset-type'           => $presetType,
             'data-input-preset-closest-parent' => 'form',
         ];
 
@@ -577,8 +571,7 @@ class FormField
 
         if ($arrayName) {
             return $arrayName.'['.implode('][', name_to_array($this->fieldName)).']';
-        }
-        else {
+        } else {
             return $this->fieldName;
         }
     }
@@ -662,7 +655,7 @@ class FormField
 
     /**
      * Returns the final model and attribute name of a nested attribute.
-     * Eg: list($model, $attribute) = $this->resolveAttribute('person[phone]');
+     * Eg: list($model, $attribute) = $this->resolveAttribute('person[phone]');.
      *
      * @param $model
      * @param string $attribute .
@@ -689,8 +682,8 @@ class FormField
      * Internal method to extract the value of a field name from a data set.
      *
      * @param string $fieldName
-     * @param mixed $data
-     * @param mixed $default
+     * @param mixed  $data
+     * @param mixed  $default
      *
      * @return mixed
      */
@@ -705,21 +698,18 @@ class FormField
         // To support relations only the last field should return th
         // relation value, all others will look up the relation object as normal.
         foreach ($keyParts as $key) {
-            if ($result instanceof Model AND $result->hasRelation($key)) {
+            if ($result instanceof Model and $result->hasRelation($key)) {
                 if ($key == $lastField) {
                     $result = $result->getRelationValue($key) ?: $default;
-                }
-                else {
+                } else {
                     $result = $result->{$key};
                 }
-            }
-            elseif (is_array($result)) {
+            } elseif (is_array($result)) {
                 if (!array_key_exists($key, $result)) {
                     return $default;
                 }
                 $result = $result[$key];
-            }
-            else {
+            } else {
                 if (!isset($result->{$key})) {
                     return $default;
                 }

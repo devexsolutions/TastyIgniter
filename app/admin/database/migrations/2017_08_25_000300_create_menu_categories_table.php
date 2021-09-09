@@ -7,7 +7,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Create menu_categories table
+ * Create menu_categories table.
  */
 class CreateMenuCategoriesTable extends Migration
 {

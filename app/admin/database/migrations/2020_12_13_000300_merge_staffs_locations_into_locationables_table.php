@@ -12,9 +12,9 @@ class MergeStaffsLocationsIntoLocationablesTable extends Migration
     {
         DB::table('staffs_locations')->get()->each(function ($model) {
             DB::table('locationables')->insert([
-                'location_id' => $model->location_id,
+                'location_id'       => $model->location_id,
                 'locationable_type' => 'staffs',
-                'locationable_id' => $model->staff_id,
+                'locationable_id'   => $model->staff_id,
             ]);
         });
 

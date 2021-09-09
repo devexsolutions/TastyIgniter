@@ -4,7 +4,7 @@ namespace Admin\Classes;
 
 /**
  * List Columns definition
- * A translation of the list column configuration
+ * A translation of the list column configuration.
  *
  * Adapted from october\backend\classes\ListColumn
  */
@@ -28,26 +28,26 @@ class ListColumn
     /**
      * @var bool Specifies if this column can be searched.
      */
-    public $searchable = FALSE;
+    public $searchable = false;
 
     /**
      * @var bool Specifies if this column is hidden by default.
      */
-    public $invisible = FALSE;
+    public $invisible = false;
 
     /**
      * @var bool Specifies if this column can be sorted.
      */
-    public $sortable = TRUE;
+    public $sortable = true;
 
     /**
      * @var bool Specifies if this column can be edited.
      */
-    public $editable = FALSE;
+    public $editable = false;
 
     /**
      * @var string Model attribute to use for the display value, this will
-     * override any $sqlSelect definition.
+     *             override any $sqlSelect definition.
      */
     public $valueFrom;
 
@@ -58,7 +58,7 @@ class ListColumn
 
     /**
      * @var string Custom SQL for selecting this record display value,
-     * the @ symbol is replaced with the table name.
+     *             the @ symbol is replaced with the table name.
      */
     public $sqlSelect;
 
@@ -69,8 +69,8 @@ class ListColumn
 
     /**
      * @var string sets the column width, can be specified in percents (10%) or pixels (50px).
-     * There could be a single column without width specified, it will be stretched to take the
-     * available space.
+     *             There could be a single column without width specified, it will be stretched to take the
+     *             available space.
      */
     public $width;
 
@@ -124,7 +124,7 @@ class ListColumn
     /**
      * Specifies a list column rendering mode. Supported modes are:
      * - text - text column, aligned left
-     * - number - numeric column, aligned right
+     * - number - numeric column, aligned right.
      *
      * @param string $type Specifies a render mode as described above
      * @param $config
@@ -148,56 +148,72 @@ class ListColumn
      */
     protected function evalConfig($config)
     {
-        if (isset($config['width']))
+        if (isset($config['width'])) {
             $this->width = $config['width'];
+        }
 
-        if (isset($config['cssClass']))
+        if (isset($config['cssClass'])) {
             $this->cssClass = $config['cssClass'];
+        }
 
-        if (isset($config['searchable']))
+        if (isset($config['searchable'])) {
             $this->searchable = $config['searchable'];
+        }
 
-        if (isset($config['sortable']))
+        if (isset($config['sortable'])) {
             $this->sortable = $config['sortable'];
+        }
 
-        if (isset($config['editable']))
+        if (isset($config['editable'])) {
             $this->editable = $config['editable'];
+        }
 
-        if (isset($config['invisible']))
+        if (isset($config['invisible'])) {
             $this->invisible = $config['invisible'];
+        }
 
-        if (isset($config['valueFrom']))
+        if (isset($config['valueFrom'])) {
             $this->valueFrom = $config['valueFrom'];
+        }
 
-        if (isset($config['default']))
+        if (isset($config['default'])) {
             $this->defaults = $config['default'];
+        }
 
-        if (isset($config['select']))
+        if (isset($config['select'])) {
             $this->sqlSelect = $config['select'];
+        }
 
-        if (isset($config['relation']))
+        if (isset($config['relation'])) {
             $this->relation = $config['relation'];
+        }
 
-        if (isset($config['attributes']))
+        if (isset($config['attributes'])) {
             $this->attributes = $config['attributes'];
+        }
 
-        if (isset($config['format']))
+        if (isset($config['format'])) {
             $this->format = $config['format'];
+        }
 
-        if (isset($config['path']))
+        if (isset($config['path'])) {
             $this->path = $config['path'];
+        }
 
-        if (isset($config['formatter']))
+        if (isset($config['formatter'])) {
             $this->formatter = $config['formatter'];
+        }
 
-        if (isset($config['iconCssClass']))
+        if (isset($config['iconCssClass'])) {
             $this->iconCssClass = $config['iconCssClass'];
+        }
 
         return $config;
     }
 
     /**
      * Returns a HTML valid name for the column name.
+     *
      * @return string
      */
     public function getName()
@@ -208,7 +224,7 @@ class ListColumn
     /**
      * Returns a value suitable for the column id property.
      *
-     * @param  string $suffix Specify a suffix string
+     * @param string $suffix Specify a suffix string
      *
      * @return string
      */

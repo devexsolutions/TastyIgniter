@@ -36,17 +36,17 @@ trait CombinesAssets
     /**
      * @var bool Cache key prefix.
      */
-    public $cacheKeyPrefix = FALSE;
+    public $cacheKeyPrefix = false;
 
     /**
      * @var bool Cache combined asset files.
      */
-    public $useCache = FALSE;
+    public $useCache = false;
 
     /**
      * @var bool Compress (minify) asset files.
      */
-    public $useMinify = FALSE;
+    public $useMinify = false;
 
     protected $assetsCombinerUri;
 
@@ -55,28 +55,30 @@ trait CombinesAssets
     protected function initCombiner()
     {
         $this->cacheKeyPrefix = 'ti.combiner.';
-        $this->useCache = config('system.enableAssetCache', TRUE);
+        $this->useCache = config('system.enableAssetCache', true);
         $this->useMinify = config('system.enableAssetMinify', null);
-        $this->combineAssets = config('system.enableAssetCombiner', FALSE);
+        $this->combineAssets = config('system.enableAssetCombiner', false);
         $this->storagePath = storage_path('system/combiner/data');
         $this->assetsCombinerUri = config('system.assetsCombinerUri', '/_assets');
 
-        if (app()->runningInAdmin())
+        if (app()->runningInAdmin()) {
             $this->assetsCombinerUri = config('system.adminUri', '/admin').$this->assetsCombinerUri;
+        }
 
-        if ($this->useMinify === null)
-            $this->useMinify = !config('app.debug', FALSE);
+        if ($this->useMinify === null) {
+            $this->useMinify = !config('app.debug', false);
+        }
 
-        $this->registerFilter('css', new \Igniter\Flame\Assetic\Filter\CssImportFilter);
-        $this->registerFilter(['css', 'scss'], new \Igniter\Flame\Assetic\Filter\CssRewriteFilter);
+        $this->registerFilter('css', new \Igniter\Flame\Assetic\Filter\CssImportFilter());
+        $this->registerFilter(['css', 'scss'], new \Igniter\Flame\Assetic\Filter\CssRewriteFilter());
 
-        $scssPhpFilter = new \Igniter\Flame\Assetic\Filter\ScssphpFilter;
+        $scssPhpFilter = new \Igniter\Flame\Assetic\Filter\ScssphpFilter();
         $scssPhpFilter->addImportPath(base_path());
         $this->registerFilter('scss', $scssPhpFilter);
 
         if ($this->useMinify) {
-            $this->registerFilter('js', new \Igniter\Flame\Assetic\Filter\JSMinFilter);
-            $this->registerFilter(['css', 'scss'], new \Igniter\Flame\Assetic\Filter\CssMinFilter);
+            $this->registerFilter('js', new \Igniter\Flame\Assetic\Filter\JSMinFilter());
+            $this->registerFilter(['css', 'scss'], new \Igniter\Flame\Assetic\Filter\CssMinFilter());
         }
     }
 
@@ -93,7 +95,7 @@ trait CombinesAssets
      *     Assets::combine('css', $assets);
      *
      * @param string $type
-     * @param array $assets Collection of assets
+     * @param array  $assets Collection of assets
      *
      * @return string URL to contents.
      */
@@ -102,7 +104,7 @@ trait CombinesAssets
         $assets = $this->prepareAssets($assets);
 
         $cacheKey = $this->getCacheKey($assets);
-        $cacheData = $this->useCache ? $this->getCache($cacheKey) : FALSE;
+        $cacheData = $this->useCache ? $this->getCache($cacheKey) : false;
 
         if (!$cacheData) {
             $combiner = $this->prepareCombiner($assets);
@@ -110,11 +112,11 @@ trait CombinesAssets
             $lastMod = $combiner->getLastModified();
 
             $cacheData = [
-                'type' => $type,
-                'uri' => $cacheKey.'-'.$lastMod.'.'.$type,
-                'eTag' => $cacheKey,
+                'type'    => $type,
+                'uri'     => $cacheKey.'-'.$lastMod.'.'.$type,
+                'eTag'    => $cacheKey,
                 'lastMod' => $lastMod,
-                'files' => $assets,
+                'files'   => $assets,
             ];
 
             $this->putCache($cacheKey, $cacheData);
@@ -124,7 +126,7 @@ trait CombinesAssets
     }
 
     /**
-     * Combines a collection of assets files to a destination file
+     * Combines a collection of assets files to a destination file.
      *
      *     $assets = [
      *         'assets/scss/flame.scss',
@@ -136,7 +138,7 @@ trait CombinesAssets
      *         base_path('themes/demo/assets/css/theme.css'),
      *     );
      *
-     * @param array $assets Collection of assets
+     * @param array  $assets      Collection of assets
      * @param string $destination Write the combined file to this location
      *
      * @return void
@@ -202,11 +204,13 @@ trait CombinesAssets
         foreach ($assets as $path) {
             $filters = $this->getFilters(File::extension($path)) ?: [];
 
-            if (file_exists($publicPath = public_path($path)))
+            if (file_exists($publicPath = public_path($path))) {
                 $path = $publicPath;
+            }
 
-            if (!file_exists($path))
+            if (!file_exists($path)) {
                 $path = File::symbolizePath($path, null) ?? $path;
+            }
 
             $asset = starts_with($path, ['//', 'http://', 'https://'])
                 ? new HttpAsset($path, $filters)
@@ -239,8 +243,9 @@ trait CombinesAssets
             $path = $baseUri.$this->assetsCombinerUri;
         }
 
-        if (strpos($path, '/') === 0)
+        if (strpos($path, '/') === 0) {
             $path = substr($path, 1);
+        }
 
         return str_replace('.', '-', $path).'/';
     }
@@ -273,7 +278,7 @@ trait CombinesAssets
      * Register a filter to apply to the combining process.
      *
      * @param string|array $extension Extension name. Eg: css
-     * @param object $filter Collection of files to combine.
+     * @param object       $filter    Collection of files to combine.
      *
      * @return self
      */
@@ -305,15 +310,16 @@ trait CombinesAssets
      *
      * @param $extension
      * @param $files
-     * @param null $destination
+     * @param null   $destination
      * @param string $appContext
      *
      * @return void
      */
     public function registerBundle($extension, $files, $destination = null, $appContext = 'main')
     {
-        if (!is_array($files))
+        if (!is_array($files)) {
             $files = [$files];
+        }
 
         $firstFile = array_values($files)[0];
 
@@ -325,12 +331,12 @@ trait CombinesAssets
 
             if ($extension != 'js') {
                 $cssPath = $path.'/../css';
-                if (File::isDirectory(File::symbolizePath($cssPath)))
+                if (File::isDirectory(File::symbolizePath($cssPath))) {
                     $path = $cssPath;
+                }
 
                 $destination = $path.'/'.$file.'.css';
-            }
-            else {
+            } else {
                 $destination = $path.'/'.$file.'.min.'.$extension;
             }
         }
@@ -342,17 +348,19 @@ trait CombinesAssets
      * Returns bundles.
      *
      * @param string $extension
-     *
      * @param string $appContext
+     *
      * @return array
      */
     public function getBundles($extension = null, $appContext = 'main')
     {
-        if (is_null($extension))
+        if (is_null($extension)) {
             return $this->bundles[$appContext] ?? [];
+        }
 
-        if (isset($this->bundles[$appContext][$extension]))
+        if (isset($this->bundles[$appContext][$extension])) {
             return $this->bundles[$appContext][$extension];
+        }
 
         return null;
     }
@@ -366,11 +374,13 @@ trait CombinesAssets
      */
     public function getFilters($extension = null)
     {
-        if (is_null($extension))
+        if (is_null($extension)) {
             return $this->filters;
+        }
 
-        if (isset($this->filters[$extension]))
+        if (isset($this->filters[$extension])) {
             return $this->filters[$extension];
+        }
 
         return null;
     }
@@ -386,8 +396,7 @@ trait CombinesAssets
     {
         if ($extension === null) {
             $this->filters = [];
-        }
-        else {
+        } else {
             $this->filters[$extension] = [];
         }
 
@@ -408,7 +417,7 @@ trait CombinesAssets
     protected function getCache($cacheKey)
     {
         if (!Cache::has($this->cacheKeyPrefix.$cacheKey)) {
-            return FALSE;
+            return false;
         }
 
         return @unserialize(@base64_decode(Cache::get($this->cacheKeyPrefix.$cacheKey)));
@@ -416,11 +425,12 @@ trait CombinesAssets
 
     protected function putCache($cacheKey, $cacheData)
     {
-        if (Cache::has($this->cacheKeyPrefix.$cacheKey))
-            return FALSE;
+        if (Cache::has($this->cacheKeyPrefix.$cacheKey)) {
+            return false;
+        }
 
         Cache::forever($this->cacheKeyPrefix.$cacheKey, base64_encode(serialize($cacheData)));
 
-        return TRUE;
+        return true;
     }
 }

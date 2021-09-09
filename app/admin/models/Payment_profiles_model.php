@@ -6,17 +6,17 @@ use Igniter\Flame\Database\Model;
 
 class Payment_profiles_model extends Model
 {
-    public $timestamps = TRUE;
+    public $timestamps = true;
 
     public $table = 'payment_profiles';
 
     protected $primaryKey = 'payment_profile_id';
 
     protected $casts = [
-        'customer_id' => 'integer',
-        'payment_id' => 'integer',
+        'customer_id'  => 'integer',
+        'payment_id'   => 'integer',
         'profile_data' => 'array',
-        'is_primary' => 'boolean',
+        'is_primary'   => 'boolean',
     ];
 
     public function afterCreate()
@@ -41,28 +41,29 @@ class Payment_profiles_model extends Model
 
     public function hasProfileData()
     {
-        return array_has((array)$this->profile_data, ['card_id', 'customer_id']);
+        return array_has((array) $this->profile_data, ['card_id', 'customer_id']);
     }
 
     /**
-     * Makes this model the default
+     * Makes this model the default.
+     *
      * @return void
      */
     public function makePrimary()
     {
-        $this->timestamps = FALSE;
+        $this->timestamps = false;
 
         $this->newQuery()
-            ->where('is_primary', '!=', FALSE)
+            ->where('is_primary', '!=', false)
             ->where('customer_id', $this->customer_id)
-            ->update(['is_primary' => FALSE]);
+            ->update(['is_primary' => false]);
 
         $this->newQuery()
             ->where('payment_profile_id', $this->payment_profile_id)
             ->where('customer_id', $this->customer_id)
-            ->update(['is_primary' => TRUE]);
+            ->update(['is_primary' => true]);
 
-        $this->timestamps = TRUE;
+        $this->timestamps = true;
     }
 
     public static function getPrimary($customer)

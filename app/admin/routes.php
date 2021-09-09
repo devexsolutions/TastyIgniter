@@ -1,4 +1,5 @@
 <?php
+
 App::before(function () {
     /*
      * Register Admin app routes
@@ -8,7 +9,7 @@ App::before(function () {
      */
     Route::group([
         'middleware' => ['web'],
-        'prefix' => config('system.adminUri', 'admin'),
+        'prefix'     => config('system.adminUri', 'admin'),
     ], function () {
         // Register Assets Combiner routes
         Route::any(config('system.assetsCombinerUri', '_assets').'/{asset}', 'System\Classes\Controller@combineAssets');

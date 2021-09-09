@@ -4,7 +4,7 @@ namespace Admin\Classes;
 
 /**
  * Filter scope definition
- * A translation of the filter scope configuration
+ * A translation of the filter scope configuration.
  *
  * Adapted from october\backend\classes\FilterScope
  */
@@ -58,7 +58,7 @@ class FilterScope
     /**
      * @var bool Specify if the scope is disabled or not.
      */
-    public $disabled = FALSE;
+    public $disabled = false;
 
     /**
      * @var string Specifies a default value for supported scopes.
@@ -101,8 +101,8 @@ class FilterScope
      * - group - filter by a group of IDs. Default.
      * - checkbox - filter by a simple toggle switch.
      *
-     * @param string $type Specifies a render mode as described above
-     * @param array $config A list of render mode specific config.
+     * @param string $type   Specifies a render mode as described above
+     * @param array  $config A list of render mode specific config.
      *
      * @return $this
      */
@@ -123,35 +123,45 @@ class FilterScope
      */
     protected function evalConfig($config)
     {
-        if (isset($config['options']))
+        if (isset($config['options'])) {
             $this->options = $config['options'];
+        }
 
-        if (isset($config['context']))
+        if (isset($config['context'])) {
             $this->context = $config['context'];
+        }
 
-        if (isset($config['default']))
+        if (isset($config['default'])) {
             $this->defaults = $config['default'];
+        }
 
-        if (isset($config['conditions']))
+        if (isset($config['conditions'])) {
             $this->conditions = $config['conditions'];
+        }
 
-        if (isset($config['scope']))
+        if (isset($config['scope'])) {
             $this->scope = $config['scope'];
+        }
 
-        if (isset($config['cssClass']))
+        if (isset($config['cssClass'])) {
             $this->cssClass = $config['cssClass'];
+        }
 
-        if (isset($config['nameFrom']))
+        if (isset($config['nameFrom'])) {
             $this->nameFrom = $config['nameFrom'];
+        }
 
-        if (isset($config['descriptionFrom']))
+        if (isset($config['descriptionFrom'])) {
             $this->descriptionFrom = $config['descriptionFrom'];
+        }
 
-        if (array_key_exists('disabled', $config))
+        if (array_key_exists('disabled', $config)) {
             $this->disabled = $config['disabled'];
+        }
 
-        if (isset($config['mode']))
+        if (isset($config['mode'])) {
             $this->mode = $config['mode'];
+        }
 
         return $config;
     }

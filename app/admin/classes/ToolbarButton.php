@@ -5,7 +5,7 @@ namespace Admin\Classes;
 use Igniter\Flame\Html\HtmlFacade as Html;
 
 /**
- * Toolbar Button definition
+ * Toolbar Button definition.
  */
 class ToolbarButton
 {
@@ -52,7 +52,7 @@ class ToolbarButton
     /**
      * Specifies a Toolbar button rendering mode. Supported modes are:
      * - text - text column, aligned left
-     * - number - numeric column, aligned right
+     * - number - numeric column, aligned right.
      *
      * @param string $type Specifies a render mode as described above
      * @param $config
@@ -75,7 +75,7 @@ class ToolbarButton
      *
      * @return array|string
      */
-    public function getAttributes($htmlBuild = TRUE)
+    public function getAttributes($htmlBuild = true)
     {
         $config = array_except($this->config, [
             'label', 'context', 'permission', 'partial',
@@ -83,17 +83,20 @@ class ToolbarButton
 
         $attributes = [];
         foreach ($config as $key => $value) {
-            if (!is_string($value)) continue;
+            if (!is_string($value)) {
+                continue;
+            }
 
-            $value = ($key == 'href' AND !preg_match('#^(\w+:)?//#i', $value))
+            $value = ($key == 'href' and !preg_match('#^(\w+:)?//#i', $value))
                 ? admin_url($value)
                 : $value;
 
             $attributes[$key] = is_lang_key($value) ? lang($value) : $value;
         }
 
-        if ($this->disabled)
+        if ($this->disabled) {
             $attributes['disabled'] = 'disabled';
+        }
 
         return $htmlBuild ? Html::attributes($attributes) : $attributes;
     }
@@ -102,8 +105,7 @@ class ToolbarButton
     {
         if (is_null($value)) {
             return $this->menuItems ?? [];
-        }
-        else {
+        } else {
             $this->menuItems = $value;
         }
 

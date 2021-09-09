@@ -13,32 +13,32 @@ class Currencies extends \Admin\Classes\AdminController
 
     public $listConfig = [
         'list' => [
-            'model' => 'System\Models\Currencies_model',
-            'title' => 'lang:system::lang.currencies.text_title',
+            'model'        => 'System\Models\Currencies_model',
+            'title'        => 'lang:system::lang.currencies.text_title',
             'emptyMessage' => 'lang:system::lang.currencies.text_empty',
-            'defaultSort' => ['currency_status', 'DESC'],
-            'configFile' => 'currencies_model',
+            'defaultSort'  => ['currency_status', 'DESC'],
+            'configFile'   => 'currencies_model',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:system::lang.currencies.text_form_name',
-        'model' => 'System\Models\Currencies_model',
+        'name'    => 'lang:system::lang.currencies.text_form_name',
+        'model'   => 'System\Models\Currencies_model',
         'request' => 'System\Requests\Currency',
-        'create' => [
-            'title' => 'lang:admin::lang.form.create_title',
-            'redirect' => 'currencies/edit/{currency_id}',
+        'create'  => [
+            'title'         => 'lang:admin::lang.form.create_title',
+            'redirect'      => 'currencies/edit/{currency_id}',
             'redirectClose' => 'currencies',
-            'redirectNew' => 'currencies/create',
+            'redirectNew'   => 'currencies/create',
         ],
         'edit' => [
-            'title' => 'lang:admin::lang.form.edit_title',
-            'redirect' => 'currencies/edit/{currency_id}',
+            'title'         => 'lang:admin::lang.form.edit_title',
+            'redirect'      => 'currencies/edit/{currency_id}',
             'redirectClose' => 'currencies',
-            'redirectNew' => 'currencies/create',
+            'redirectNew'   => 'currencies/create',
         ],
         'preview' => [
-            'title' => 'lang:admin::lang.form.preview_title',
+            'title'    => 'lang:admin::lang.form.preview_title',
             'redirect' => 'currencies',
         ],
         'delete' => [

@@ -5,7 +5,7 @@ namespace Admin\Controllers;
 use Admin\Facades\AdminMenu;
 
 /**
- * Admin Controller Class Tables
+ * Admin Controller Class Tables.
  */
 class Tables extends \Admin\Classes\AdminController
 {
@@ -17,32 +17,32 @@ class Tables extends \Admin\Classes\AdminController
 
     public $listConfig = [
         'list' => [
-            'model' => 'Admin\Models\Tables_model',
-            'title' => 'lang:admin::lang.tables.text_title',
+            'model'        => 'Admin\Models\Tables_model',
+            'title'        => 'lang:admin::lang.tables.text_title',
             'emptyMessage' => 'lang:admin::lang.tables.text_empty',
-            'defaultSort' => ['table_id', 'DESC'],
-            'configFile' => 'tables_model',
+            'defaultSort'  => ['table_id', 'DESC'],
+            'configFile'   => 'tables_model',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:admin::lang.tables.text_form_name',
-        'model' => 'Admin\Models\Tables_model',
+        'name'    => 'lang:admin::lang.tables.text_form_name',
+        'model'   => 'Admin\Models\Tables_model',
         'request' => 'Admin\Requests\Table',
-        'create' => [
-            'title' => 'lang:admin::lang.form.create_title',
-            'redirect' => 'tables/edit/{table_id}',
+        'create'  => [
+            'title'         => 'lang:admin::lang.form.create_title',
+            'redirect'      => 'tables/edit/{table_id}',
             'redirectClose' => 'tables',
-            'redirectNew' => 'tables/create',
+            'redirectNew'   => 'tables/create',
         ],
         'edit' => [
-            'title' => 'lang:admin::lang.form.edit_title',
-            'redirect' => 'tables/edit/{table_id}',
+            'title'         => 'lang:admin::lang.form.edit_title',
+            'redirect'      => 'tables/edit/{table_id}',
             'redirectClose' => 'tables',
-            'redirectNew' => 'tables/create',
+            'redirectNew'   => 'tables/create',
         ],
         'preview' => [
-            'title' => 'lang:admin::lang.form.preview_title',
+            'title'    => 'lang:admin::lang.form.preview_title',
             'redirect' => 'tables',
         ],
         'delete' => [

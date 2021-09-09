@@ -18,7 +18,7 @@ trait ValidatesForm
     /**
      * Validate the given request with the given rules.
      *
-     * @param  $request
+     * @param       $request
      * @param array $rules
      * @param array $messages
      * @param array $customAttributes
@@ -32,7 +32,7 @@ trait ValidatesForm
         if ($validator->fails()) {
             $this->flashValidationErrors($validator->errors());
 
-            return FALSE;
+            return false;
         }
 
         return $this->extractInputFromRules($request, $rules);
@@ -41,7 +41,7 @@ trait ValidatesForm
     /**
      * Validate the given request with the given rules.
      *
-     * @param  $request
+     * @param       $request
      * @param array $rules
      * @param array $messages
      * @param array $customAttributes
@@ -54,6 +54,7 @@ trait ValidatesForm
 
         if ($validator->fails()) {
             $this->flashValidationErrors($validator->errors());
+
             throw new ValidationException($validator);
         }
 
@@ -67,19 +68,24 @@ trait ValidatesForm
         $customAttributes = Arr::get($parsed, 'attributes', $customAttributes);
 
         $validator = $this->getValidationFactory()->make(
-            $request ?? [], $rules, $messages, $customAttributes
+            $request ?? [],
+            $rules,
+            $messages,
+            $customAttributes
         );
 
-        if ($this->validateAfterCallback instanceof Closure)
+        if ($this->validateAfterCallback instanceof Closure) {
             $validator->after($this->validateAfterCallback);
+        }
 
         return $validator;
     }
 
     public function parseRules(array $rules)
     {
-        if (!isset($rules[0]))
+        if (!isset($rules[0])) {
             return $rules;
+        }
 
         $result = [];
         foreach ($rules as $key => $value) {
@@ -91,8 +97,9 @@ trait ValidatesForm
 
     public function parseAttributes(array $rules)
     {
-        if (!isset($rules[0]))
+        if (!isset($rules[0])) {
             return [];
+        }
 
         $result = [];
         foreach ($rules as $key => [$name, $attribute]) {
@@ -106,7 +113,7 @@ trait ValidatesForm
      * Get the request input based on the given validation rules.
      *
      * @param \Illuminate\Http\Request $request
-     * @param array $rules
+     * @param array                    $rules
      *
      * @return array
      */
@@ -121,6 +128,7 @@ trait ValidatesForm
 
     /**
      * Get a validation factory instance.
+     *
      * @return \Illuminate\Contracts\Validation\Factory
      */
     protected function getValidationFactory()
@@ -137,16 +145,18 @@ trait ValidatesForm
     {
         $sessionKey = 'errors';
 
-        if (App::runningInAdmin())
+        if (App::runningInAdmin()) {
             $sessionKey = 'admin_errors';
+        }
 
         return Session::flash($sessionKey, $errors);
     }
 
     protected function validateFormWidget($form, $saveData)
     {
-        if (!$rules = array_get($form->config, 'rules'))
+        if (!$rules = array_get($form->config, 'rules')) {
             return;
+        }
 
         return $this->validate($saveData, $rules);
     }

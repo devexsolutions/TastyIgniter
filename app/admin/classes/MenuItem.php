@@ -6,7 +6,7 @@ use Igniter\Flame\Html\HtmlFacade as Html;
 
 /**
  * Menu item definition
- * A translation of the menu item configuration
+ * A translation of the menu item configuration.
  */
 class MenuItem
 {
@@ -48,7 +48,7 @@ class MenuItem
     /**
      * @var bool Specify if the item is disabled or not.
      */
-    public $disabled = FALSE;
+    public $disabled = false;
 
     /**
      * @var array Contains a list of attributes specified in the item configuration.
@@ -113,8 +113,7 @@ class MenuItem
         if ($value === null) {
             if (is_array($this->options)) {
                 return $this->options;
-            }
-            elseif (is_callable($this->options)) {
+            } elseif (is_callable($this->options)) {
                 $callable = $this->options;
 
                 return $callable();
@@ -133,8 +132,8 @@ class MenuItem
      * - group - menu by a group of IDs. Default.
      * - checkbox - menu by a simple toggle switch.
      *
-     * @param string $type Specifies a render mode as described above
-     * @param array $config A list of render mode specific config.
+     * @param string $type   Specifies a render mode as described above
+     * @param array  $config A list of render mode specific config.
      *
      * @return $this
      */
@@ -155,44 +154,57 @@ class MenuItem
      */
     protected function evalConfig($config)
     {
-        if (isset($config['anchor']))
+        if (isset($config['anchor'])) {
             $this->anchor = $config['anchor'];
+        }
 
-        if (isset($config['options']))
+        if (isset($config['options'])) {
             $this->options = $config['options'];
+        }
 
-        if (isset($config['context']))
+        if (isset($config['context'])) {
             $this->context = $config['context'];
+        }
 
-        if (isset($config['icon']))
+        if (isset($config['icon'])) {
             $this->icon = $config['icon'];
+        }
 
-        if (isset($config['badge']))
+        if (isset($config['badge'])) {
             $this->badge = $config['badge'];
+        }
 
-        if (isset($config['badgeCount']))
+        if (isset($config['badgeCount'])) {
             $this->badgeCount = $config['badgeCount'];
+        }
 
-        if (isset($config['viewMoreUrl']))
+        if (isset($config['viewMoreUrl'])) {
             $this->viewMoreUrl = $config['viewMoreUrl'];
+        }
 
-        if (isset($config['optionsView']))
+        if (isset($config['optionsView'])) {
             $this->optionsView = $config['optionsView'];
+        }
 
-        if (isset($config['path']))
+        if (isset($config['path'])) {
             $this->path = $config['path'];
+        }
 
-        if (isset($config['partial']))
+        if (isset($config['partial'])) {
             $this->partial = $config['partial'];
+        }
 
-        if (isset($config['cssClass']))
+        if (isset($config['cssClass'])) {
             $this->cssClass = $config['cssClass'];
+        }
 
-        if (isset($config['attributes']))
+        if (isset($config['attributes'])) {
             $this->attributes = $config['attributes'];
+        }
 
-        if (array_key_exists('disabled', $config))
+        if (array_key_exists('disabled', $config)) {
             $this->disabled = $config['disabled'];
+        }
 
         return $config;
     }
@@ -205,7 +217,7 @@ class MenuItem
      *
      * @return array|string
      */
-    public function getAttributes($htmlBuild = TRUE)
+    public function getAttributes($htmlBuild = true)
     {
         $attributes = $this->attributes;
 
@@ -214,7 +226,9 @@ class MenuItem
         }
 
         foreach ($attributes as $key => $value) {
-            if ($key == 'href') $value = preg_match('#^(\w+:)?//#i', $value) ? $value : admin_url($value);
+            if ($key == 'href') {
+                $value = preg_match('#^(\w+:)?//#i', $value) ? $value : admin_url($value);
+            }
             $attributes[$key] = is_lang_key($value) ? lang($value) : $value;
         }
 

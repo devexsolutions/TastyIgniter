@@ -1,4 +1,5 @@
 <?php
+
 $config['form']['fields'] = [
     'menu_option_value_id' => [
         'type' => 'hidden',
@@ -7,21 +8,21 @@ $config['form']['fields'] = [
         'type' => 'hidden',
     ],
     'is_default' => [
-        'label' => 'lang:admin::lang.menus.label_option_default_value',
-        'type' => 'checkbox',
+        'label'   => 'lang:admin::lang.menus.label_option_default_value',
+        'type'    => 'checkbox',
         'options' => [],
     ],
     'option_value_id' => [
         'label' => 'lang:admin::lang.menus.label_option_value',
-        'type' => 'select',
+        'type'  => 'select',
     ],
     'new_price' => [
         'label' => 'lang:admin::lang.menus.label_option_price',
-        'type' => 'currency',
+        'type'  => 'currency',
     ],
     'quantity' => [
         'label' => 'lang:admin::lang.menus.label_option_qty',
-        'type' => 'number',
+        'type'  => 'number',
     ],
 ];
 

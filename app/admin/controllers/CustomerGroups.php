@@ -14,32 +14,32 @@ class CustomerGroups extends \Admin\Classes\AdminController
 
     public $listConfig = [
         'list' => [
-            'model' => 'Admin\Models\Customer_groups_model',
-            'title' => 'lang:admin::lang.customer_groups.text_title',
+            'model'        => 'Admin\Models\Customer_groups_model',
+            'title'        => 'lang:admin::lang.customer_groups.text_title',
             'emptyMessage' => 'lang:admin::lang.customer_groups.text_empty',
-            'defaultSort' => ['customer_group_id', 'DESC'],
-            'configFile' => 'customer_groups_model',
+            'defaultSort'  => ['customer_group_id', 'DESC'],
+            'configFile'   => 'customer_groups_model',
         ],
     ];
 
     public $formConfig = [
-        'name' => 'lang:admin::lang.customer_groups.text_form_name',
-        'model' => 'Admin\Models\Customer_groups_model',
+        'name'    => 'lang:admin::lang.customer_groups.text_form_name',
+        'model'   => 'Admin\Models\Customer_groups_model',
         'request' => 'Admin\Requests\CustomerGroup',
-        'create' => [
-            'title' => 'lang:admin::lang.form.create_title',
-            'redirect' => 'customer_groups/edit/{customer_group_id}',
+        'create'  => [
+            'title'         => 'lang:admin::lang.form.create_title',
+            'redirect'      => 'customer_groups/edit/{customer_group_id}',
             'redirectClose' => 'customer_groups',
-            'redirectNew' => 'customer_groups/create',
+            'redirectNew'   => 'customer_groups/create',
         ],
         'edit' => [
-            'title' => 'lang:admin::lang.form.edit_title',
-            'redirect' => 'customer_groups/edit/{customer_group_id}',
+            'title'         => 'lang:admin::lang.form.edit_title',
+            'redirect'      => 'customer_groups/edit/{customer_group_id}',
             'redirectClose' => 'customer_groups',
-            'redirectNew' => 'customer_groups/create',
+            'redirectNew'   => 'customer_groups/create',
         ],
         'preview' => [
-            'title' => 'lang:admin::lang.form.preview_title',
+            'title'    => 'lang:admin::lang.form.preview_title',
             'redirect' => 'customer_groups',
         ],
         'delete' => [
@@ -68,11 +68,13 @@ class CustomerGroups extends \Admin\Classes\AdminController
 
     public function listOverrideColumnValue($record, $column, $alias = null)
     {
-        if ($column->type != 'button')
+        if ($column->type != 'button') {
             return null;
+        }
 
-        if ($column->columnName != 'default')
+        if ($column->columnName != 'default') {
             return null;
+        }
 
         $attributes = $column->attributes;
         $column->iconCssClass = 'fa fa-star-o';
